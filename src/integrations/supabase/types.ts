@@ -14,7 +14,264 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      chat_messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          role: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_messages_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      documents: {
+        Row: {
+          created_at: string
+          extracted_text: string | null
+          file_name: string
+          file_path: string
+          file_size: number | null
+          file_type: string | null
+          id: string
+          status: string | null
+          summary: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          extracted_text?: string | null
+          file_name: string
+          file_path: string
+          file_size?: number | null
+          file_type?: string | null
+          id?: string
+          status?: string | null
+          summary?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          extracted_text?: string | null
+          file_name?: string
+          file_path?: string
+          file_size?: number | null
+          file_type?: string | null
+          id?: string
+          status?: string | null
+          summary?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documents_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      flashcards: {
+        Row: {
+          back: string
+          created_at: string
+          document_id: string | null
+          front: string
+          id: string
+          last_reviewed: string | null
+          mastery_level: number | null
+          topic: string | null
+          user_id: string
+        }
+        Insert: {
+          back: string
+          created_at?: string
+          document_id?: string | null
+          front: string
+          id?: string
+          last_reviewed?: string | null
+          mastery_level?: number | null
+          topic?: string | null
+          user_id: string
+        }
+        Update: {
+          back?: string
+          created_at?: string
+          document_id?: string | null
+          front?: string
+          id?: string
+          last_reviewed?: string | null
+          mastery_level?: number | null
+          topic?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "flashcards_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "documents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "flashcards_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          education_level: string | null
+          email: string | null
+          exam_type: string | null
+          full_name: string | null
+          id: string
+          institution: string | null
+          program: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          education_level?: string | null
+          email?: string | null
+          exam_type?: string | null
+          full_name?: string | null
+          id: string
+          institution?: string | null
+          program?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          education_level?: string | null
+          email?: string | null
+          exam_type?: string | null
+          full_name?: string | null
+          id?: string
+          institution?: string | null
+          program?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      quizzes: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          difficulty: string | null
+          document_id: string | null
+          id: string
+          questions: Json
+          score: number | null
+          title: string
+          total_questions: number | null
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          difficulty?: string | null
+          document_id?: string | null
+          id?: string
+          questions?: Json
+          score?: number | null
+          title: string
+          total_questions?: number | null
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          difficulty?: string | null
+          document_id?: string | null
+          id?: string
+          questions?: Json
+          score?: number | null
+          title?: string
+          total_questions?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quizzes_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "documents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quizzes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      study_progress: {
+        Row: {
+          created_at: string
+          date: string
+          flashcards_reviewed: number | null
+          id: string
+          quizzes_completed: number | null
+          study_minutes: number | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          date?: string
+          flashcards_reviewed?: number | null
+          id?: string
+          quizzes_completed?: number | null
+          study_minutes?: number | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          flashcards_reviewed?: number | null
+          id?: string
+          quizzes_completed?: number | null
+          study_minutes?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "study_progress_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

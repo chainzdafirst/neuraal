@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,7 +10,7 @@ import { toast } from "sonner";
 
 export default function Signup() {
   const navigate = useNavigate();
-  const { signup, isLoading } = useAuth();
+  const { signup, isLoading, isAuthenticated } = useAuth();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -20,6 +20,12 @@ export default function Signup() {
     { label: "At least 8 characters", met: password.length >= 8 },
     { label: "Contains a number", met: /\d/.test(password) },
   ];
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/onboarding");
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,8 +44,13 @@ export default function Signup() {
       await signup(email, password, name);
       toast.success("Account created! Let's set up your study profile.");
       navigate("/onboarding");
-    } catch (error) {
-      toast.error("Signup failed. Please try again.");
+    } catch (error: any) {
+      const message = error?.message || "Signup failed. Please try again.";
+      if (message.includes("already registered")) {
+        toast.error("This email is already registered. Please log in instead.");
+      } else {
+        toast.error(message);
+      }
     }
   };
 

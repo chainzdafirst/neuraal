@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { NeuraalLogo } from "@/components/ui/NeuraalLogo";
 import { useNavigate } from "react-router-dom";
@@ -20,7 +20,7 @@ type Step = 1 | 2 | 3 | 4;
 
 export default function Onboarding() {
   const navigate = useNavigate();
-  const { updateProfile } = useAuth();
+  const { updateProfile, isAuthenticated } = useAuth();
   const [step, setStep] = useState<Step>(1);
   const [isLoading, setIsLoading] = useState(false);
   
@@ -28,6 +28,12 @@ export default function Onboarding() {
   const [institution, setInstitution] = useState("");
   const [program, setProgram] = useState("");
   const [examType, setExamType] = useState<"semester" | "board" | "">("");
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/login");
+    }
+  }, [isAuthenticated, navigate]);
 
   const totalSteps = 4;
   const progress = (step / totalSteps) * 100;
@@ -53,18 +59,21 @@ export default function Onboarding() {
     }
 
     setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    
-    updateProfile({
-      educationLevel,
-      institution,
-      program,
-      country: "Zambia",
-      examType,
-    });
+    try {
+      await updateProfile({
+        education_level: educationLevel,
+        institution,
+        program,
+        exam_type: examType,
+      });
 
-    toast.success("Your study space is ready!");
-    navigate("/dashboard");
+      toast.success("Your study space is ready!");
+      navigate("/dashboard");
+    } catch (error) {
+      toast.error("Failed to save profile");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const canProceed = () => {
