@@ -10,26 +10,28 @@ import {
   Brain,
   Loader2,
   Sparkles,
-  BookOpen,
-  AlertCircle,
   Copy,
   Check,
 } from "lucide-react";
 import { toast } from "sonner";
-import { ChatMessage } from "@/types";
+
+interface Message {
+  id: string;
+  role: "user" | "assistant";
+  content: string;
+}
 
 export default function AITutor() {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { profile, isAuthenticated } = useAuth();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const [messages, setMessages] = useState<ChatMessage[]>([
+  const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
       role: "assistant",
       content: "Hello! I'm your AI Tutor. What would you like to understand today? I'll explain concepts step-by-step using your uploaded notes and syllabus.",
-      timestamp: new Date().toISOString(),
     },
   ]);
   const [input, setInput] = useState("");
@@ -44,46 +46,100 @@ export default function AITutor() {
   ];
 
   useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/login");
+    }
+  }, [isAuthenticated, navigate]);
+
+  useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
 
-    const userMessage: ChatMessage = {
+    const userMessage: Message = {
       id: Date.now().toString(),
       role: "user",
       content: input.trim(),
-      timestamp: new Date().toISOString(),
     };
 
-    setMessages((prev) => [...prev, userMessage]);
+    const updatedMessages = [...messages, userMessage];
+    setMessages(updatedMessages);
     setInput("");
     setIsLoading(true);
 
-    // Simulate AI response (will be replaced with actual LLM call)
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    try {
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-chat`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        },
+        body: JSON.stringify({
+          messages: updatedMessages.slice(1).map(m => ({ role: m.role, content: m.content })),
+          userProfile: profile ? {
+            program: profile.program,
+            institution: profile.institution,
+            educationLevel: profile.education_level,
+          } : null,
+        }),
+      });
 
-    const assistantMessage: ChatMessage = {
-      id: (Date.now() + 1).toString(),
-      role: "assistant",
-      content: `Great question! Let me explain this based on your syllabus and uploaded materials.
+      if (!response.ok) {
+        throw new Error("Failed to get response");
+      }
 
-**Understanding ${input.trim().split(" ").slice(0, 3).join(" ")}...**
+      const reader = response.body?.getReader();
+      if (!reader) throw new Error("No reader available");
 
-This is a simulated response. When connected to the backend, I will:
+      const decoder = new TextDecoder();
+      let assistantContent = "";
+      const assistantId = (Date.now() + 1).toString();
 
-1. **Retrieve relevant context** from your uploaded documents
-2. **Align with your syllabus** objectives
-3. **Provide step-by-step explanations** tailored to your level
-4. **Highlight exam-relevant points** for your revision
+      // Add empty assistant message
+      setMessages(prev => [...prev, { id: assistantId, role: "assistant", content: "" }]);
 
-Would you like me to elaborate on any specific aspect?`,
-      timestamp: new Date().toISOString(),
-    };
+      let buffer = "";
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
 
-    setMessages((prev) => [...prev, assistantMessage]);
-    setIsLoading(false);
+        buffer += decoder.decode(value, { stream: true });
+        
+        let newlineIndex: number;
+        while ((newlineIndex = buffer.indexOf("\n")) !== -1) {
+          let line = buffer.slice(0, newlineIndex);
+          buffer = buffer.slice(newlineIndex + 1);
+
+          if (line.endsWith("\r")) line = line.slice(0, -1);
+          if (line.startsWith(":") || line.trim() === "") continue;
+          if (!line.startsWith("data: ")) continue;
+
+          const jsonStr = line.slice(6).trim();
+          if (jsonStr === "[DONE]") break;
+
+          try {
+            const parsed = JSON.parse(jsonStr);
+            const content = parsed.choices?.[0]?.delta?.content;
+            if (content) {
+              assistantContent += content;
+              setMessages(prev => 
+                prev.map(m => m.id === assistantId ? { ...m, content: assistantContent } : m)
+              );
+            }
+          } catch {
+            // Incomplete JSON, continue
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Chat error:", error);
+      toast.error("Failed to get response. Please try again.");
+      setMessages(prev => prev.slice(0, -1)); // Remove failed assistant message
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleCopy = async (content: string, id: string) => {
@@ -147,15 +203,11 @@ Would you like me to elaborate on any specific aspect?`,
                   </div>
                 )}
 
-                <div className="prose prose-sm dark:prose-invert max-w-none">
-                  {message.content.split("\n").map((line, i) => (
-                    <p key={i} className={message.role === "user" ? "mb-0" : "mb-2 last:mb-0"}>
-                      {line}
-                    </p>
-                  ))}
+                <div className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap">
+                  {message.content || (isLoading && message.role === "assistant" ? "Thinking..." : "")}
                 </div>
 
-                {message.role === "assistant" && (
+                {message.role === "assistant" && message.content && (
                   <div className="flex items-center gap-2 mt-3 pt-3 border-t border-border">
                     <Button
                       variant="ghost"
@@ -181,7 +233,7 @@ Would you like me to elaborate on any specific aspect?`,
             </div>
           ))}
 
-          {isLoading && (
+          {isLoading && messages[messages.length - 1]?.role !== "assistant" && (
             <div className="flex justify-start">
               <div className="neuraal-card p-4">
                 <div className="flex items-center gap-3">
@@ -222,14 +274,6 @@ Would you like me to elaborate on any specific aspect?`,
       {/* Input Area */}
       <footer className="sticky bottom-0 neuraal-glass border-t border-border/50 p-4">
         <div className="container mx-auto max-w-3xl">
-          {/* Free tier notice */}
-          {user?.tier === "free" && (
-            <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3">
-              <AlertCircle className="w-3.5 h-3.5" />
-              <span>Free tier: Shorter explanations. Upgrade for detailed responses.</span>
-            </div>
-          )}
-
           <div className="flex items-center gap-3">
             <Input
               ref={inputRef}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { NeuraalLogo } from "@/components/ui/NeuraalLogo";
 import { useNavigate } from "react-router-dom";
@@ -23,8 +23,14 @@ import { toast } from "sonner";
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const { user, profile, logout } = useAuth();
+  const { user, profile, logout, isAuthenticated, isLoading } = useAuth();
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      navigate("/login");
+    }
+  }, [isAuthenticated, isLoading, navigate]);
 
   const mainActions = [
     {
@@ -65,7 +71,7 @@ export default function Dashboard() {
       color: "from-accent to-neuraal-cyan-light",
       bgColor: "bg-accent/10",
       iconColor: "text-accent",
-      route: "/summaries",
+      route: "/upload",
     },
   ];
 
@@ -75,11 +81,21 @@ export default function Dashboard() {
     { label: "Topics Mastered", value: "8/24", icon: BookOpen },
   ];
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     toast.success("Logged out successfully");
     navigate("/");
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <NeuraalLogo size="lg" />
+      </div>
+    );
+  }
+
+  const userName = profile?.full_name || user?.email?.split("@")[0] || "Student";
 
   return (
     <div className="min-h-screen bg-background">
@@ -90,22 +106,9 @@ export default function Dashboard() {
           
           <div className="flex items-center gap-3">
             {/* Tier badge */}
-            <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium ${
-              user?.tier === "premium" 
-                ? "bg-gradient-to-r from-neuraal-amber to-neuraal-rose text-white" 
-                : "bg-secondary text-secondary-foreground"
-            }`}>
-              {user?.tier === "premium" ? (
-                <>
-                  <Crown className="w-3.5 h-3.5" />
-                  Premium
-                </>
-              ) : (
-                <>
-                  <Sparkles className="w-3.5 h-3.5" />
-                  Free Tier
-                </>
-              )}
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-secondary text-secondary-foreground">
+              <Sparkles className="w-3.5 h-3.5" />
+              Free Tier
             </div>
 
             <Button variant="ghost" size="icon" onClick={() => navigate("/settings")}>
@@ -122,7 +125,7 @@ export default function Dashboard() {
         {/* Greeting Section */}
         <section className="mb-8">
           <h1 className="text-2xl sm:text-3xl font-display font-bold mb-2">
-            Ready to study, {user?.name || "Student"}?
+            Ready to study, {userName}?
           </h1>
           <p className="text-muted-foreground">
             {profile?.program || "Your personalized study dashboard"}
@@ -218,28 +221,26 @@ export default function Dashboard() {
           </button>
         </section>
 
-        {/* Upgrade Banner (for free users) */}
-        {user?.tier === "free" && (
-          <section className="neuraal-card p-6 bg-gradient-to-r from-primary/10 to-accent/10 border-primary/20">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-              <div className="flex items-center gap-4">
-                <div className="p-3 rounded-xl bg-gradient-to-r from-neuraal-amber to-neuraal-rose">
-                  <Crown className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h3 className="font-display font-semibold">Upgrade to Premium</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Get unlimited quizzes, exam mode, and study planner
-                  </p>
-                </div>
+        {/* Upgrade Banner */}
+        <section className="neuraal-card p-6 bg-gradient-to-r from-primary/10 to-accent/10 border-primary/20">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div className="p-3 rounded-xl bg-gradient-to-r from-neuraal-amber to-neuraal-rose">
+                <Crown className="w-6 h-6 text-white" />
               </div>
-              <Button variant="gradient" onClick={() => navigate("/upgrade")}>
-                Upgrade Now
-                <ChevronRight className="w-4 h-4 ml-1" />
-              </Button>
+              <div>
+                <h3 className="font-display font-semibold">Upgrade to Premium</h3>
+                <p className="text-sm text-muted-foreground">
+                  Get unlimited quizzes, exam mode, and study planner
+                </p>
+              </div>
             </div>
-          </section>
-        )}
+            <Button variant="gradient" onClick={() => navigate("/upgrade")}>
+              Upgrade Now
+              <ChevronRight className="w-4 h-4 ml-1" />
+            </Button>
+          </div>
+        </section>
 
         {/* Recent Activity */}
         <section className="mt-8">
