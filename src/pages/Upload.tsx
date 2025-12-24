@@ -14,9 +14,6 @@ import {
   Check,
   Loader2,
   Sparkles,
-  Brain,
-  Target,
-  LayoutGrid,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -35,6 +32,7 @@ export default function UploadDocument() {
   const [files, setFiles] = useState<UploadedFile[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [generatingSummary, setGeneratingSummary] = useState(false);
+  const [summary, setSummary] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -121,6 +119,13 @@ export default function UploadDocument() {
   };
 
   const handleGenerateSummary = async () => {
+    const readyFiles = files.filter((f) => f.status === "ready");
+    
+    if (readyFiles.length === 0) {
+      toast.error("Please upload a document first before generating a summary.");
+      return;
+    }
+
     setGeneratingSummary(true);
     try {
       const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-summary`, {
@@ -139,8 +144,8 @@ export default function UploadDocument() {
       if (!response.ok) throw new Error("Failed to generate summary");
       
       const data = await response.json();
+      setSummary(data.summary);
       toast.success("Summary generated!");
-      navigate("/tutor");
     } catch (error) {
       toast.error("Failed to generate summary");
     } finally {
@@ -150,13 +155,6 @@ export default function UploadDocument() {
 
   const readyFiles = files.filter((f) => f.status === "ready");
 
-  const actions = [
-    { icon: Sparkles, label: "Generate Summary", action: handleGenerateSummary, loading: generatingSummary },
-    { icon: Target, label: "Create Quiz", route: "/quiz" },
-    { icon: LayoutGrid, label: "Make Flashcards", route: "/flashcards" },
-    { icon: Brain, label: "Ask AI Tutor", route: "/tutor" },
-  ];
-
   return (
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-50 neuraal-glass border-b border-border/50">
@@ -165,13 +163,23 @@ export default function UploadDocument() {
             <Button variant="ghost" size="icon" onClick={() => navigate("/dashboard")}>
               <ArrowLeft className="w-5 h-5" />
             </Button>
-            <h1 className="font-display font-semibold">Upload Notes</h1>
+            <h1 className="font-display font-semibold">Smart Summaries</h1>
           </div>
           <NeuraalLogo size="sm" showText={false} />
         </div>
       </header>
 
       <main className="container mx-auto px-4 py-8 max-w-2xl">
+        <div className="text-center mb-8">
+          <div className="inline-flex p-4 rounded-2xl bg-accent/10 mb-4">
+            <Sparkles className="w-8 h-8 text-accent" />
+          </div>
+          <h2 className="text-2xl font-display font-bold mb-2">Generate Smart Summary</h2>
+          <p className="text-muted-foreground">
+            Upload your notes and get an exam-ready summary
+          </p>
+        </div>
+
         <div
           className={`relative rounded-2xl border-2 border-dashed p-12 text-center transition-all ${
             isDragging ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"
@@ -224,7 +232,7 @@ export default function UploadDocument() {
                     <div className="flex items-center gap-2">
                       {uploadedFile.status === "processing" && <Loader2 className="w-4 h-4 animate-spin text-primary" />}
                       {uploadedFile.status === "ready" && <Check className="w-4 h-4 text-neuraal-emerald" />}
-                      <Button variant="ghost" size="icon-sm" onClick={() => removeFile(uploadedFile.id)}>
+                      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => removeFile(uploadedFile.id)}>
                         <X className="w-4 h-4" />
                       </Button>
                     </div>
@@ -235,22 +243,36 @@ export default function UploadDocument() {
           </div>
         )}
 
-        {readyFiles.length > 0 && (
-          <div className="mt-8 space-y-4">
-            <h3 className="font-display font-semibold">What would you like to do?</h3>
-            <div className="grid grid-cols-2 gap-3">
-              {actions.map((action) => (
-                <Button
-                  key={action.label}
-                  variant="outline"
-                  className="h-auto py-4 flex-col gap-2"
-                  onClick={() => action.action ? action.action() : navigate(action.route!)}
-                  disabled={action.loading}
-                >
-                  {action.loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <action.icon className="w-5 h-5 text-primary" />}
-                  <span className="text-sm">{action.label}</span>
-                </Button>
-              ))}
+        <div className="mt-8">
+          <Button 
+            variant="gradient" 
+            size="lg" 
+            className="w-full" 
+            onClick={handleGenerateSummary}
+            disabled={generatingSummary}
+          >
+            {generatingSummary ? (
+              <>
+                <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                Generating Summary...
+              </>
+            ) : (
+              <>
+                <Sparkles className="w-5 h-5 mr-2" />
+                Generate Smart Summary
+              </>
+            )}
+          </Button>
+        </div>
+
+        {summary && (
+          <div className="mt-8 neuraal-card p-6">
+            <h3 className="font-display font-semibold mb-4 flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-accent" />
+              Generated Summary
+            </h3>
+            <div className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap">
+              {summary}
             </div>
           </div>
         )}

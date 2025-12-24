@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { NeuraalLogo } from "@/components/ui/NeuraalLogo";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import FileUploader from "@/components/FileUploader";
 import {
   ArrowLeft,
   Target,
@@ -15,6 +16,7 @@ import {
   Award,
   RotateCcw,
   Loader2,
+  Upload,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -40,6 +42,7 @@ export default function Quiz() {
   const [answers, setAnswers] = useState<(number | null)[]>([]);
   const [showExplanation, setShowExplanation] = useState(false);
   const [questions, setQuestions] = useState<Question[]>([]);
+  const [uploadedDocumentId, setUploadedDocumentId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -52,6 +55,11 @@ export default function Quiz() {
   const score = answers.filter((a, i) => a === questions[i]?.correctAnswer).length;
 
   const handleStartQuiz = async () => {
+    if (!uploadedDocumentId) {
+      toast.error("Please upload a document first before generating a quiz.");
+      return;
+    }
+
     setState("loading");
     
     try {
@@ -121,6 +129,10 @@ export default function Quiz() {
     setQuestions([]);
   };
 
+  const handleFileReady = (documentId: string) => {
+    setUploadedDocumentId(documentId);
+  };
+
   const renderSetup = () => (
     <div className="container mx-auto px-4 py-8 max-w-lg">
       <div className="text-center mb-8">
@@ -131,6 +143,21 @@ export default function Quiz() {
         <p className="text-muted-foreground">
           Practice with exam-style questions from your notes
         </p>
+      </div>
+
+      {/* File Upload */}
+      <div className="mb-6">
+        <h3 className="font-semibold mb-3 flex items-center gap-2">
+          <Upload className="w-4 h-4" />
+          Upload Document
+        </h3>
+        <FileUploader onFileReady={handleFileReady} />
+        {uploadedDocumentId && (
+          <p className="text-sm text-neuraal-emerald mt-2 flex items-center gap-1">
+            <Check className="w-4 h-4" />
+            Document ready for quiz generation
+          </p>
+        )}
       </div>
 
       {/* Difficulty */}
@@ -349,11 +376,11 @@ export default function Quiz() {
           {/* Performance message */}
           <div className="mt-4 p-3 rounded-lg bg-secondary">
             {percentage >= 80 ? (
-              <span className="text-neuraal-emerald">🎉 Excellent work!</span>
+              <span className="text-neuraal-emerald">Excellent work!</span>
             ) : percentage >= 60 ? (
-              <span className="text-neuraal-amber">👍 Good effort! Keep practicing.</span>
+              <span className="text-neuraal-amber">Good effort! Keep practicing.</span>
             ) : (
-              <span className="text-muted-foreground">📚 Review the topics and try again.</span>
+              <span className="text-muted-foreground">Review the topics and try again.</span>
             )}
           </div>
         </div>
@@ -386,8 +413,8 @@ export default function Quiz() {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => (state === "active" || state === "loading" ? null : navigate("/dashboard"))}
-              disabled={state === "active" || state === "loading"}
+              onClick={() => navigate("/dashboard")}
+              disabled={state === "loading"}
             >
               <ArrowLeft className="w-5 h-5" />
             </Button>

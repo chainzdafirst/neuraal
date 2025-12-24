@@ -110,8 +110,8 @@ export default function Onboarding() {
 
             <div className="grid grid-cols-2 gap-4">
               {[
-                { value: "diploma", label: "Diploma", desc: "1-2 year programs" },
-                { value: "degree", label: "Degree", desc: "3-4+ year programs" },
+                { value: "diploma", label: "Diploma", desc: "2-3 year programs" },
+                { value: "degree", label: "Degree", desc: "4+ year programs" },
               ].map((option) => (
                 <button
                   key={option.value}
@@ -262,8 +262,8 @@ export default function Onboarding() {
 
             <div className="grid grid-cols-2 gap-4">
               {[
-                { value: "semester", label: "Semester Exams", desc: "Mid-year / End-of-year" },
-                { value: "board", label: "Board Exams", desc: "National/Professional" },
+                { value: "semester", label: "Semester Exams", desc: "Mid-year only" },
+                { value: "board", label: "Board Exams", desc: "End of year" },
               ].map((option) => (
                 <button
                   key={option.value}
