@@ -8,7 +8,6 @@ import {
   Brain,
   FileText,
   LayoutGrid,
-  Upload,
   Settings,
   LogOut,
   ChevronRight,
@@ -76,9 +75,9 @@ export default function Dashboard() {
   ];
 
   const quickStats = [
-    { label: "Study Streak", value: "5 days", icon: Zap },
-    { label: "Quizzes Taken", value: "12", icon: Target },
-    { label: "Topics Mastered", value: "8/24", icon: BookOpen },
+    { label: "Study Streak", value: "0 days", icon: Zap },
+    { label: "Quizzes Taken", value: "0", icon: Target },
+    { label: "Topics Mastered", value: "0", icon: BookOpen },
   ];
 
   const handleLogout = async () => {
@@ -95,7 +94,7 @@ export default function Dashboard() {
     );
   }
 
-  const userName = profile?.full_name || user?.email?.split("@")[0] || "Student";
+  const firstName = profile?.full_name?.split(" ")[0] || user?.email?.split("@")[0] || "Student";
 
   return (
     <div className="min-h-screen bg-background">
@@ -125,7 +124,7 @@ export default function Dashboard() {
         {/* Greeting Section */}
         <section className="mb-8">
           <h1 className="text-2xl sm:text-3xl font-display font-bold mb-2">
-            Ready to study, {userName}?
+            Welcome, {firstName}!
           </h1>
           <p className="text-muted-foreground">
             {profile?.program || "Your personalized study dashboard"}
@@ -188,22 +187,6 @@ export default function Dashboard() {
 
         {/* Secondary Actions */}
         <section className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-          {/* Upload Document */}
-          <button
-            onClick={() => navigate("/upload")}
-            className="neuraal-card p-6 text-left border-dashed border-2 hover:border-primary/50 transition-all group"
-          >
-            <div className="flex items-center gap-4">
-              <div className="p-3 rounded-xl bg-secondary">
-                <Upload className="w-6 h-6 text-muted-foreground group-hover:text-primary transition-colors" />
-              </div>
-              <div>
-                <h3 className="font-display font-semibold">Upload Notes</h3>
-                <p className="text-sm text-muted-foreground">PDF, DOCX, PPT, Images</p>
-              </div>
-            </div>
-          </button>
-
           {/* View Progress */}
           <button
             onClick={() => navigate("/progress")}
@@ -248,25 +231,9 @@ export default function Dashboard() {
             <Clock className="w-5 h-5 text-muted-foreground" />
             Recent Activity
           </h2>
-          <div className="neuraal-card divide-y divide-border">
-            {[
-              { action: "Completed Quiz", topic: "Medicinal Chemistry", time: "2 hours ago", score: "85%" },
-              { action: "Generated Summary", topic: "Pharmacology Notes", time: "Yesterday" },
-              { action: "Reviewed Flashcards", topic: "Drug Classifications", time: "2 days ago" },
-            ].map((activity, index) => (
-              <div key={index} className="p-4 flex items-center justify-between">
-                <div>
-                  <div className="font-medium">{activity.action}</div>
-                  <div className="text-sm text-muted-foreground">{activity.topic}</div>
-                </div>
-                <div className="text-right">
-                  {activity.score && (
-                    <div className="text-sm font-medium text-neuraal-emerald">{activity.score}</div>
-                  )}
-                  <div className="text-xs text-muted-foreground">{activity.time}</div>
-                </div>
-              </div>
-            ))}
+          <div className="neuraal-card p-8 text-center">
+            <p className="text-muted-foreground">No recent activity yet.</p>
+            <p className="text-sm text-muted-foreground mt-1">Start studying to see your activity here!</p>
           </div>
         </section>
       </main>

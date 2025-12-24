@@ -166,7 +166,7 @@ export default function Landing() {
                 { value: "300K+", label: "Students in Zambia" },
                 { value: "24/7", label: "AI Availability" },
                 { value: "100%", label: "Syllabus Aligned" },
-                { value: "$2-6", label: "Monthly Price" },
+                { value: "ZMW 25", label: "Monthly Price" },
               ].map((stat) => (
                 <div key={stat.label}>
                   <div className="text-3xl md:text-4xl font-display font-bold mb-2">
@@ -204,7 +204,7 @@ export default function Landing() {
         <div className="container mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <NeuraalLogo size="sm" />
           <p className="text-sm text-muted-foreground">
-            © 2024 Neuraal. Your AI Study Companion.
+            © 2026 Neuraal. Your AI Study Companion.
           </p>
         </div>
       </footer>
