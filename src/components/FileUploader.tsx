@@ -54,6 +54,12 @@ export default function FileUploader({ onFileReady }: FileUploaderProps) {
       setFiles((prev) => [...prev, uploadedFile]);
 
       try {
+        // Extract text for .txt files client-side
+        let extractedText: string | null = null;
+        if (file.type === "text/plain" || file.name.endsWith(".txt")) {
+          extractedText = await file.text();
+        }
+
         // Upload to storage
         const filePath = `${user.id}/${fileId}-${file.name}`;
         const { error: uploadError } = await supabase.storage
@@ -66,7 +72,7 @@ export default function FileUploader({ onFileReady }: FileUploaderProps) {
           prev.map((f) => (f.id === fileId ? { ...f, progress: 50, status: "processing" } : f))
         );
 
-        // Save to database
+        // Save to database with extracted text
         const { data: docData, error: dbError } = await supabase
           .from("documents")
           .insert({
@@ -75,7 +81,8 @@ export default function FileUploader({ onFileReady }: FileUploaderProps) {
             file_path: filePath,
             file_type: file.type,
             file_size: file.size,
-            status: "uploaded",
+            status: extractedText ? "ready" : "uploaded",
+            extracted_text: extractedText,
           })
           .select()
           .single();
@@ -109,8 +116,6 @@ export default function FileUploader({ onFileReady }: FileUploaderProps) {
     setIsDragging(false);
     handleFileSelect(e.dataTransfer.files);
   };
-
-  const hasReadyFile = files.some((f) => f.status === "ready");
 
   return (
     <div className="space-y-4">

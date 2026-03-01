@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { NeuraalLogo } from "@/components/ui/NeuraalLogo";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import MarkdownContent from "@/components/MarkdownContent";
 import {
   ArrowLeft,
   Send,
@@ -31,7 +32,7 @@ export default function AITutor() {
     {
       id: "1",
       role: "assistant",
-      content: "Hello! I'm your AI Tutor. What would you like to understand today? I'll explain concepts step-by-step using your uploaded notes and syllabus.",
+      content: "Hey there! I'm Neuraal, your study companion. I'm here to help you break down complex topics, answer your questions, and keep you motivated. What would you like to explore today?",
     },
   ]);
   const [input, setInput] = useState("");
@@ -86,9 +87,7 @@ export default function AITutor() {
         }),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to get response");
-      }
+      if (!response.ok) throw new Error("Failed to get response");
 
       const reader = response.body?.getReader();
       if (!reader) throw new Error("No reader available");
@@ -97,7 +96,6 @@ export default function AITutor() {
       let assistantContent = "";
       const assistantId = (Date.now() + 1).toString();
 
-      // Add empty assistant message
       setMessages(prev => [...prev, { id: assistantId, role: "assistant", content: "" }]);
 
       let buffer = "";
@@ -111,14 +109,11 @@ export default function AITutor() {
         while ((newlineIndex = buffer.indexOf("\n")) !== -1) {
           let line = buffer.slice(0, newlineIndex);
           buffer = buffer.slice(newlineIndex + 1);
-
           if (line.endsWith("\r")) line = line.slice(0, -1);
           if (line.startsWith(":") || line.trim() === "") continue;
           if (!line.startsWith("data: ")) continue;
-
           const jsonStr = line.slice(6).trim();
           if (jsonStr === "[DONE]") break;
-
           try {
             const parsed = JSON.parse(jsonStr);
             const content = parsed.choices?.[0]?.delta?.content;
@@ -128,15 +123,13 @@ export default function AITutor() {
                 prev.map(m => m.id === assistantId ? { ...m, content: assistantContent } : m)
               );
             }
-          } catch {
-            // Incomplete JSON, continue
-          }
+          } catch {}
         }
       }
     } catch (error) {
       console.error("Chat error:", error);
       toast.error("Failed to get response. Please try again.");
-      setMessages(prev => prev.slice(0, -1)); // Remove failed assistant message
+      setMessages(prev => prev.slice(0, -1));
     } finally {
       setIsLoading(false);
     }
@@ -156,7 +149,6 @@ export default function AITutor() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {/* Header */}
       <header className="sticky top-0 z-50 neuraal-glass border-b border-border/50">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -168,8 +160,8 @@ export default function AITutor() {
                 <Brain className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <h1 className="font-display font-semibold">AI Tutor</h1>
-                <p className="text-xs text-muted-foreground">Syllabus-aligned explanations</p>
+                <h1 className="font-display font-semibold">Neuraal Tutor</h1>
+                <p className="text-xs text-muted-foreground">Your study companion</p>
               </div>
             </div>
           </div>
@@ -177,15 +169,12 @@ export default function AITutor() {
         </div>
       </header>
 
-      {/* Messages */}
       <main className="flex-1 overflow-y-auto">
         <div className="container mx-auto px-4 py-6 max-w-3xl space-y-6">
           {messages.map((message) => (
             <div
               key={message.id}
-              className={`flex ${
-                message.role === "user" ? "justify-end" : "justify-start"
-              }`}
+              className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
             >
               <div
                 className={`max-w-[85%] ${
@@ -199,13 +188,19 @@ export default function AITutor() {
                     <div className="p-1.5 rounded-lg bg-primary/10">
                       <Brain className="w-4 h-4 text-primary" />
                     </div>
-                    <span className="text-sm font-medium">Neuraal Tutor</span>
+                    <span className="text-sm font-medium">Neuraal</span>
                   </div>
                 )}
 
-                <div className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap">
-                  {message.content || (isLoading && message.role === "assistant" ? "Thinking..." : "")}
-                </div>
+                {message.role === "assistant" ? (
+                  <MarkdownContent
+                    content={message.content || (isLoading ? "Thinking..." : "")}
+                  />
+                ) : (
+                  <div className="whitespace-pre-wrap">
+                    {message.content}
+                  </div>
+                )}
 
                 {message.role === "assistant" && message.content && (
                   <div className="flex items-center gap-2 mt-3 pt-3 border-t border-border">
@@ -216,15 +211,9 @@ export default function AITutor() {
                       onClick={() => handleCopy(message.content, message.id)}
                     >
                       {copiedId === message.id ? (
-                        <>
-                          <Check className="w-3 h-3 mr-1" />
-                          Copied
-                        </>
+                        <><Check className="w-3 h-3 mr-1" /> Copied</>
                       ) : (
-                        <>
-                          <Copy className="w-3 h-3 mr-1" />
-                          Copy
-                        </>
+                        <><Copy className="w-3 h-3 mr-1" /> Copy</>
                       )}
                     </Button>
                   </div>
@@ -238,19 +227,15 @@ export default function AITutor() {
               <div className="neuraal-card p-4">
                 <div className="flex items-center gap-3">
                   <Loader2 className="w-5 h-5 text-primary animate-spin" />
-                  <span className="text-sm text-muted-foreground">
-                    Thinking...
-                  </span>
+                  <span className="text-sm text-muted-foreground">Thinking...</span>
                 </div>
               </div>
             </div>
           )}
-
           <div ref={messagesEndRef} />
         </div>
       </main>
 
-      {/* Suggestions (show when no user messages) */}
       {messages.length === 1 && (
         <div className="container mx-auto px-4 pb-4 max-w-3xl">
           <div className="flex items-center gap-2 mb-3">
@@ -271,13 +256,12 @@ export default function AITutor() {
         </div>
       )}
 
-      {/* Input Area */}
       <footer className="sticky bottom-0 neuraal-glass border-t border-border/50 p-4">
         <div className="container mx-auto max-w-3xl">
           <div className="flex items-center gap-3">
             <Input
               ref={inputRef}
-              placeholder="Ask me anything about your syllabus..."
+              placeholder="Ask Neuraal anything about your studies..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSend()}
@@ -290,11 +274,7 @@ export default function AITutor() {
               onClick={handleSend}
               disabled={!input.trim() || isLoading}
             >
-              {isLoading ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
-              ) : (
-                <Send className="w-5 h-5" />
-              )}
+              {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
             </Button>
           </div>
         </div>

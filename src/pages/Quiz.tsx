@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { NeuraalLogo } from "@/components/ui/NeuraalLogo";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import FileUploader from "@/components/FileUploader";
 import {
   ArrowLeft,
@@ -33,7 +34,7 @@ interface Question {
 
 export default function Quiz() {
   const navigate = useNavigate();
-  const { profile, isAuthenticated } = useAuth();
+  const { user, profile, isAuthenticated } = useAuth();
   const [state, setState] = useState<QuizState>("setup");
   const [difficulty, setDifficulty] = useState<"easy" | "moderate" | "hard">("moderate");
   const [questionCount, setQuestionCount] = useState(5);
@@ -43,6 +44,8 @@ export default function Quiz() {
   const [showExplanation, setShowExplanation] = useState(false);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [uploadedDocumentId, setUploadedDocumentId] = useState<string | null>(null);
+  const [documentName, setDocumentName] = useState("");
+  const [quizId, setQuizId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -60,6 +63,18 @@ export default function Quiz() {
       return;
     }
 
+    // Fetch extracted text
+    const { data: doc } = await supabase
+      .from("documents")
+      .select("extracted_text")
+      .eq("id", uploadedDocumentId)
+      .single();
+
+    if (!doc?.extracted_text) {
+      toast.error("Could not extract text from the document. Please upload a .txt file for best results.");
+      return;
+    }
+
     setState("loading");
     
     try {
@@ -70,6 +85,7 @@ export default function Quiz() {
           Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
         },
         body: JSON.stringify({
+          documentText: doc.extracted_text,
           difficulty,
           questionCount,
           userProfile: profile ? {
@@ -79,15 +95,32 @@ export default function Quiz() {
         }),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to generate quiz");
-      }
+      if (!response.ok) throw new Error("Failed to generate quiz");
 
       const data = await response.json();
       
       if (data.questions && data.questions.length > 0) {
         setQuestions(data.questions);
         setAnswers(new Array(data.questions.length).fill(null));
+
+        // Save quiz to DB
+        if (user) {
+          const { data: quizData } = await supabase
+            .from("quizzes")
+            .insert({
+              user_id: user.id,
+              title: `Quiz - ${documentName || "Document"}`,
+              questions: data.questions,
+              difficulty,
+              total_questions: data.questions.length,
+              document_id: uploadedDocumentId,
+            })
+            .select()
+            .single();
+          
+          if (quizData) setQuizId(quizData.id);
+        }
+
         setState("active");
         toast.success("Quiz started! Good luck!");
       } else {
@@ -116,6 +149,15 @@ export default function Quiz() {
       setSelectedAnswer(null);
       setShowExplanation(false);
     } else {
+      // Save score to DB
+      if (quizId && user) {
+        const finalScore = answers.filter((a, i) => a === questions[i]?.correctAnswer).length;
+        supabase
+          .from("quizzes")
+          .update({ score: finalScore, completed_at: new Date().toISOString() })
+          .eq("id", quizId)
+          .then(() => {});
+      }
       setState("review");
     }
   };
@@ -127,10 +169,12 @@ export default function Quiz() {
     setShowExplanation(false);
     setAnswers([]);
     setQuestions([]);
+    setQuizId(null);
   };
 
-  const handleFileReady = (documentId: string) => {
+  const handleFileReady = (documentId: string, fileName: string) => {
     setUploadedDocumentId(documentId);
+    setDocumentName(fileName);
   };
 
   const renderSetup = () => (
@@ -140,9 +184,7 @@ export default function Quiz() {
           <Target className="w-8 h-8 text-neuraal-amber" />
         </div>
         <h2 className="text-2xl font-display font-bold mb-2">Quiz Setup</h2>
-        <p className="text-muted-foreground">
-          Practice with exam-style questions from your notes
-        </p>
+        <p className="text-muted-foreground">Practice with exam-style questions from your notes</p>
       </div>
 
       {/* File Upload */}
@@ -155,7 +197,7 @@ export default function Quiz() {
         {uploadedDocumentId && (
           <p className="text-sm text-neuraal-emerald mt-2 flex items-center gap-1">
             <Check className="w-4 h-4" />
-            Document ready for quiz generation
+            {documentName} ready for quiz generation
           </p>
         )}
       </div>
@@ -235,20 +277,15 @@ export default function Quiz() {
         <Loader2 className="w-12 h-12 text-primary animate-spin" />
       </div>
       <h2 className="text-2xl font-display font-bold mb-2">Generating Quiz...</h2>
-      <p className="text-muted-foreground">
-        Creating {questionCount} {difficulty} questions for you
-      </p>
+      <p className="text-muted-foreground">Creating {questionCount} {difficulty} questions from your notes</p>
     </div>
   );
 
   const renderActive = () => (
     <div className="container mx-auto px-4 py-6 max-w-2xl">
-      {/* Progress */}
       <div className="mb-6">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm text-muted-foreground">
-            Question {currentIndex + 1} of {totalQuestions}
-          </span>
+          <span className="text-sm text-muted-foreground">Question {currentIndex + 1} of {totalQuestions}</span>
           <span className="text-sm font-medium">{currentQuestion?.topic}</span>
         </div>
         <div className="h-2 bg-secondary rounded-full overflow-hidden">
@@ -259,12 +296,8 @@ export default function Quiz() {
         </div>
       </div>
 
-      {/* Question */}
       <div className="neuraal-card p-6 mb-6">
-        <h2 className="text-xl font-display font-semibold mb-6">
-          {currentQuestion?.question}
-        </h2>
-
+        <h2 className="text-xl font-display font-semibold mb-6">{currentQuestion?.question}</h2>
         <div className="space-y-3">
           {currentQuestion?.options.map((option, index) => {
             const isSelected = selectedAnswer === index;
@@ -303,13 +336,7 @@ export default function Quiz() {
                     }`}
                   >
                     {showResult ? (
-                      isCorrect ? (
-                        <Check className="w-4 h-4" />
-                      ) : isSelected ? (
-                        <X className="w-4 h-4" />
-                      ) : (
-                        String.fromCharCode(65 + index)
-                      )
+                      isCorrect ? <Check className="w-4 h-4" /> : isSelected ? <X className="w-4 h-4" /> : String.fromCharCode(65 + index)
                     ) : (
                       String.fromCharCode(65 + index)
                     )}
@@ -322,7 +349,6 @@ export default function Quiz() {
         </div>
       </div>
 
-      {/* Explanation */}
       {showExplanation && currentQuestion?.explanation && (
         <div className="neuraal-card p-6 mb-6 bg-accent/5 border-accent/20">
           <h3 className="font-semibold mb-2 flex items-center gap-2">
@@ -333,19 +359,12 @@ export default function Quiz() {
         </div>
       )}
 
-      {/* Next button */}
       {selectedAnswer !== null && (
         <Button variant="gradient" size="lg" className="w-full" onClick={handleNext}>
           {currentIndex < totalQuestions - 1 ? (
-            <>
-              Next Question
-              <ChevronRight className="w-5 h-5 ml-1" />
-            </>
+            <>Next Question <ChevronRight className="w-5 h-5 ml-1" /></>
           ) : (
-            <>
-              See Results
-              <Award className="w-5 h-5 ml-2" />
-            </>
+            <>See Results <Award className="w-5 h-5 ml-2" /></>
           )}
         </Button>
       )}
@@ -360,43 +379,29 @@ export default function Quiz() {
         <div className="inline-flex p-6 rounded-full bg-gradient-to-r from-primary/20 to-accent/20 mb-6">
           <Award className="w-16 h-16 text-primary" />
         </div>
-
         <h2 className="text-3xl font-display font-bold mb-2">Quiz Complete!</h2>
-        <p className="text-muted-foreground mb-8">Here's how you did:</p>
+        <p className="text-muted-foreground mb-8">Here is how you did:</p>
 
-        {/* Score */}
         <div className="neuraal-card p-8 mb-6">
-          <div className="text-5xl font-display font-bold neuraal-gradient-text mb-2">
-            {percentage}%
-          </div>
-          <div className="text-lg text-muted-foreground">
-            {score} out of {totalQuestions} correct
-          </div>
-
-          {/* Performance message */}
+          <div className="text-5xl font-display font-bold neuraal-gradient-text mb-2">{percentage}%</div>
+          <div className="text-lg text-muted-foreground">{score} out of {totalQuestions} correct</div>
           <div className="mt-4 p-3 rounded-lg bg-secondary">
             {percentage >= 80 ? (
-              <span className="text-neuraal-emerald">Excellent work!</span>
+              <span className="text-neuraal-emerald">Excellent work! Keep it up!</span>
             ) : percentage >= 60 ? (
               <span className="text-neuraal-amber">Good effort! Keep practicing.</span>
             ) : (
-              <span className="text-muted-foreground">Review the topics and try again.</span>
+              <span className="text-muted-foreground">Review the topics and try again. You got this!</span>
             )}
           </div>
         </div>
 
-        {/* Actions */}
         <div className="space-y-3">
           <Button variant="gradient" size="lg" className="w-full" onClick={handleRetry}>
             <RotateCcw className="w-5 h-5 mr-2" />
             Try Again
           </Button>
-          <Button
-            variant="outline"
-            size="lg"
-            className="w-full"
-            onClick={() => navigate("/dashboard")}
-          >
+          <Button variant="outline" size="lg" className="w-full" onClick={() => navigate("/dashboard")}>
             Back to Dashboard
           </Button>
         </div>
@@ -406,16 +411,10 @@ export default function Quiz() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
       <header className="sticky top-0 z-50 neuraal-glass border-b border-border/50">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => navigate("/dashboard")}
-              disabled={state === "loading"}
-            >
+            <Button variant="ghost" size="icon" onClick={() => navigate("/dashboard")} disabled={state === "loading"}>
               <ArrowLeft className="w-5 h-5" />
             </Button>
             <div className="flex items-center gap-2">
@@ -428,7 +427,6 @@ export default function Quiz() {
           <NeuraalLogo size="sm" showText={false} />
         </div>
       </header>
-
       <main>
         {state === "setup" && renderSetup()}
         {state === "loading" && renderLoading()}

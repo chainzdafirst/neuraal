@@ -10,6 +10,7 @@ import Signup from "./pages/Signup";
 import Onboarding from "./pages/Onboarding";
 import Dashboard from "./pages/Dashboard";
 import Upload from "./pages/Upload";
+import SummaryView from "./pages/SummaryView";
 import AITutor from "./pages/AITutor";
 import Quiz from "./pages/Quiz";
 import Flashcards from "./pages/Flashcards";
@@ -32,6 +33,7 @@ const App = () => (
             <Route path="/onboarding" element={<Onboarding />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/upload" element={<Upload />} />
+            <Route path="/summary/:documentId" element={<SummaryView />} />
             <Route path="/tutor" element={<AITutor />} />
             <Route path="/quiz" element={<Quiz />} />
             <Route path="/flashcards" element={<Flashcards />} />

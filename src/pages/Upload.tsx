@@ -4,35 +4,22 @@ import { NeuraalLogo } from "@/components/ui/NeuraalLogo";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import FileUploader from "@/components/FileUploader";
 import {
   ArrowLeft,
   Upload,
-  FileText,
-  Image,
-  File,
-  X,
   Check,
   Loader2,
   Sparkles,
 } from "lucide-react";
 import { toast } from "sonner";
 
-interface UploadedFile {
-  id: string;
-  file: File;
-  status: "uploading" | "processing" | "ready" | "error";
-  progress: number;
-  documentId?: string;
-}
-
 export default function UploadDocument() {
   const navigate = useNavigate();
   const { user, profile, isAuthenticated } = useAuth();
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [files, setFiles] = useState<UploadedFile[]>([]);
-  const [isDragging, setIsDragging] = useState(false);
+  const [uploadedDocumentId, setUploadedDocumentId] = useState<string | null>(null);
+  const [documentName, setDocumentName] = useState("");
   const [generatingSummary, setGeneratingSummary] = useState(false);
-  const [summary, setSummary] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -40,89 +27,26 @@ export default function UploadDocument() {
     }
   }, [isAuthenticated, navigate]);
 
-  const acceptedTypes = [".pdf", ".docx", ".doc", ".ppt", ".pptx", ".txt"];
-
-  const getFileIcon = (type: string) => {
-    if (type.includes("image")) return Image;
-    if (type.includes("pdf")) return FileText;
-    return File;
-  };
-
-  const handleFileSelect = async (selectedFiles: FileList | null) => {
-    if (!selectedFiles || !user) return;
-
-    for (const file of Array.from(selectedFiles)) {
-      const fileId = Math.random().toString(36).substr(2, 9);
-      const uploadedFile: UploadedFile = {
-        id: fileId,
-        file,
-        status: "uploading",
-        progress: 0,
-      };
-
-      setFiles((prev) => [...prev, uploadedFile]);
-
-      try {
-        // Upload to storage
-        const filePath = `${user.id}/${fileId}-${file.name}`;
-        const { error: uploadError } = await supabase.storage
-          .from("documents")
-          .upload(filePath, file);
-
-        if (uploadError) throw uploadError;
-
-        setFiles((prev) =>
-          prev.map((f) => (f.id === fileId ? { ...f, progress: 50, status: "processing" } : f))
-        );
-
-        // Save to database
-        const { data: docData, error: dbError } = await supabase
-          .from("documents")
-          .insert({
-            user_id: user.id,
-            file_name: file.name,
-            file_path: filePath,
-            file_type: file.type,
-            file_size: file.size,
-            status: "uploaded",
-          })
-          .select()
-          .single();
-
-        if (dbError) throw dbError;
-
-        setFiles((prev) =>
-          prev.map((f) =>
-            f.id === fileId ? { ...f, progress: 100, status: "ready", documentId: docData.id } : f
-          )
-        );
-
-        toast.success("Document uploaded successfully!");
-      } catch (error) {
-        console.error("Upload error:", error);
-        setFiles((prev) =>
-          prev.map((f) => (f.id === fileId ? { ...f, status: "error" } : f))
-        );
-        toast.error("Failed to upload document");
-      }
-    }
-  };
-
-  const removeFile = (fileId: string) => {
-    setFiles((prev) => prev.filter((f) => f.id !== fileId));
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-    handleFileSelect(e.dataTransfer.files);
+  const handleFileReady = (documentId: string, fileName: string) => {
+    setUploadedDocumentId(documentId);
+    setDocumentName(fileName);
   };
 
   const handleGenerateSummary = async () => {
-    const readyFiles = files.filter((f) => f.status === "ready");
-    
-    if (readyFiles.length === 0) {
+    if (!uploadedDocumentId) {
       toast.error("Please upload a document first before generating a summary.");
+      return;
+    }
+
+    // Fetch extracted text from document
+    const { data: doc, error: docError } = await supabase
+      .from("documents")
+      .select("extracted_text")
+      .eq("id", uploadedDocumentId)
+      .single();
+
+    if (docError || !doc?.extracted_text) {
+      toast.error("Could not extract text from the document. Please upload a .txt file for best results.");
       return;
     }
 
@@ -135,8 +59,8 @@ export default function UploadDocument() {
           Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
         },
         body: JSON.stringify({
-          documentText: "Generate a summary for pharmacy and medical sciences topics.",
-          summaryType: "concise",
+          documentText: doc.extracted_text,
+          summaryType: "detailed",
           userProfile: profile,
         }),
       });
@@ -144,16 +68,25 @@ export default function UploadDocument() {
       if (!response.ok) throw new Error("Failed to generate summary");
       
       const data = await response.json();
-      setSummary(data.summary);
-      toast.success("Summary generated!");
+      
+      if (data.summary) {
+        // Save summary to document record
+        await supabase
+          .from("documents")
+          .update({ summary: data.summary })
+          .eq("id", uploadedDocumentId);
+
+        toast.success("Summary generated!");
+        navigate(`/summary/${uploadedDocumentId}`);
+      } else {
+        throw new Error("No summary generated");
+      }
     } catch (error) {
-      toast.error("Failed to generate summary");
+      toast.error("Failed to generate summary. Please try again.");
     } finally {
       setGeneratingSummary(false);
     }
   };
-
-  const readyFiles = files.filter((f) => f.status === "ready");
 
   return (
     <div className="min-h-screen bg-background">
@@ -180,68 +113,20 @@ export default function UploadDocument() {
           </p>
         </div>
 
-        <div
-          className={`relative rounded-2xl border-2 border-dashed p-12 text-center transition-all ${
-            isDragging ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"
-          }`}
-          onDrop={handleDrop}
-          onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
-          onDragLeave={() => setIsDragging(false)}
-        >
-          <input
-            ref={fileInputRef}
-            type="file"
-            multiple
-            accept={acceptedTypes.join(",")}
-            onChange={(e) => handleFileSelect(e.target.files)}
-            className="hidden"
-          />
-          <div className="inline-flex p-4 rounded-2xl bg-primary/10 mb-4">
-            <Upload className="w-8 h-8 text-primary" />
-          </div>
-          <h2 className="text-xl font-display font-semibold mb-2">Drop your lecture notes here</h2>
-          <p className="text-muted-foreground mb-6">or click to browse files</p>
-          <Button variant="gradient" onClick={() => fileInputRef.current?.click()}>
-            Select Files
-          </Button>
-          <p className="text-xs text-muted-foreground mt-4">Supports PDF, DOCX, PPT, TXT (Max 30MB)</p>
+        {/* File Upload */}
+        <div className="mb-6">
+          <h3 className="font-semibold mb-3 flex items-center gap-2">
+            <Upload className="w-4 h-4" />
+            Upload Document
+          </h3>
+          <FileUploader onFileReady={handleFileReady} />
+          {uploadedDocumentId && (
+            <p className="text-sm text-neuraal-emerald mt-2 flex items-center gap-1">
+              <Check className="w-4 h-4" />
+              {documentName} ready for summary generation
+            </p>
+          )}
         </div>
-
-        {files.length > 0 && (
-          <div className="mt-8 space-y-4">
-            <h3 className="font-display font-semibold">Uploaded Files</h3>
-            <div className="space-y-3">
-              {files.map((uploadedFile) => {
-                const FileIcon = getFileIcon(uploadedFile.file.type);
-                return (
-                  <div key={uploadedFile.id} className="neuraal-card p-4 flex items-center gap-4">
-                    <div className="p-2 rounded-lg bg-secondary">
-                      <FileIcon className="w-5 h-5 text-muted-foreground" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="font-medium truncate">{uploadedFile.file.name}</div>
-                      <div className="text-xs text-muted-foreground">
-                        {(uploadedFile.file.size / 1024 / 1024).toFixed(2)} MB
-                      </div>
-                      {uploadedFile.status === "uploading" && (
-                        <div className="mt-2 h-1 bg-secondary rounded-full overflow-hidden">
-                          <div className="h-full bg-primary transition-all" style={{ width: `${uploadedFile.progress}%` }} />
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-2">
-                      {uploadedFile.status === "processing" && <Loader2 className="w-4 h-4 animate-spin text-primary" />}
-                      {uploadedFile.status === "ready" && <Check className="w-4 h-4 text-neuraal-emerald" />}
-                      <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => removeFile(uploadedFile.id)}>
-                        <X className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
 
         <div className="mt-8">
           <Button 
@@ -264,18 +149,6 @@ export default function UploadDocument() {
             )}
           </Button>
         </div>
-
-        {summary && (
-          <div className="mt-8 neuraal-card p-6">
-            <h3 className="font-display font-semibold mb-4 flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-accent" />
-              Generated Summary
-            </h3>
-            <div className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap">
-              {summary}
-            </div>
-          </div>
-        )}
       </main>
     </div>
   );
