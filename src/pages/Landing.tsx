@@ -91,8 +91,10 @@ function FeatureCard({ icon: Icon, title, description, preview, gradient }: Feat
         <p className="text-muted-foreground text-[15px] sm:text-base leading-relaxed max-w-2xl">
           {description}
         </p>
-        <div className="w-full md:aspect-video md:overflow-hidden md:rounded-[16px]">
-          {preview}
+        <div className="w-full md:aspect-video md:overflow-hidden md:rounded-[16px] md:border md:border-border md:bg-muted/30 md:flex md:items-center md:justify-center">
+          <div className="w-full md:w-auto md:max-w-[55%] md:py-6">
+            {preview}
+          </div>
         </div>
       </div>
     </ScrollReveal>);
