@@ -15,6 +15,7 @@ import AITutor from "./pages/AITutor";
 import Quiz from "./pages/Quiz";
 import Flashcards from "./pages/Flashcards";
 import Progress from "./pages/Progress";
+import Upgrade from "./pages/Upgrade";
 import NotFound from "./pages/NotFound";
 import AdminOverview from "./pages/admin/AdminOverview";
 import AdminUsers from "./pages/admin/AdminUsers";
