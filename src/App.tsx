@@ -50,8 +50,8 @@ const App = () => (
             <Route path="/admin" element={<AdminOverview />} />
             <Route path="/admin/users" element={<AdminUsers />} />
             <Route path="/admin/ai" element={<AdminAI />} />
-            <Route path="/admin/content" element={<AdminPlaceholder title="Content Management" />} />
-            <Route path="/admin/analytics" element={<AdminPlaceholder title="Analytics & Reporting" />} />
+            <Route path="/admin/content" element={<AdminContent />} />
+            <Route path="/admin/analytics" element={<AdminAnalytics />} />
             <Route path="/admin/feedback" element={<AdminPlaceholder title="Feedback & Support" />} />
             <Route path="/admin/billing" element={<AdminPlaceholder title="Billing & Monetization" />} />
             <Route path="/admin/security" element={<AdminPlaceholder title="Security & Compliance" />} />
