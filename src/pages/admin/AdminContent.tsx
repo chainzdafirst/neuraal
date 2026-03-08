@@ -277,6 +277,34 @@ export default function AdminContent() {
     setClassifyFailed(false);
   };
 
+  // ── Add new school: creates a placeholder resource per program ──
+  const handleAddSchool = async () => {
+    if (!schoolForm.institution || !schoolForm.programs.trim()) {
+      toast.error("Institution and at least one program are required"); return;
+    }
+    setAddingSchool(true);
+    try {
+      const programs = schoolForm.programs.split(",").map((p) => p.trim()).filter(Boolean);
+      const rows = programs.map((program) => ({
+        title: `${program} — Curriculum Placeholder`,
+        description: `Initial setup for ${program} at ${schoolForm.institution}`,
+        resource_type: "syllabus" as const,
+        institution: schoolForm.institution,
+        program,
+        education_level: schoolForm.education_level,
+        exam_type: schoolForm.exam_type,
+        is_active: false,
+      }));
+      const { error } = await supabase.from("curriculum_resources").insert(rows);
+      if (error) throw error;
+      toast.success(`${schoolForm.institution} added with ${programs.length} program(s)`);
+      setSchoolDialogOpen(false);
+      setSchoolForm({ institution: "", programs: "", education_level: "degree", exam_type: "semester" });
+      fetchData();
+    } catch (err: any) { toast.error(err.message || "Failed to add school"); }
+    finally { setAddingSchool(false); }
+  };
+
   // ── Open upload dialog pre-filled with current context ──
   const openUploadDialog = () => {
     resetUploadForm();
