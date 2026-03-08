@@ -215,11 +215,6 @@ export default function Dashboard() {
     { id: "summary", title: "Smart Summaries", description: "Transform notes into exam-ready content", icon: FileText, bgColor: "bg-accent/10", iconColor: "text-accent", route: "/upload" },
   ];
 
-  const handleLogout = async () => {
-    await logout();
-    toast.success("Logged out successfully");
-    navigate("/");
-  };
 
   if (isLoading) {
     return (
