@@ -141,14 +141,38 @@ export default function Landing() {
       {/* Navigation */}
       <nav className="max-w-[1360px] px-5 sm:px-[70px] mx-auto flex items-center justify-between py-4">
         <NeuraalLogo size="lg" />
-        <div className="flex items-center gap-3">
-          <Button variant="ghost" size="default" className="text-sm font-semibold" onClick={() => navigate("/login")}>
-            Sign In
-          </Button>
+
+        {/* Desktop nav */}
+        <div className="hidden md:flex items-center gap-6">
+          <a href="#features" className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors">Features</a>
+          <a href="#how-it-works" className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors">How it Works</a>
+          <a href="#pricing" className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors">Pricing</a>
           <Button variant="hero" size="default" className="text-sm font-extrabold" onClick={() => navigate("/signup")}>
-            Sign Up
+            Get Started for Free
           </Button>
         </div>
+
+        {/* Mobile hamburger */}
+        <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+          <SheetTrigger asChild>
+            <button className="md:hidden flex flex-col justify-center items-center gap-[5px] w-10 h-10" aria-label="Open menu">
+              <span className="block w-6 h-[2.5px] rounded-full bg-foreground" />
+              <span className="block w-6 h-[2.5px] rounded-full bg-foreground" />
+              <span className="block w-6 h-[2.5px] rounded-full bg-foreground" />
+            </button>
+          </SheetTrigger>
+          <SheetContent side="right" className="w-[280px] pt-12">
+            <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+            <div className="flex flex-col gap-6">
+              <a href="#features" onClick={() => setMobileMenuOpen(false)} className="text-lg font-semibold text-foreground">Features</a>
+              <a href="#how-it-works" onClick={() => setMobileMenuOpen(false)} className="text-lg font-semibold text-foreground">How it Works</a>
+              <a href="#pricing" onClick={() => setMobileMenuOpen(false)} className="text-lg font-semibold text-foreground">Pricing</a>
+              <Button variant="hero" size="default" className="text-sm font-extrabold mt-4" onClick={() => { setMobileMenuOpen(false); navigate("/signup"); }}>
+                Get Started for Free
+              </Button>
+            </div>
+          </SheetContent>
+        </Sheet>
       </nav>
 
       {/* Hero Section */}
