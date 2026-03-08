@@ -43,7 +43,7 @@ const plans = [
     price: 229.98,
     period: "year",
     icon: Crown,
-    discount: 55,
+    discount: 56,
     features: [
       "Everything in Monthly",
       "Offline Access",
