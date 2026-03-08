@@ -59,13 +59,13 @@ export function PreviewQuiz() {
         <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
           <div className="h-full bg-gradient-to-r from-primary to-accent" style={{ width: "50%" }} />
         </div>
-        <p className="text-sm font-semibold mt-2">What is the worst-case time complexity of QuickSort?</p>
+        <p className="text-sm font-semibold mt-2">Which of the following best describes "active listening"?</p>
         <div className="space-y-2 text-[11px]">
           {[
-            { label: "O(n log n)", correct: false },
-            { label: "O(n²)", correct: true },
-            { label: "O(n)", correct: false },
-            { label: "O(log n)", correct: false },
+            { label: "Waiting for your turn to speak", correct: false },
+            { label: "Fully engaging with the speaker's message", correct: true },
+            { label: "Taking notes without responding", correct: false },
+            { label: "Repeating everything verbatim", correct: false },
           ].map((o, i) => (
             <div key={i} className={`p-2.5 rounded-lg border-2 flex items-center gap-2 ${o.correct ? "border-neuraal-emerald bg-neuraal-emerald/10" : "border-border opacity-50"}`}>
               <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-medium ${o.correct ? "bg-neuraal-emerald text-white" : "bg-secondary"}`}>
@@ -77,7 +77,7 @@ export function PreviewQuiz() {
         </div>
         <div className="bg-accent/5 border border-accent/20 rounded-lg p-3 text-[11px]">
           <div className="flex items-center gap-1.5 font-semibold mb-1"><BookOpen className="w-3 h-3 text-accent" /> Explanation</div>
-          <p className="text-muted-foreground">QuickSort's worst case occurs when the pivot is always the smallest or largest element, leading to O(n²) comparisons.</p>
+          <p className="text-muted-foreground">Active listening involves fully concentrating on the speaker, understanding their message, and responding thoughtfully — rather than passively hearing words.</p>
         </div>
       </div>
     </div>
