@@ -10,11 +10,11 @@ export function PreviewAITutor() {
         <span className="text-xs font-semibold">Neuraal Tutor</span>
       </div>
       {/* Chat */}
-      <div className="p-3 space-y-3 text-[11px] leading-relaxed max-h-[340px] overflow-hidden">
+      <div className="p-3 space-y-3 text-[11px] leading-relaxed max-h-[260px] overflow-hidden">
         {/* User */}
         <div className="flex justify-end">
           <div className="bg-primary text-primary-foreground rounded-xl rounded-br-sm px-3 py-2 max-w-[75%]">
-            Explain the mechanism of action of aspirin
+            Explain the law of diminishing marginal returns
           </div>
         </div>
         {/* Assistant */}
@@ -24,14 +24,14 @@ export function PreviewAITutor() {
               <div className="p-1 rounded-md bg-primary/10"><Brain className="w-2.5 h-2.5 text-primary" /></div>
               <span className="text-[10px] font-medium">Neuraal</span>
             </div>
-            <p className="font-semibold text-[11px]">Aspirin — Mechanism of Action</p>
-            <p>Aspirin works by <strong>irreversibly inhibiting COX enzymes</strong>:</p>
+            <p className="font-semibold text-[11px]">Law of Diminishing Marginal Returns</p>
+            <p>As you add more of one <strong>variable input</strong> (e.g. labour) while keeping others fixed:</p>
             <ul className="list-disc pl-4 space-y-1">
-              <li><strong>COX-1</strong> — Blocks thromboxane A₂, preventing platelet aggregation</li>
-              <li><strong>COX-2</strong> — Reduces prostaglandin synthesis, anti-inflammatory effect</li>
-              <li><strong>Antipyretic</strong> — Inhibits PGE₂ in hypothalamus, lowering fever</li>
+              <li><strong>Initially</strong> — Output increases at an increasing rate</li>
+              <li><strong>Then</strong> — Output still rises but at a decreasing rate</li>
+              <li><strong>Eventually</strong> — Additional units may reduce total output</li>
             </ul>
-            <p>The <strong>irreversible acetylation</strong> lasts the platelet's lifespan (~7–10 days).</p>
+            <p>This explains why firms can't scale infinitely by adding only one factor.</p>
           </div>
         </div>
       </div>
@@ -54,18 +54,18 @@ export function PreviewQuiz() {
       </div>
       <div className="p-4 space-y-3">
         <div className="flex items-center justify-between text-[10px] text-muted-foreground">
-          <span>Question 3 of 10</span><span className="font-medium text-foreground">Cell Biology</span>
+          <span>Question 5 of 10</span><span className="font-medium text-foreground">Computer Science</span>
         </div>
         <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
-          <div className="h-full bg-gradient-to-r from-primary to-accent" style={{ width: "30%" }} />
+          <div className="h-full bg-gradient-to-r from-primary to-accent" style={{ width: "50%" }} />
         </div>
-        <p className="text-sm font-semibold mt-2">Which of the following best describes the primary function of mitochondria?</p>
+        <p className="text-sm font-semibold mt-2">What is the worst-case time complexity of QuickSort?</p>
         <div className="space-y-2 text-[11px]">
           {[
-            { label: "Protein synthesis and folding", correct: false },
-            { label: "ATP production through cellular respiration", correct: true },
-            { label: "DNA replication and repair", correct: false },
-            { label: "Lipid storage and metabolism", correct: false },
+            { label: "O(n log n)", correct: false },
+            { label: "O(n²)", correct: true },
+            { label: "O(n)", correct: false },
+            { label: "O(log n)", correct: false },
           ].map((o, i) => (
             <div key={i} className={`p-2.5 rounded-lg border-2 flex items-center gap-2 ${o.correct ? "border-neuraal-emerald bg-neuraal-emerald/10" : "border-border opacity-50"}`}>
               <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-medium ${o.correct ? "bg-neuraal-emerald text-white" : "bg-secondary"}`}>
@@ -77,7 +77,7 @@ export function PreviewQuiz() {
         </div>
         <div className="bg-accent/5 border border-accent/20 rounded-lg p-3 text-[11px]">
           <div className="flex items-center gap-1.5 font-semibold mb-1"><BookOpen className="w-3 h-3 text-accent" /> Explanation</div>
-          <p className="text-muted-foreground">Mitochondria generate most of the cell's ATP through oxidative phosphorylation.</p>
+          <p className="text-muted-foreground">QuickSort's worst case occurs when the pivot is always the smallest or largest element, leading to O(n²) comparisons.</p>
         </div>
       </div>
     </div>
@@ -92,41 +92,34 @@ export function PreviewSummary() {
         <div className="p-1 rounded-md bg-accent/10"><Sparkles className="w-3 h-3 text-accent" /></div>
         <div className="min-w-0">
           <span className="text-xs font-semibold">Smart Summary</span>
-          <span className="text-[9px] text-muted-foreground ml-2">Biology_Notes.pdf</span>
+          <span className="text-[9px] text-muted-foreground ml-2">Project_Management.pdf</span>
         </div>
       </div>
-      <div className="p-4 text-[11px] leading-relaxed max-h-[360px] overflow-hidden space-y-3">
+      <div className="p-4 text-[11px] leading-relaxed max-h-[280px] overflow-hidden space-y-3">
         <div>
-          <h3 className="text-sm font-bold font-display">Cell Biology — Chapter 5 Summary</h3>
-          <p className="text-[10px] text-muted-foreground">12 key concepts identified</p>
+          <h3 className="text-sm font-bold font-display">Project Management — Chapter 3 Summary</h3>
+          <p className="text-[10px] text-muted-foreground">9 key concepts identified</p>
         </div>
         <div>
-          <h4 className="font-semibold mb-1.5">🧬 Key Concepts</h4>
+          <h4 className="font-semibold mb-1.5">📋 Key Concepts</h4>
           <ul className="list-disc pl-4 space-y-1">
-            <li><strong>Cell Membrane</strong> — Selectively permeable phospholipid bilayer</li>
-            <li><strong>Fluid Mosaic Model</strong> — Proteins floating in a fluid lipid bilayer</li>
-            <li><strong>Endocytosis & Exocytosis</strong> — Active transport for large molecules</li>
+            <li><strong>Triple Constraint</strong> — Scope, Time, and Cost balance</li>
+            <li><strong>Critical Path Method</strong> — Longest sequence of dependent tasks</li>
+            <li><strong>Stakeholder Analysis</strong> — Power/interest grid for engagement</li>
           </ul>
         </div>
         <div>
-          <h4 className="font-semibold mb-1.5">🔬 Cell Membrane Structure</h4>
+          <h4 className="font-semibold mb-1.5">🔄 Agile Methodology</h4>
           <ul className="list-disc pl-4 space-y-1">
-            <li><strong>Phospholipids</strong> — Amphipathic bilayer molecules</li>
-            <li><strong>Cholesterol</strong> — Regulates fluidity and stability</li>
-            <li><strong>Integral proteins</strong> — Channels, carriers, receptors</li>
-          </ul>
-        </div>
-        <div>
-          <h4 className="font-semibold mb-1.5">⚡ Active Transport</h4>
-          <ul className="list-disc pl-4 space-y-1">
-            <li><strong>Na⁺/K⁺ Pump</strong> — 3 Na⁺ out, 2 K⁺ in per ATP</li>
-            <li><strong>Co-transport</strong> — Ion gradient-driven symport</li>
+            <li><strong>Sprints</strong> — Time-boxed iterations (2-4 weeks)</li>
+            <li><strong>Scrum Roles</strong> — Product Owner, Scrum Master, Dev Team</li>
+            <li><strong>Retrospectives</strong> — Continuous improvement after each sprint</li>
           </ul>
         </div>
         <div className="bg-card rounded-lg border border-border/50 p-2.5 text-[10px] space-y-1">
-          <p>✅ Differentiate passive vs active transport</p>
-          <p>✅ Explain the fluid mosaic model</p>
-          <p>✅ Describe the Na⁺/K⁺ pump mechanism</p>
+          <p>✅ Define the triple constraint triangle</p>
+          <p>✅ Identify the critical path in a project</p>
+          <p>✅ Compare Agile vs Waterfall methodologies</p>
         </div>
       </div>
     </div>
@@ -143,20 +136,20 @@ export function PreviewFlashcards() {
       </div>
       <div className="p-4">
         <div className="flex items-center justify-between text-[10px] mb-2">
-          <span className="text-muted-foreground">Card 4 of 15</span>
-          <div className="flex gap-1.5"><span className="text-neuraal-emerald font-medium">3 mastered</span><span className="text-muted-foreground">· 12 remaining</span></div>
+          <span className="text-muted-foreground">Card 7 of 20</span>
+          <div className="flex gap-1.5"><span className="text-neuraal-emerald font-medium">6 mastered</span><span className="text-muted-foreground">· 14 remaining</span></div>
         </div>
         <div className="h-1.5 bg-secondary rounded-full overflow-hidden mb-4">
-          <div className="h-full bg-gradient-to-r from-neuraal-emerald to-accent" style={{ width: "20%" }} />
+          <div className="h-full bg-gradient-to-r from-neuraal-emerald to-accent" style={{ width: "30%" }} />
         </div>
         <div className="text-center mb-3">
-          <span className="inline-flex px-2 py-0.5 rounded-full bg-secondary text-[10px]">Cell Biology</span>
+          <span className="inline-flex px-2 py-0.5 rounded-full bg-secondary text-[10px]">Economics</span>
         </div>
-        <div className="bg-gradient-to-br from-primary/5 to-accent/5 rounded-xl border border-border/50 p-6 text-center min-h-[160px] flex flex-col items-center justify-center">
+        <div className="bg-gradient-to-br from-primary/5 to-accent/5 rounded-xl border border-border/50 p-6 text-center min-h-[120px] flex flex-col items-center justify-center">
           <div className="text-[9px] text-primary uppercase tracking-wide mb-2">Answer</div>
           <p className="text-xs leading-relaxed">
-            <strong>Mitosis</strong> produces 2 identical diploid cells for growth & repair.<br /><br />
-            <strong>Meiosis</strong> produces 4 genetically unique haploid cells for sexual reproduction.
+            <strong>GDP</strong> measures total value of goods & services produced in a country over a period.<br /><br />
+            <strong>GNP</strong> adds income earned abroad and subtracts income earned domestically by foreigners.
           </p>
         </div>
         <div className="mt-4 flex gap-2">
@@ -233,7 +226,7 @@ export function PreviewProgress() {
         <div className="grid grid-cols-2 gap-2">
           <div className="bg-card rounded-lg border border-border/50 p-2.5">
             <div className="text-[10px] font-semibold mb-2 flex items-center gap-1"><AlertTriangle className="w-3 h-3 text-neuraal-amber" /> Improve</div>
-            {[{ t: "Organic Chem", s: 35 }, { t: "Thermodynamics", s: 42 }].map((a) => (
+            {[{ t: "Data Structures", s: 35 }, { t: "Microeconomics", s: 42 }].map((a) => (
               <div key={a.t} className="mb-1.5">
                 <div className="flex justify-between text-[9px] mb-0.5"><span>{a.t}</span><span className="text-neuraal-amber">{a.s}%</span></div>
                 <div className="h-1 bg-secondary rounded-full"><div className="h-full bg-neuraal-amber rounded-full" style={{ width: `${a.s}%` }} /></div>
@@ -242,7 +235,7 @@ export function PreviewProgress() {
           </div>
           <div className="bg-card rounded-lg border border-border/50 p-2.5">
             <div className="text-[10px] font-semibold mb-2 flex items-center gap-1"><Zap className="w-3 h-3 text-neuraal-emerald" /> Strengths</div>
-            {[{ t: "Cell Biology", s: 92 }, { t: "Pharmacology", s: 85 }].map((a) => (
+            {[{ t: "Agile Methods", s: 92 }, { t: "Algorithms", s: 85 }].map((a) => (
               <div key={a.t} className="mb-1.5">
                 <div className="flex justify-between text-[9px] mb-0.5"><span>{a.t}</span><span className="text-neuraal-emerald">{a.s}%</span></div>
                 <div className="h-1 bg-secondary rounded-full"><div className="h-full bg-neuraal-emerald rounded-full" style={{ width: `${a.s}%` }} /></div>

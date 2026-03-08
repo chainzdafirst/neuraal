@@ -1,8 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { NeuraalLogo } from "@/components/ui/NeuraalLogo";
-import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   Brain,
   FileText,
@@ -59,7 +58,7 @@ interface FeatureCardProps {
 
 function FeatureCard({ icon: Icon, title, description, preview, gradient, reverse }: FeatureCardProps) {
   return (
-    <div className={`flex flex-col ${reverse ? "lg:flex-row-reverse" : "lg:flex-row"} gap-6 sm:gap-10 items-center`}>
+    <div className={`flex flex-col ${reverse ? "md:flex-row-reverse" : "md:flex-row"} gap-6 sm:gap-10 items-center`}>
       <div className="flex-1 w-full lg:w-auto">
         <div className="flex items-center gap-2.5 mb-3">
           <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center`}>
@@ -80,7 +79,19 @@ function FeatureCard({ icon: Icon, title, description, preview, gradient, revers
 
 export default function Landing() {
   const navigate = useNavigate();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // Close menu on outside click
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node) && !(e.target as Element).closest('button[aria-label]')) {
+        setMenuOpen(false);
+      }
+    };
+    if (menuOpen) document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [menuOpen]);
 
   const features = [
     {
@@ -141,40 +152,37 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-background overflow-hidden">
       {/* Navigation */}
-      <nav className="max-w-[1360px] px-5 sm:px-[70px] mx-auto flex items-center justify-between py-4">
+      <nav className="max-w-[1360px] px-5 sm:px-[70px] mx-auto flex items-center justify-between py-4 relative">
         <NeuraalLogo size="lg" />
 
-        {/* Desktop nav */}
-        <div className="hidden md:flex items-center gap-6">
-          <a href="#features" className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors">Features</a>
-          <a href="#how-it-works" className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors">How it Works</a>
-          <a href="#pricing" className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors">Pricing</a>
-          <Button variant="hero" size="default" className="text-sm font-extrabold" onClick={() => navigate("/signup")}>
-            Get Started for Free
-          </Button>
-        </div>
+        {/* Hamburger / X toggle — always visible */}
+        <div className="relative z-50">
+          <button
+            onClick={() => setMenuOpen((v) => !v)}
+            className="flex flex-col justify-center items-center w-10 h-10 gap-[5px] group"
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+          >
+            <span className={`block w-6 h-[2.5px] rounded-full bg-foreground transition-all duration-300 origin-center ${menuOpen ? "rotate-45 translate-y-[7.5px]" : ""}`} />
+            <span className={`block w-6 h-[2.5px] rounded-full bg-foreground transition-all duration-300 ${menuOpen ? "opacity-0 scale-x-0" : ""}`} />
+            <span className={`block w-6 h-[2.5px] rounded-full bg-foreground transition-all duration-300 origin-center ${menuOpen ? "-rotate-45 -translate-y-[7.5px]" : ""}`} />
+          </button>
 
-        {/* Mobile hamburger */}
-        <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-          <SheetTrigger asChild>
-            <button className="md:hidden flex flex-col justify-center items-center gap-[5px] w-10 h-10" aria-label="Open menu">
-              <span className="block w-6 h-[2.5px] rounded-full bg-foreground" />
-              <span className="block w-6 h-[2.5px] rounded-full bg-foreground" />
-              <span className="block w-6 h-[2.5px] rounded-full bg-foreground" />
-            </button>
-          </SheetTrigger>
-          <SheetContent side="right" className="w-[280px] pt-12">
-            <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
-            <div className="flex flex-col gap-6">
-              <a href="#features" onClick={() => setMobileMenuOpen(false)} className="text-lg font-semibold text-foreground">Features</a>
-              <a href="#how-it-works" onClick={() => setMobileMenuOpen(false)} className="text-lg font-semibold text-foreground">How it Works</a>
-              <a href="#pricing" onClick={() => setMobileMenuOpen(false)} className="text-lg font-semibold text-foreground">Pricing</a>
-              <Button variant="hero" size="default" className="text-sm font-extrabold mt-4" onClick={() => { setMobileMenuOpen(false); navigate("/signup"); }}>
+          {/* Dropdown menu */}
+          <div
+            ref={menuRef}
+            className={`absolute right-0 top-[52px] w-[220px] bg-card border border-border rounded-xl shadow-lg overflow-hidden transition-all duration-300 origin-top-right ${menuOpen ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 -translate-y-2 pointer-events-none"}`}
+          >
+            <div className="flex flex-col p-3 gap-1">
+              <a href="#features" onClick={() => setMenuOpen(false)} className="px-3 py-2.5 rounded-lg text-sm font-semibold text-foreground hover:bg-secondary transition-colors">Features</a>
+              <a href="#how-it-works" onClick={() => setMenuOpen(false)} className="px-3 py-2.5 rounded-lg text-sm font-semibold text-foreground hover:bg-secondary transition-colors">How it Works</a>
+              <a href="#pricing" onClick={() => setMenuOpen(false)} className="px-3 py-2.5 rounded-lg text-sm font-semibold text-foreground hover:bg-secondary transition-colors">Pricing</a>
+              <div className="border-t border-border my-1" />
+              <Button variant="hero" size="sm" className="text-xs font-extrabold w-full" onClick={() => { setMenuOpen(false); navigate("/signup"); }}>
                 Get Started for Free
               </Button>
             </div>
-          </SheetContent>
-        </Sheet>
+          </div>
+        </div>
       </nav>
 
       {/* Hero Section */}
@@ -197,8 +205,11 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Feature Sections — Alternating layout with screenshots */}
+      {/* Feature Sections */}
       <section id="features" className="max-w-[1360px] px-5 sm:px-[70px] mx-auto py-16 sm:py-24 space-y-16 sm:space-y-28">
+        <h2 className="text-[32px] sm:text-[48px] font-display font-bold tracking-[-0.02em] text-center">
+          Features
+        </h2>
         {features.map((feature, i) => (
           <FeatureCard
             key={feature.title}
@@ -212,8 +223,8 @@ export default function Landing() {
         ))}
       </section>
 
-      {/* Social Proofid="pricing"  / Stats */}
- id="pricing"      <section className="py-24 max-w-[1360px] px-5 sm:px-[70px] mx-auto">
+      {/* Social Proof / Stats */}
+      <section id="pricing" className="py-24 max-w-[1360px] px-5 sm:px-[70px] mx-auto">
         <div>
           <div className="rounded-[16px] border border-border bg-card p-10 md:p-14">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
@@ -235,8 +246,8 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* How iid="how-it-works" t works */}
-      <section className="py-24 bg-secondary/30">
+      {/* How it works */}
+      <section id="how-it-works" className="py-24 bg-secondary/30">
         <div className="max-w-[1360px] px-5 sm:px-[70px] mx-auto max-w-3xl">
           <h2 className="text-[28px] sm:text-[40px] font-display font-bold text-center mb-16 tracking-[-0.02em]">
             Simple to get started
