@@ -62,6 +62,7 @@ const App = () => (
             <Route path="/admin/ai" element={<AdminAI />} />
             <Route path="/admin/content" element={<AdminContent />} />
             <Route path="/admin/analytics" element={<AdminAnalytics />} />
+            <Route path="/admin/banners" element={<AdminBanners />} />
             <Route path="/admin/feedback" element={<AdminPlaceholder title="Feedback & Support" />} />
             <Route path="/admin/billing" element={<AdminPlaceholder title="Billing & Monetization" />} />
             <Route path="/admin/security" element={<AdminPlaceholder title="Security & Compliance" />} />
