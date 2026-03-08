@@ -95,6 +95,8 @@ export default function AdminUsers() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [loading, setLoading] = useState(true);
+  const [deleteTarget, setDeleteTarget] = useState<UserRow | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const fetchData = async () => {
     const [profilesRes, rolesRes, docsRes, quizzesRes, flashRes] = await Promise.all([
