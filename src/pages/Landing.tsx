@@ -14,11 +14,10 @@ import {
 import { PreviewAITutor, PreviewQuiz, PreviewSummary, PreviewFlashcards, PreviewProgress } from "@/components/FeaturePreviews";
 
 const rotatingWords = [
-  "AI Tutor",
+  "AI Tutoring",
   "Smart Summaries",
   "Flashcards",
   "Quizzes",
-  "Progress Tracking",
 ];
 
 function RotatingText() {
