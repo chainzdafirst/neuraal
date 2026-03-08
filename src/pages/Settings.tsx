@@ -11,7 +11,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, User, GraduationCap, Bell, Shield, Save, LogOut, Crown, Trash2, Lock, Eye, EyeOff, Loader2 } from "lucide-react";
+import { ArrowLeft, User, GraduationCap, Bell, Shield, Save, LogOut, Crown, Trash2, Lock, Loader2, Mail, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 
 export default function Settings() {
