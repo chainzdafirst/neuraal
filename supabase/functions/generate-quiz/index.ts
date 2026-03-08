@@ -43,7 +43,8 @@ serve(async (req) => {
       }
     }
 
-    const systemPrompt = `You are an expert exam question generator for ${userProfile?.program || 'university'} students${userProfile?.institution ? ` at ${userProfile.institution}` : ''}.
+    const yearContext = userProfile?.yearOfStudy ? ` (Year ${userProfile.yearOfStudy})` : '';
+    const systemPrompt = `You are an expert exam question generator for ${userProfile?.program || 'university'} students${userProfile?.institution ? ` at ${userProfile.institution}` : ''}${yearContext}.
 
 Generate ${questionCount || 5} multiple-choice questions based on the provided content.
 

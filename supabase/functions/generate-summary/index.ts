@@ -53,7 +53,8 @@ serve(async (req) => {
       outline: "Create a hierarchical outline format with main topics and subtopics"
     };
 
-    const systemPrompt = `You are an expert academic summarizer for ${userProfile?.program || 'university'} students${userProfile?.institution ? ` at ${userProfile.institution}` : ''}.
+    const yearContext = userProfile?.yearOfStudy ? ` (Year ${userProfile.yearOfStudy})` : '';
+    const systemPrompt = `You are an expert academic summarizer for ${userProfile?.program || 'university'} students${userProfile?.institution ? ` at ${userProfile.institution}` : ''}${yearContext}.
 
 ${summaryStyles[summaryType as string] || summaryStyles.concise}
 

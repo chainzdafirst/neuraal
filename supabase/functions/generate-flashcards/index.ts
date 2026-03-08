@@ -43,7 +43,8 @@ serve(async (req) => {
       }
     }
 
-    const systemPrompt = `You are an expert study card creator for ${userProfile?.program || 'university'} students${userProfile?.institution ? ` at ${userProfile.institution}` : ''}.
+    const yearContext = userProfile?.yearOfStudy ? ` (Year ${userProfile.yearOfStudy})` : '';
+    const systemPrompt = `You are an expert study card creator for ${userProfile?.program || 'university'} students${userProfile?.institution ? ` at ${userProfile.institution}` : ''}${yearContext}.
 
 Generate ${count || 10} flashcards based on the provided content.
 
