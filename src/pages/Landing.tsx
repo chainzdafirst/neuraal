@@ -76,7 +76,7 @@ interface FeatureCardProps {
   description: string;
   preview: React.ReactNode;
   gradient: string;
-  reverse?: boolean;
+  
 }
 
 function FeatureCard({ icon: Icon, title, description, preview, gradient }: FeatureCardProps) {
