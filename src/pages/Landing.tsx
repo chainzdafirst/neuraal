@@ -76,30 +76,26 @@ interface FeatureCardProps {
   description: string;
   preview: React.ReactNode;
   gradient: string;
-  reverse?: boolean;
 }
 
-function FeatureCard({ icon: Icon, title, description, preview, gradient, reverse }: FeatureCardProps) {
+function FeatureCard({ icon: Icon, title, description, preview, gradient }: FeatureCardProps) {
   return (
     <ScrollReveal>
-      <div className={`flex flex-col ${reverse ? "md:flex-row-reverse" : "md:flex-row"} gap-6 sm:gap-10 items-center`}>
-        <div className="flex-1 w-full lg:w-auto">
-          <div className="flex items-center gap-2.5 mb-3">
-            <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center`}>
-              <Icon className="w-5 h-5 text-white" />
-            </div>
-            <h3 className="text-xl sm:text-2xl font-display font-bold tracking-[-0.01em]">{title}</h3>
+      <div className="flex flex-col gap-4 sm:gap-5">
+        <div className="flex items-center gap-2.5">
+          <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center`}>
+            <Icon className="w-5 h-5 text-white" />
           </div>
-          <p className="text-muted-foreground text-[15px] sm:text-base leading-relaxed max-w-md">
-            {description}
-          </p>
+          <h3 className="text-xl sm:text-2xl font-display font-bold tracking-[-0.01em]">{title}</h3>
         </div>
-        <div className="flex-1 w-full lg:w-auto md:aspect-video md:overflow-hidden md:rounded-[16px]">
+        <p className="text-muted-foreground text-[15px] sm:text-base leading-relaxed max-w-2xl">
+          {description}
+        </p>
+        <div className="w-full md:aspect-video md:overflow-hidden md:rounded-[16px]">
           {preview}
         </div>
       </div>
     </ScrollReveal>);
-
 }
 
 export default function Landing() {
@@ -244,9 +240,7 @@ export default function Landing() {
           title={feature.title}
           description={feature.description}
           preview={feature.preview}
-          gradient={feature.gradient}
-          reverse={i % 2 !== 0} />
-
+          gradient={feature.gradient} />
         )}
       </section>
 
