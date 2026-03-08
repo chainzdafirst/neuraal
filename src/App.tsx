@@ -16,6 +16,10 @@ import Quiz from "./pages/Quiz";
 import Flashcards from "./pages/Flashcards";
 import Progress from "./pages/Progress";
 import NotFound from "./pages/NotFound";
+import AdminOverview from "./pages/admin/AdminOverview";
+import AdminUsers from "./pages/admin/AdminUsers";
+import AdminAI from "./pages/admin/AdminAI";
+import AdminPlaceholder from "./pages/admin/AdminPlaceholder";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +42,16 @@ const App = () => (
             <Route path="/quiz" element={<Quiz />} />
             <Route path="/flashcards" element={<Flashcards />} />
             <Route path="/progress" element={<Progress />} />
+            {/* Admin routes */}
+            <Route path="/admin" element={<AdminOverview />} />
+            <Route path="/admin/users" element={<AdminUsers />} />
+            <Route path="/admin/ai" element={<AdminAI />} />
+            <Route path="/admin/content" element={<AdminPlaceholder title="Content Management" />} />
+            <Route path="/admin/analytics" element={<AdminPlaceholder title="Analytics & Reporting" />} />
+            <Route path="/admin/feedback" element={<AdminPlaceholder title="Feedback & Support" />} />
+            <Route path="/admin/billing" element={<AdminPlaceholder title="Billing & Monetization" />} />
+            <Route path="/admin/security" element={<AdminPlaceholder title="Security & Compliance" />} />
+            <Route path="/admin/settings" element={<AdminPlaceholder title="Admin Settings" />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
