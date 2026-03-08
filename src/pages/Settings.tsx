@@ -78,36 +78,20 @@ export default function Settings() {
     }
   };
 
-  const handleChangePassword = async () => {
-    if (newPassword.length < 6) {
-      toast.error("New password must be at least 6 characters");
-      return;
-    }
-    if (newPassword !== confirmNewPassword) {
-      toast.error("Passwords do not match");
-      return;
-    }
-    setChangingPassword(true);
+  const handleSendPasswordReset = async () => {
+    if (!user?.email) return;
+    setSendingReset(true);
     try {
-      // Re-authenticate with current password
-      const { error: signInError } = await supabase.auth.signInWithPassword({
-        email: user?.email || "",
-        password: currentPassword,
+      const { error } = await supabase.auth.resetPasswordForEmail(user.email, {
+        redirectTo: `${window.location.origin}/reset-password`,
       });
-      if (signInError) {
-        toast.error("Current password is incorrect");
-        return;
-      }
-      const { error } = await supabase.auth.updateUser({ password: newPassword });
       if (error) throw error;
-      toast.success("Password changed successfully");
-      setCurrentPassword("");
-      setNewPassword("");
-      setConfirmNewPassword("");
+      setResetSent(true);
+      toast.success("Password reset link sent to your email");
     } catch (error: any) {
-      toast.error(error?.message || "Failed to change password");
+      toast.error(error?.message || "Failed to send reset email");
     } finally {
-      setChangingPassword(false);
+      setSendingReset(false);
     }
   };
 
