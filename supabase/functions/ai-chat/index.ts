@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.89.0";
+import { buildCurriculumContext } from "../_shared/match-curriculum.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -19,8 +20,9 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    // Fetch matching curriculum resources for syllabus-aligned tutoring
+    // Fetch matching curriculum resources then score by document context
     let curriculumContext = "";
+    let identifiedCourse: string | null = null;
     if (userProfile?.institution && userProfile?.program) {
       const sb = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
       const { data: resources } = await sb
@@ -32,7 +34,12 @@ serve(async (req) => {
         .match(userProfile.yearOfStudy ? { year_of_study: userProfile.yearOfStudy } : {})
         .limit(15);
 
-      if (resources && resources.length > 0) {
+      if (resources && resources.length > 0 && context) {
+        const result = buildCurriculumContext(context, resources, userProfile);
+        curriculumContext = result.context;
+        identifiedCourse = result.identifiedCourse;
+      } else if (resources && resources.length > 0) {
+        // No document context — fall back to metadata-only
         const snippets = resources
           .filter((r: any) => r.content_text)
           .map((r: any) => `[${r.resource_type.toUpperCase()}: ${r.title}]\n${r.content_text!.slice(0, 2000)}`)
@@ -43,8 +50,14 @@ serve(async (req) => {
       }
     }
 
+    const courseIdentification = identifiedCourse
+      ? `The student's current document has been identified as belonging to the course "${identifiedCourse}". Focus your answers on this specific subject.`
+      : "";
+
     const yearContext = userProfile?.yearOfStudy ? ` in Year ${userProfile.yearOfStudy}` : '';
     const systemPrompt = `You are Neuraal, a friendly and encouraging AI study companion for ${userProfile?.program || 'university'} students${userProfile?.institution ? ` at ${userProfile.institution}` : ''}${yearContext}.
+
+${courseIdentification}
 
 Your personality:
 - You are warm, supportive, and genuinely excited to help students learn
