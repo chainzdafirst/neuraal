@@ -32,6 +32,7 @@ serve(async (req) => {
         .eq("institution", userProfile.institution)
         .eq("program", userProfile.program)
         .eq("is_active", true)
+        .match(userProfile.yearOfStudy ? { year_of_study: userProfile.yearOfStudy } : {})
         .limit(5);
 
       if (resources && resources.length > 0) {
