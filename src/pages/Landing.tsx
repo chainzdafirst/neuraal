@@ -239,10 +239,10 @@ export default function Landing() {
       <section className="py-28 max-w-[1360px] px-5 sm:px-[70px] mx-auto">
         <div className="max-w-3xl mx-auto text-center">
           <NeuraalLogo size="lg" showText={false} className="justify-center mb-8" />
-          <h2 className="text-3xl sm:text-4xl font-display font-bold mb-4">
+          <h2 className="text-[28px] sm:text-[40px] font-display font-bold mb-4 tracking-[-0.02em]">
             Ready to study smarter?
           </h2>
-          <p className="text-muted-foreground text-lg max-w-xl mx-auto mb-10 leading-relaxed">
+          <p className="text-muted-foreground text-[15px] sm:text-lg font-semibold max-w-xl mx-auto mb-10">
             Join thousands of students transforming their academic performance with Neuraal.
           </p>
           <Button variant="hero" size="xl" onClick={() => navigate("/signup")}>
