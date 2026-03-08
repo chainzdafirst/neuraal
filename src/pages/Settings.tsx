@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -21,9 +21,9 @@ export default function Settings() {
   const [fullName, setFullName] = useState(profile?.full_name || "");
   const [deleting, setDeleting] = useState(false);
 
-  const [emailNotifications, setEmailNotifications] = useState(true);
-  const [studyReminders, setStudyReminders] = useState(true);
-  const [weeklyReport, setWeeklyReport] = useState(false);
+  const [emailNotifications, setEmailNotifications] = useState(profile?.notify_email ?? true);
+  const [studyReminders, setStudyReminders] = useState(profile?.notify_study_reminders ?? true);
+  const [weeklyReport, setWeeklyReport] = useState(profile?.notify_weekly_report ?? false);
 
   const [saving, setSaving] = useState(false);
 
@@ -47,10 +47,15 @@ export default function Settings() {
   const handleSaveProfile = async () => {
     setSaving(true);
     try {
-      await updateProfile({ full_name: fullName });
-      toast.success("Profile updated successfully");
+      await updateProfile({
+        full_name: fullName,
+        notify_email: emailNotifications,
+        notify_study_reminders: studyReminders,
+        notify_weekly_report: weeklyReport,
+      });
+      toast.success("Settings saved successfully");
     } catch {
-      toast.error("Failed to update profile");
+      toast.error("Failed to save settings");
     } finally {
       setSaving(false);
     }

@@ -11,6 +11,9 @@ interface Profile {
   program: string | null;
   exam_type: string | null;
   year_of_study: number | null;
+  notify_email: boolean;
+  notify_study_reminders: boolean;
+  notify_weekly_report: boolean;
 }
 
 interface AuthContextType {

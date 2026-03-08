@@ -217,6 +217,9 @@ export type Database = {
           full_name: string | null
           id: string
           institution: string | null
+          notify_email: boolean
+          notify_study_reminders: boolean
+          notify_weekly_report: boolean
           program: string | null
           updated_at: string
           year_of_study: number | null
@@ -230,6 +233,9 @@ export type Database = {
           full_name?: string | null
           id: string
           institution?: string | null
+          notify_email?: boolean
+          notify_study_reminders?: boolean
+          notify_weekly_report?: boolean
           program?: string | null
           updated_at?: string
           year_of_study?: number | null
@@ -243,6 +249,9 @@ export type Database = {
           full_name?: string | null
           id?: string
           institution?: string | null
+          notify_email?: boolean
+          notify_study_reminders?: boolean
+          notify_weekly_report?: boolean
           program?: string | null
           updated_at?: string
           year_of_study?: number | null
