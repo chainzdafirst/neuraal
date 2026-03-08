@@ -189,7 +189,7 @@ export function buildCurriculumContext(
 
   const snippets = matchedResources
     .filter((r) => r.content_text)
-    .map((r) => `[${r.resource_type.toUpperCase()}: ${r.title}]\n${r.content_text!.slice(0, 3000)}`)
+    .map((r) => `[${r.resource_type.toUpperCase()}: ${r.title}]\n${r.content_text!.slice(0, 6000)}`)
     .join("\n\n---\n\n");
 
   if (!snippets) {

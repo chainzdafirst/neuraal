@@ -83,26 +83,36 @@ At the END of your output, add a line: "---\n**Learning Outcomes covered so far:
 
 ${courseIdentification}
 
-YOUR TASK: Extract the **Learning Outcomes** and **Learning Activities** from the matched syllabus/curriculum below, then use the uploaded document's content to **answer and address each one**.
+You have TWO sources of information:
+1. **SYLLABUS / CURRICULUM** (provided below in this system prompt) — this is where you find Learning Outcomes (LOs) and Learning Activities (LAs).
+2. **UPLOADED DOCUMENT** (provided in the user message) — this is the student's study material/notes.
+
+YOUR TASK: Find the Learning Outcomes and Learning Activities listed in the SYLLABUS below, then use the UPLOADED DOCUMENT's content to answer and explain each one.
 
 PROCESS (follow strictly):
-1. EXTRACT from the curriculum context below:
+1. READ the syllabus/curriculum context below and EXTRACT:
    - All **Learning Outcomes** (LOs) — what the student is expected to know or demonstrate
-   - All **Learning Activities** — tasks, exercises, or study activities the syllabus prescribes
-2. For EACH Learning Outcome:
-   - Use it as a **section heading** (e.g., "## LO: Explain the mechanism of antimicrobial resistance")
-   - Write a thorough answer/explanation using ONLY information found in the uploaded document
-   - Highlight **key terms**, definitions, formulas, diagrams described, and mechanisms
-   - If the document contains examples, case studies, or data relevant to this LO, include them
-3. For EACH Learning Activity:
-   - Under a sub-heading "📝 Learning Activity", describe how the document content fulfills or relates to the activity
-   - If the activity asks students to compare, list, or analyze — do that using the document's content
-4. If the document does not adequately cover a Learning Outcome, still include the heading but note briefly that the document lacks sufficient information on this topic.
+   - All **Learning Activities** (LAs) — tasks, exercises, or study activities prescribed
+   These come ONLY from the syllabus text below, NOT from the uploaded document.
 
-If NO curriculum context is available, organize by the document's own topic structure and create a standard summary.
+2. For EACH Learning Outcome from the syllabus:
+   - Use it as a **section heading** (e.g., "## LO: Explain the mechanism of antimicrobial resistance")
+   - Write a thorough answer/explanation using ONLY information found in the UPLOADED DOCUMENT
+   - Highlight **key terms**, definitions, formulas, diagrams described, and mechanisms
+   - If the uploaded document contains examples, case studies, or data relevant to this LO, include them
+
+3. For EACH Learning Activity from the syllabus:
+   - Under a sub-heading "📝 Learning Activity", describe how the uploaded document's content fulfills or relates to the activity
+   - If the activity asks students to compare, list, or analyze — do that using the uploaded document's content
+
+4. If the uploaded document does not adequately cover a Learning Outcome, still include the heading but note briefly what information is missing.
+
+If NO syllabus/curriculum context is available below, organize by the uploaded document's own topic structure and create a standard detailed summary.
 
 Requirements:
-- Every section must be grounded in actual document content — do not fabricate information
+- Learning Outcomes and Learning Activities must come from the SYLLABUS context below
+- Answers and explanations must come from the UPLOADED DOCUMENT
+- Do not fabricate information — if the document doesn't cover something, say so
 - Use markdown formatting: headers, bold key terms, bullet points, numbered lists
 - Be thorough but concise — exam-focused, no unnecessary padding
 - Include important formulas, mechanisms, or processes verbatim from the document${curriculumContext}${partInstruction}`;
