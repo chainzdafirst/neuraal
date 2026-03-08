@@ -27,6 +27,12 @@ export default function Settings() {
 
   const [saving, setSaving] = useState(false);
 
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [changingPassword, setChangingPassword] = useState(false);
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
