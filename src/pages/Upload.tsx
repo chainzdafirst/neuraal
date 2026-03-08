@@ -32,6 +32,16 @@ export default function UploadDocument() {
     setDocumentName(fileName);
   };
 
+  const [documentFilePath, setDocumentFilePath] = useState<string | null>(null);
+  const [documentFileName, setDocumentFileName] = useState<string | null>(null);
+
+  const handleFileReady = (documentId: string, fileName: string, filePath?: string) => {
+    setUploadedDocumentId(documentId);
+    setDocumentName(fileName);
+    setDocumentFilePath(filePath || null);
+    setDocumentFileName(fileName);
+  };
+
   const handleGenerateSummary = async () => {
     if (!uploadedDocumentId) {
       toast.error("Please upload a document first before generating a summary.");
@@ -40,62 +50,74 @@ export default function UploadDocument() {
 
     setGeneratingSummary(true);
 
-    // Poll for extracted text (extraction may still be running in background)
-    let extractedText: string | null = null;
-    const maxAttempts = 30; // 30 × 2s = 60s max wait
-    for (let attempt = 0; attempt < maxAttempts; attempt++) {
-      const { data: doc, error: docError } = await supabase
-        .from("documents")
-        .select("extracted_text, status")
-        .eq("id", uploadedDocumentId)
-        .single();
-
-      if (docError) {
-        toast.error("Could not retrieve document.");
-        setGeneratingSummary(false);
-        return;
-      }
-
-      if (doc?.extracted_text) {
-        extractedText = doc.extracted_text;
-        break;
-      }
-
-      if (doc?.status === "error") {
-        toast.error("Text extraction failed. Please try uploading a different file.");
-        setGeneratingSummary(false);
-        return;
-      }
-
-      // Still processing — wait and retry
-      if (attempt === 0) {
-        toast.info("Still extracting text from your document...");
-      }
-      await new Promise((r) => setTimeout(r, 2000));
-    }
-
-    if (!extractedText) {
-      toast.error("Text extraction timed out. Please try again.");
-      setGeneratingSummary(false);
-      return;
-    }
     try {
+      const isPdf = (documentFileName || "").toLowerCase().endsWith(".pdf");
+
+      // For PDFs: send file path directly to generate-summary (single AI call, no extraction step)
+      // For other files: wait for extracted text then send it
+      let bodyPayload: any = {
+        summaryType: "detailed",
+        userProfile: profile ? {
+          program: profile.program,
+          institution: profile.institution,
+          educationLevel: profile.education_level,
+          yearOfStudy: profile.year_of_study,
+        } : null,
+      };
+
+      if (isPdf && documentFilePath) {
+        // PDF direct mode — skip extraction, summarize in one pass
+        bodyPayload.filePath = documentFilePath;
+        bodyPayload.fileName = documentFileName;
+      } else {
+        // Non-PDF: poll for extracted text (extraction is fast for docx/pptx/epub/txt)
+        let extractedText: string | null = null;
+        const maxAttempts = 15; // 15 × 2s = 30s max
+        for (let attempt = 0; attempt < maxAttempts; attempt++) {
+          const { data: doc, error: docError } = await supabase
+            .from("documents")
+            .select("extracted_text, status")
+            .eq("id", uploadedDocumentId)
+            .single();
+
+          if (docError) {
+            toast.error("Could not retrieve document.");
+            setGeneratingSummary(false);
+            return;
+          }
+
+          if (doc?.extracted_text) {
+            extractedText = doc.extracted_text;
+            break;
+          }
+
+          if (doc?.status === "error") {
+            toast.error("Text extraction failed. Please try uploading a different file.");
+            setGeneratingSummary(false);
+            return;
+          }
+
+          if (attempt === 0) {
+            toast.info("Processing your document...");
+          }
+          await new Promise((r) => setTimeout(r, 2000));
+        }
+
+        if (!extractedText) {
+          toast.error("Text extraction timed out. Please try again.");
+          setGeneratingSummary(false);
+          return;
+        }
+        bodyPayload.documentText = extractedText;
+      }
+
       const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-summary`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
         },
-        body: JSON.stringify({
-          documentText: extractedText,
-          summaryType: "detailed",
-          userProfile: profile ? {
-            program: profile.program,
-            institution: profile.institution,
-            educationLevel: profile.education_level,
-            yearOfStudy: profile.year_of_study,
-          } : null,
-        }),
+        body: JSON.stringify(bodyPayload),
       });
 
       if (!response.ok) throw new Error("Failed to generate summary");
@@ -103,7 +125,6 @@ export default function UploadDocument() {
       const data = await response.json();
       
       if (data.summary) {
-        // Save summary to document record
         await supabase
           .from("documents")
           .update({ summary: data.summary })
