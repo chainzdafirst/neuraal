@@ -84,6 +84,7 @@ export default function Flashcards() {
           userProfile: profile ? {
             program: profile.program,
             institution: profile.institution,
+            yearOfStudy: profile.year_of_study,
           } : null,
         }),
       });

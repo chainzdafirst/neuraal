@@ -83,6 +83,7 @@ export default function AITutor() {
             program: profile.program,
             institution: profile.institution,
             educationLevel: profile.education_level,
+            yearOfStudy: profile.year_of_study,
           } : null,
         }),
       });

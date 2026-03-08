@@ -390,7 +390,7 @@ export default function Onboarding() {
           >
             {isLoading ? (
               <Loader2 className="w-5 h-5 animate-spin" />
-            ) : step === 4 ? (
+            ) : step === 5 ? (
               <>
                 Complete Setup
                 <Check className="w-4 h-4 ml-2" />

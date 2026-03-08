@@ -630,15 +630,30 @@ export default function AdminContent() {
                   <Input value={form.program} onChange={(e) => setForm({ ...form, program: e.target.value })} placeholder="e.g. Diploma in Business Administration" disabled={classifying} />
                 </div>
               </div>
-              <div>
-                <Label>Exam Type</Label>
-                <Select value={form.exam_type} onValueChange={(v) => setForm({ ...form, exam_type: v })} disabled={classifying}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="semester">Semester</SelectItem>
-                    <SelectItem value="board">Board</SelectItem>
-                  </SelectContent>
-                </Select>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <Label>Exam Type</Label>
+                  <Select value={form.exam_type} onValueChange={(v) => setForm({ ...form, exam_type: v })} disabled={classifying}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="semester">Semester</SelectItem>
+                      <SelectItem value="board">Board</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>Year of Study</Label>
+                  <Select value={form.year_of_study} onValueChange={(v) => setForm({ ...form, year_of_study: v })} disabled={classifying}>
+                    <SelectTrigger><SelectValue placeholder="Select year" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="1">Year 1</SelectItem>
+                      <SelectItem value="2">Year 2</SelectItem>
+                      <SelectItem value="3">Year 3</SelectItem>
+                      <SelectItem value="4">Year 4</SelectItem>
+                      <SelectItem value="5">Year 5+</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
             </div>
             <DialogFooter>

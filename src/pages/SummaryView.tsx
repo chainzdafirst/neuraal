@@ -116,7 +116,7 @@ export default function SummaryView() {
           messages: allMessages.map((m) => ({ role: m.role, content: m.content })),
           context: extractedText,
           userProfile: profile
-            ? { program: profile.program, institution: profile.institution, educationLevel: profile.education_level }
+            ? { program: profile.program, institution: profile.institution, educationLevel: profile.education_level, yearOfStudy: profile.year_of_study }
             : null,
         }),
       });
