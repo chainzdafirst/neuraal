@@ -130,7 +130,7 @@ export default function FileUploader({ onFileReady }: FileUploaderProps) {
         if (dbError) throw dbError;
 
         // Notify parent immediately — file is saved and ready to reference
-        onFileReady?.(docData.id, file.name);
+        onFileReady?.(docData.id, file.name, filePath);
 
         if (isTxt) {
           // TXT is already extracted — mark done
