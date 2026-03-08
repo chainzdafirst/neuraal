@@ -200,14 +200,6 @@
       border: none;
       box-shadow: none;
     }
-    /* Padding on body content only, skip the header bar */
-    .feature-frame > div > *:not(:first-child) {
-      padding-left: 2.5rem;
-      padding-right: 2.5rem;
-    }
-    .feature-frame > div > *:last-child {
-      padding-bottom: 2.5rem;
-    }
   }
 }
 
