@@ -210,9 +210,9 @@ export default function Landing() {
 
       {/* Hero Section */}
       <ScrollReveal threshold={0.1}>
-        <section className="pt-5 pb-5 sm:pt-9 sm:pb-[74px] max-w-[1360px] px-5 sm:px-[70px] mx-auto">
+        <section className="pt-5 pb-5 sm:pt-9 sm:pb-[74px] max-w-[1360px] px-5 sm:px-[70px] mx-auto overflow-hidden">
           <div>
-            <h1 className="text-[40px] sm:text-[84px] font-display font-bold tracking-[-0.02em] leading-[48px] sm:leading-[100px] mb-6">
+            <h1 className="text-3xl sm:text-[84px] font-display font-bold tracking-[-0.02em] leading-[1.2] sm:leading-[100px] mb-6">
               Syllabus-Aligned
               <br />
               <RotatingText />
@@ -221,7 +221,7 @@ export default function Landing() {
               Turn bulky lecture notes into structured, exam-ready learning within minutes.  
             
             </p>
-            <Button variant="hero" size="xl" onClick={() => navigate("/signup")} className="h-[57px] leading-[57px] px-10 text-sm font-extrabold">
+            <Button variant="hero" size="xl" onClick={() => navigate("/signup")} className="h-12 sm:h-[57px] leading-normal px-8 sm:px-10 text-sm font-extrabold w-full sm:w-auto">
               Get Started
             </Button>
           </div>
@@ -273,7 +273,7 @@ export default function Landing() {
 
       {/* How it works */}
       <section id="how-it-works" className="py-24 bg-secondary/30">
-        <div className="max-w-[1360px] px-5 sm:px-[70px] mx-auto max-w-3xl">
+        <div className="max-w-[1360px] px-5 sm:px-[70px] mx-auto lg:max-w-3xl">
           <ScrollReveal>
             <h2 className="text-[28px] font-display font-bold text-center tracking-[-0.02em] my-0 sm:text-5xl mb-[30px]">
               How it Works  
@@ -311,7 +311,7 @@ export default function Landing() {
             <p className="text-muted-foreground text-[15px] sm:text-lg font-semibold max-w-xl mx-auto mb-10">
               Join thousands of students transforming their academic performance with Neuraal.
             </p>
-            <Button variant="hero" size="xl" onClick={() => navigate("/signup")} className="h-[57px] leading-[57px] px-10 text-sm font-extrabold">
+            <Button variant="hero" size="xl" onClick={() => navigate("/signup")} className="h-12 sm:h-[57px] leading-normal px-8 sm:px-10 text-sm font-extrabold w-full sm:w-auto">
               Get Started — It's Free
               <ChevronRight className="w-5 h-5 ml-1" />
             </Button>
