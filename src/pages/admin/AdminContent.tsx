@@ -365,6 +365,31 @@ export default function AdminContent() {
             {breadcrumb}
             <h1 className="text-2xl sm:text-3xl font-display font-bold truncate">Curriculum Content</h1>
             <p className="text-muted-foreground text-sm mt-1">Manage training data by institution and program</p>
+            {(activeInstitution || activeProgram) && (
+              <div className="flex items-center gap-2 mt-3">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 px-2 text-muted-foreground hover:text-foreground"
+                  onClick={() => {
+                    if (activeProgram) {
+                      setActiveProgram(null);
+                    } else {
+                      setActiveInstitution(null);
+                    }
+                    setSelected(new Set());
+                  }}
+                >
+                  <ArrowLeft className="h-4 w-4 mr-1" />
+                  Back
+                </Button>
+                <span className="text-sm font-medium text-foreground">
+                  {activeProgram
+                    ? `${activeInstitution} › ${activeProgram}`
+                    : activeInstitution}
+                </span>
+              </div>
+            )}
           </div>
           <div className="flex gap-2 shrink-0">
             <Button variant="outline" size="sm" className="sm:size-default" onClick={() => setSchoolDialogOpen(true)}>
