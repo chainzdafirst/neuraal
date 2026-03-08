@@ -30,7 +30,7 @@ serve(async (req) => {
         .eq("program", userProfile.program)
         .eq("is_active", true)
         .match(userProfile.yearOfStudy ? { year_of_study: userProfile.yearOfStudy } : {})
-        .limit(5);
+        .limit(15);
 
       if (resources && resources.length > 0) {
         const snippets = resources
