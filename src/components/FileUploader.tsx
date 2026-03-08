@@ -65,6 +65,10 @@ export default function FileUploader({ onFileReady }: FileUploaderProps) {
       setFiles((prev) =>
         prev.map((f) => (f.id === fileId ? { ...f, progress: 100, status: "ready" } : f))
       );
+
+      // Notify parent only after extraction is complete
+      onFileReady?.(docId, fileName, filePath);
+      toast.success("Document ready!");
     } catch (extractError) {
       console.error("Text extraction error:", extractError);
       toast.error("Text extraction failed. Summary features may be limited.");
