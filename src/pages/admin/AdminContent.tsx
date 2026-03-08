@@ -333,28 +333,12 @@ export default function AdminContent() {
     syllabi: resources.filter((r) => r.resource_type === "syllabus").length,
   };
 
-  // ── Breadcrumb ──
-  const breadcrumb = (
-    <div className="flex items-center gap-1 text-sm text-muted-foreground mb-1">
-      <button onClick={() => { setActiveInstitution(null); setActiveProgram(null); setSelected(new Set()); }} className="hover:text-foreground transition-colors">
-        All Institutions
-      </button>
-      {activeInstitution && (
-        <>
-          <ChevronRight className="h-3 w-3" />
-          <button onClick={() => { setActiveProgram(null); setSelected(new Set()); }} className="hover:text-foreground transition-colors">
-            {activeInstitution}
-          </button>
-        </>
-      )}
-      {activeProgram && (
-        <>
-          <ChevronRight className="h-3 w-3" />
-          <span className="text-foreground">{activeProgram}</span>
-        </>
-      )}
-    </div>
-  );
+  // ── Tab title summary ──
+  const tabSummary = (() => {
+    if (activeProgram) return "Viewing program resources";
+    if (activeInstitution) return "Viewing institution programs";
+    return null;
+  })();
 
   return (
     <AdminLayout>
@@ -362,7 +346,6 @@ export default function AdminContent() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
           <div className="min-w-0">
-            {breadcrumb}
             <h1 className="text-2xl sm:text-3xl font-display font-bold truncate">Curriculum Content</h1>
             <p className="text-muted-foreground text-sm mt-1">Manage training data by institution and program</p>
             {(activeInstitution || activeProgram) && (
@@ -383,11 +366,7 @@ export default function AdminContent() {
                   <ArrowLeft className="h-4 w-4 mr-1" />
                   Back
                 </Button>
-                <span className="text-sm font-medium text-foreground">
-                  {activeProgram
-                    ? `${activeInstitution} › ${activeProgram}`
-                    : activeInstitution}
-                </span>
+                <span className="text-xs text-muted-foreground">{tabSummary}</span>
               </div>
             )}
           </div>
