@@ -1,18 +1,53 @@
 import { Button } from "@/components/ui/button";
 import { NeuraalLogo } from "@/components/ui/NeuraalLogo";
 import { useNavigate } from "react-router-dom";
-import { 
-  BookOpen, 
-  Brain, 
-  FileText, 
-  GraduationCap, 
-  Sparkles, 
+import { useEffect, useState } from "react";
+import {
+  BookOpen,
+  Brain,
+  FileText,
+  GraduationCap,
+  Sparkles,
   Target,
   ChevronRight,
-  Zap,
-  Shield,
-  Clock
+  Upload,
+  MessageSquare,
+  BarChart3,
 } from "lucide-react";
+
+const rotatingWords = [
+  "AI Tutor",
+  "Smart Summaries",
+  "Flashcards",
+  "Quizzes",
+  "Progress Tracking",
+];
+
+function RotatingText() {
+  const [index, setIndex] = useState(0);
+  const [isVisible, setIsVisible] = useState(true);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIsVisible(false);
+      setTimeout(() => {
+        setIndex((prev) => (prev + 1) % rotatingWords.length);
+        setIsVisible(true);
+      }, 300);
+    }, 2800);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <span
+      className={`neuraal-gradient-text inline-block transition-all duration-300 ${
+        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
+      }`}
+    >
+      {rotatingWords[index]}
+    </span>
+  );
+}
 
 export default function Landing() {
   const navigate = useNavigate();
@@ -21,146 +56,143 @@ export default function Landing() {
     {
       icon: Brain,
       title: "AI Tutor",
-      description: "Get step-by-step explanations tailored to your syllabus",
-      color: "text-neuraal-indigo",
-      bg: "bg-neuraal-indigo/10",
+      description:
+        "Get step-by-step explanations tailored to your syllabus. Ask questions and get instant, curriculum-aware answers.",
+      gradient: "from-[hsl(234,89%,54%)] to-[hsl(270,80%,60%)]",
     },
     {
       icon: FileText,
       title: "Smart Summaries",
-      description: "Transform bulky notes into exam-ready summaries",
-      color: "text-neuraal-cyan",
-      bg: "bg-neuraal-cyan/10",
+      description:
+        "Transform bulky lecture notes into exam-ready summaries. Structured and easy to revise from.",
+      gradient: "from-[hsl(187,85%,43%)] to-[hsl(210,90%,55%)]",
     },
     {
       icon: Target,
       title: "Quizzes & Tests",
-      description: "Practice with auto-generated exam-style questions",
-      color: "text-neuraal-amber",
-      bg: "bg-neuraal-amber/10",
+      description:
+        "Practice with auto-generated exam-style questions. Track your accuracy and improve weak areas.",
+      gradient: "from-[hsl(38,92%,50%)] to-[hsl(350,89%,60%)]",
     },
     {
       icon: Sparkles,
       title: "Flashcards",
-      description: "Master concepts with spaced repetition",
-      color: "text-neuraal-emerald",
-      bg: "bg-neuraal-emerald/10",
+      description:
+        "Master concepts with spaced repetition. AI generates flashcards from your notes automatically.",
+      gradient: "from-[hsl(160,84%,39%)] to-[hsl(187,85%,43%)]",
+    },
+    {
+      icon: Upload,
+      title: "Upload Anything",
+      description:
+        "PDF, DOCX, PPTX, EPUB — upload your notes in any format. We extract the text and make it study-ready.",
+      gradient: "from-[hsl(270,80%,60%)] to-[hsl(234,89%,54%)]",
+    },
+    {
+      icon: BarChart3,
+      title: "Track Progress",
+      description:
+        "Monitor your study performance over time. See how much you've revised and where you need to focus.",
+      gradient: "from-[hsl(350,89%,60%)] to-[hsl(38,92%,50%)]",
     },
   ];
 
-  const benefits = [
-    { icon: Zap, text: "Syllabus-aligned learning" },
-    { icon: Shield, text: "Exam-focused revision" },
-    { icon: Clock, text: "Study smarter, not harder" },
+  const steps = [
+    {
+      step: "Step 1",
+      title: "Upload your notes",
+      description: "PDF, DOCX, PPTX or EPUB — any format works.",
+    },
+    {
+      step: "Step 2",
+      title: "Choose your study tool",
+      description: "Summaries, quizzes, flashcards, or AI tutor.",
+    },
+    {
+      step: "Step 3",
+      title: "Study smarter, ace your exams",
+      description: "Revision material aligned to your syllabus.",
+    },
   ];
 
   return (
     <div className="min-h-screen bg-background overflow-hidden">
+      {/* Top Banner */}
+      <div className="bg-foreground text-background text-center py-2.5 text-sm font-medium tracking-wide">
+        🎓 Free for Zambian students — Start studying smarter today
+      </div>
+
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 neuraal-glass">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+      <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border/50">
+        <div className="container mx-auto px-6 h-16 flex items-center justify-between">
           <NeuraalLogo size="sm" />
           <div className="flex items-center gap-3">
-            <Button variant="ghost" onClick={() => navigate("/login")}>
-              Log in
+            <Button variant="ghost" size="default" onClick={() => navigate("/login")}>
+              Sign In
             </Button>
-            <Button variant="gradient" onClick={() => navigate("/signup")}>
-              Get Started
+            <Button variant="hero" size="default" onClick={() => navigate("/signup")}>
+              Sign Up
             </Button>
           </div>
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section className="relative pt-32 pb-20 px-4">
-        {/* Background decorations */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl animate-pulse-slow" />
-          <div className="absolute top-40 right-20 w-96 h-96 bg-accent/10 rounded-full blur-3xl animate-pulse-slow animation-delay-300" />
-          <div className="absolute bottom-20 left-1/3 w-64 h-64 bg-neuraal-amber/10 rounded-full blur-3xl animate-pulse-slow animation-delay-500" />
-        </div>
-
-        <div className="container mx-auto text-center relative z-10">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-8 animate-fade-up">
-            <Sparkles className="w-4 h-4" />
-            AI-Powered Study Companion
-          </div>
-
-          {/* Main heading */}
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-bold tracking-tight mb-6 animate-fade-up animation-delay-100">
+      {/* Hero Section — Left-aligned like Flook */}
+      <section className="pt-24 pb-32 px-6">
+        <div className="container mx-auto max-w-5xl">
+          <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-display font-bold tracking-tight leading-[1.05] mb-6">
             Your Syllabus-Aligned
             <br />
-            <span className="neuraal-gradient-text">AI Study Partner</span>
+            <RotatingText />
           </h1>
 
-          {/* Subheading */}
-          <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 animate-fade-up animation-delay-200">
-            Turn complex lecture notes into structured, exam-ready learning. 
-            Neuraal helps you understand, revise, and prepare — smarter.
+          <p className="text-lg sm:text-xl text-muted-foreground max-w-xl mb-10 leading-relaxed">
+            Turn complex lecture notes into structured, exam-ready learning.
+            Built for students. No developers required.
           </p>
 
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 animate-fade-up animation-delay-300">
-            <Button variant="hero" size="xl" onClick={() => navigate("/signup")}>
-              <GraduationCap className="w-5 h-5 mr-2" />
-              Start Learning Free
-              <ChevronRight className="w-5 h-5 ml-1" />
-            </Button>
-            <Button variant="outline" size="lg" onClick={() => navigate("/login")}>
-              I have an account
-            </Button>
-          </div>
-
-          {/* Benefits pills */}
-          <div className="flex flex-wrap justify-center gap-4 animate-fade-up animation-delay-400">
-            {benefits.map((benefit) => (
-              <div
-                key={benefit.text}
-                className="flex items-center gap-2 px-4 py-2 rounded-full bg-card border border-border/50 text-sm"
-              >
-                <benefit.icon className="w-4 h-4 text-accent" />
-                <span>{benefit.text}</span>
-              </div>
-            ))}
-          </div>
+          <Button variant="hero" size="xl" onClick={() => navigate("/signup")}>
+            Get Started
+          </Button>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-20 px-4 bg-gradient-to-b from-background to-secondary/30">
-        <div className="container mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-display font-bold mb-4">
-              Everything You Need to <span className="neuraal-gradient-text">Excel</span>
-            </h2>
-            <p className="text-muted-foreground text-lg max-w-xl mx-auto">
-              Powered by curriculum-aware AI that adapts to your learning style
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {features.map((feature, index) => (
+      {/* Feature Cards — 2-column grid with gradient backgrounds like Flook */}
+      <section className="py-24 px-6">
+        <div className="container mx-auto max-w-5xl">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {features.map((feature) => (
               <div
                 key={feature.title}
-                className="neuraal-card p-6 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 animate-fade-up"
-                style={{ animationDelay: `${(index + 1) * 100}ms` }}
+                className={`relative rounded-3xl bg-gradient-to-br ${feature.gradient} p-8 min-h-[260px] flex flex-col justify-end text-white overflow-hidden group hover:-translate-y-1 transition-transform duration-300`}
               >
-                <div className={`inline-flex p-3 rounded-xl ${feature.bg} mb-4`}>
-                  <feature.icon className={`w-6 h-6 ${feature.color}`} />
+                {/* Subtle overlay for readability */}
+                <div className="absolute inset-0 bg-black/10 rounded-3xl" />
+
+                {/* Icon floating top-right */}
+                <div className="absolute top-6 right-6 opacity-20 group-hover:opacity-30 transition-opacity">
+                  <feature.icon className="w-20 h-20" strokeWidth={1} />
                 </div>
-                <h3 className="text-lg font-display font-semibold mb-2">{feature.title}</h3>
-                <p className="text-muted-foreground text-sm">{feature.description}</p>
+
+                <div className="relative z-10">
+                  <div className="flex items-center gap-2.5 mb-3">
+                    <feature.icon className="w-5 h-5" />
+                    <h3 className="text-lg font-display font-semibold">{feature.title}</h3>
+                  </div>
+                  <p className="text-white/80 text-sm leading-relaxed max-w-sm">
+                    {feature.description}
+                  </p>
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="py-20 px-4">
-        <div className="container mx-auto">
-          <div className="neuraal-card p-8 md:p-12 bg-gradient-to-r from-primary to-accent text-primary-foreground">
+      {/* Social Proof / Stats — Clean card */}
+      <section className="py-24 px-6">
+        <div className="container mx-auto max-w-5xl">
+          <div className="rounded-3xl border border-border bg-card p-10 md:p-14">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
               {[
                 { value: "300K+", label: "Students in Zambia" },
@@ -169,10 +201,10 @@ export default function Landing() {
                 { value: "ZMW 25", label: "Monthly Price" },
               ].map((stat) => (
                 <div key={stat.label}>
-                  <div className="text-3xl md:text-4xl font-display font-bold mb-2">
+                  <div className="text-3xl md:text-4xl font-display font-bold text-foreground mb-1">
                     {stat.value}
                   </div>
-                  <div className="text-primary-foreground/80 text-sm">{stat.label}</div>
+                  <div className="text-muted-foreground text-sm">{stat.label}</div>
                 </div>
               ))}
             </div>
@@ -180,17 +212,40 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20 px-4">
-        <div className="container mx-auto text-center">
-          <div className="inline-flex mb-6">
-            <NeuraalLogo size="lg" showText={false} />
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-display font-bold mb-4">
-            Ready to Study Smarter?
+      {/* How it works — Numbered steps like Flook */}
+      <section className="py-24 px-6 bg-secondary/30">
+        <div className="container mx-auto max-w-3xl">
+          <h2 className="text-3xl sm:text-4xl font-display font-bold text-center mb-16">
+            Simple to get started
           </h2>
-          <p className="text-muted-foreground text-lg max-w-xl mx-auto mb-8">
-            Join thousands of students transforming their academic performance with Neuraal
+
+          <div className="space-y-12">
+            {steps.map((item, i) => (
+              <div key={item.step} className="flex gap-6 items-start">
+                <div className="flex-shrink-0 text-xs font-semibold text-accent uppercase tracking-wider pt-1">
+                  {item.step}
+                </div>
+                <div>
+                  <h3 className="text-xl font-display font-semibold mb-1">{item.title}</h3>
+                  <p className="text-muted-foreground text-base leading-relaxed">
+                    {item.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-28 px-6">
+        <div className="container mx-auto max-w-3xl text-center">
+          <NeuraalLogo size="lg" showText={false} className="justify-center mb-8" />
+          <h2 className="text-3xl sm:text-4xl font-display font-bold mb-4">
+            Ready to study smarter?
+          </h2>
+          <p className="text-muted-foreground text-lg max-w-xl mx-auto mb-10 leading-relaxed">
+            Join thousands of students transforming their academic performance with Neuraal.
           </p>
           <Button variant="hero" size="xl" onClick={() => navigate("/signup")}>
             Get Started — It's Free
@@ -200,7 +255,7 @@ export default function Landing() {
       </section>
 
       {/* Footer */}
-      <footer className="py-8 px-4 border-t border-border">
+      <footer className="py-8 px-6 border-t border-border">
         <div className="container mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <NeuraalLogo size="sm" />
           <p className="text-sm text-muted-foreground">
