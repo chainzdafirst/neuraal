@@ -16,6 +16,7 @@ import Quiz from "./pages/Quiz";
 import Flashcards from "./pages/Flashcards";
 import Progress from "./pages/Progress";
 import NotFound from "./pages/NotFound";
+import DemoPreview from "./pages/DemoPreview";
 
 const queryClient = new QueryClient();
 
