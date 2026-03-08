@@ -77,6 +77,11 @@ export function PreviewQuiz() {
           <div className="flex items-center gap-1.5 font-semibold mb-1"><BookOpen className="w-3 h-3 text-accent" /> Explanation</div>
           <p className="text-muted-foreground">Active listening involves fully concentrating on the speaker, understanding their message, and responding thoughtfully — rather than passively hearing words.</p>
         </div>
+        <div className="flex justify-end">
+          <div className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-gradient-to-r from-primary to-accent text-primary-foreground text-[11px] sm:text-xs font-medium">
+            Next Question <ChevronRight className="w-3.5 h-3.5" />
+          </div>
+        </div>
       </div>
     </div>
   );
