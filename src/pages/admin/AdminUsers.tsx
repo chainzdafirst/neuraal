@@ -340,7 +340,7 @@ export default function AdminUsers() {
                         <span>{format(new Date(user.created_at), "MMM d, yy")}</span>
                       </div>
                     </div>
-                    <UserActionsMenu user={user} userRoles={userRoles} updateStatus={updateStatus} assignRole={assignRole} />
+                    <UserActionsMenu user={user} userRoles={userRoles} updateStatus={updateStatus} assignRole={assignRole} onDelete={setDeleteTarget} />
                   </div>
                 </Card>
               );
