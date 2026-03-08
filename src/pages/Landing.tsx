@@ -220,7 +220,7 @@ export default function Landing() {
               <RotatingText />
             </h1>
             <p className="text-[15px] sm:text-lg font-semibold text-foreground mb-6">
-              Turn complex lecture notes into structured, exam-ready learning within minutes.  
+              Turn bulky lecture notes into structured, exam-ready learning within minutes.  
             
             </p>
             <Button variant="hero" size="xl" onClick={() => navigate("/signup")} className="h-[57px] leading-[57px] px-10 text-sm font-extrabold">
