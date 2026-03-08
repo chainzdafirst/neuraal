@@ -23,11 +23,11 @@ const plans = [
   {
     id: "monthly",
     name: "Monthly",
-    price: 21199,
+    price: 19.99,
     period: "month",
     icon: Star,
     popular: true,
-    discount: 62,
+    discount: 50,
     features: [
       "Everything in Weekly",
       "Unlimited AI Summaries",
@@ -43,7 +43,7 @@ const plans = [
     price: 229.98,
     period: "year",
     icon: Crown,
-    discount: 55,
+    discount: 56,
     features: [
       "Everything in Monthly",
       "Offline Access",
