@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.89.0";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -16,6 +17,29 @@ serve(async (req) => {
     
     if (!LOVABLE_API_KEY) {
       throw new Error("LOVABLE_API_KEY is not configured");
+    }
+
+    // Fetch matching curriculum resources for syllabus-aligned tutoring
+    let curriculumContext = "";
+    if (userProfile?.institution && userProfile?.program) {
+      const sb = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
+      const { data: resources } = await sb
+        .from("curriculum_resources")
+        .select("title, resource_type, content_text")
+        .eq("institution", userProfile.institution)
+        .eq("program", userProfile.program)
+        .eq("is_active", true)
+        .limit(5);
+
+      if (resources && resources.length > 0) {
+        const snippets = resources
+          .filter((r: any) => r.content_text)
+          .map((r: any) => `[${r.resource_type.toUpperCase()}: ${r.title}]\n${r.content_text!.slice(0, 2000)}`)
+          .join("\n\n---\n\n");
+        if (snippets) {
+          curriculumContext = `\n\nOfficial curriculum resources for ${userProfile.institution} (${userProfile.program}). Use these to align your answers with the syllabus:\n\n${snippets}`;
+        }
+      }
     }
 
     const systemPrompt = `You are Neuraal, a friendly and encouraging AI study companion for ${userProfile?.program || 'university'} students${userProfile?.institution ? ` at ${userProfile.institution}` : ''}.
@@ -40,8 +64,9 @@ Guidelines:
 - Cite relevant concepts and principles
 - Keep responses focused and thorough but avoid unnecessary padding
 - Use markdown formatting for readability (headers, bold, lists, code blocks)
+- If curriculum context is available, reference syllabus topics and past-paper patterns
 
-${context ? `\nRelevant context from the student's uploaded notes:\n${context}` : ''}`;
+${context ? `\nRelevant context from the student's uploaded notes:\n${context}` : ''}${curriculumContext}`;
 
     console.log("AI chat request received, sending to gateway...");
 
