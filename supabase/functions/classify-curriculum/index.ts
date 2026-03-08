@@ -79,14 +79,14 @@ serve(async (req) => {
     const lowerName = (fileName || filePath).toLowerCase();
     const firstPageText = await getFirstPageText(uint8, lowerName);
 
-    const systemPrompt = `You are a document classifier for academic curriculum resources. Analyze the document content and extract structured metadata.
+    const systemPrompt = `You are a document classifier for academic curriculum resources. You have OCR capabilities — use them to read all visible text in the document images, including scanned pages, headers, footers, logos, watermarks, and stamps. Extract structured metadata from what you read.
 
 Known institutions in the system: ${knownInstitutions.length > 0 ? knownInstitutions.join(', ') : 'None yet'}
 Known programs in the system: ${knownPrograms.length > 0 ? knownPrograms.join(', ') : 'None yet'}
 
 If the document matches a known institution or program, use the EXACT same spelling. Otherwise, use the name as written in the document.`;
 
-    const userPrompt = `Extract the following metadata from this academic document:
+    const userPrompt = `Use OCR to carefully read ALL text visible in this document (including scanned/image-based text, headers, footers, logos, stamps, and watermarks). Then extract the following metadata:
 1. title: The document's full title
 2. resource_type: One of "syllabus", "past_paper", "reference_material"
 3. institution: The examining body or institution (e.g. "TEVETA", "University of Zambia")
@@ -95,7 +95,7 @@ If the document matches a known institution or program, use the EXACT same spell
 6. exam_type: "board" or "semester"
 7. description: A one-sentence summary of the document
 
-Focus on the first/cover page for metadata.`;
+Focus on the first/cover page for metadata. If the document appears to be a scanned image, use OCR to read all visible text before classifying.`;
 
     // Build messages based on whether we have text or need multimodal
     let messages: any[];
@@ -105,6 +105,7 @@ Focus on the first/cover page for metadata.`;
         { role: "user", content: `${userPrompt}\n\nDocument text (first page):\n${firstPageText}` },
       ];
     } else if (lowerName.endsWith('.pdf')) {
+      // For PDFs, send as inline_data with proper PDF mime type for OCR
       const base64 = btoa(String.fromCharCode(...uint8));
       messages = [
         { role: "system", content: systemPrompt },
