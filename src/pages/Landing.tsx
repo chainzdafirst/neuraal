@@ -273,7 +273,7 @@ export default function Landing() {
 
       {/* How it works */}
       <section id="how-it-works" className="py-24 bg-secondary/30">
-        <div className="max-w-[1360px] px-5 sm:px-[70px] mx-auto max-w-3xl">
+        <div className="max-w-[1360px] px-5 sm:px-[70px] mx-auto lg:max-w-3xl">
           <ScrollReveal>
             <h2 className="text-[28px] font-display font-bold text-center tracking-[-0.02em] my-0 sm:text-5xl mb-[30px]">
               How it Works  
