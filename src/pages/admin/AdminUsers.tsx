@@ -44,6 +44,42 @@ const statusConfig: Record<string, { label: string; variant: "default" | "second
   deactivated: { label: "Deactivated", variant: "secondary" },
 };
 
+function UserActionsMenu({ user, userRoles, updateStatus, assignRole }: {
+  user: UserRow;
+  userRoles: string[];
+  updateStatus: (userId: string, status: string) => void;
+  assignRole: (userId: string, role: string) => void;
+}) {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" size="icon" className="shrink-0"><MoreHorizontal className="h-4 w-4" /></Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        {user.account_status !== "active" && (
+          <DropdownMenuItem onClick={() => updateStatus(user.id, "active")}>
+            <UserCheck className="h-4 w-4 mr-2" /> Activate
+          </DropdownMenuItem>
+        )}
+        {user.account_status !== "suspended" && (
+          <DropdownMenuItem onClick={() => updateStatus(user.id, "suspended")} className="text-destructive">
+            <UserX className="h-4 w-4 mr-2" /> Suspend
+          </DropdownMenuItem>
+        )}
+        {user.account_status !== "deactivated" && (
+          <DropdownMenuItem onClick={() => updateStatus(user.id, "deactivated")}>
+            <UserMinus className="h-4 w-4 mr-2" /> Deactivate
+          </DropdownMenuItem>
+        )}
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={() => assignRole(user.id, "super_admin")}>Assign Super Admin</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => assignRole(user.id, "academic_admin")}>Assign Academic Admin</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => assignRole(user.id, "support_admin")}>Assign Support Admin</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
 export default function AdminUsers() {
   const [users, setUsers] = useState<UserRow[]>([]);
   const [roles, setRoles] = useState<RoleRow[]>([]);
