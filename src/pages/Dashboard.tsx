@@ -226,6 +226,13 @@ export default function Dashboard() {
 
   const firstName = profile?.full_name?.split(" ")[0] || user?.email?.split("@")[0] || "Student";
 
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good Morning";
+    if (hour < 17) return "Good Afternoon";
+    return "Good Evening";
+  };
+
   const getActivityIcon = (type: string) => {
     if (type === "quiz") return Target;
     if (type === "summary") return FileText;
