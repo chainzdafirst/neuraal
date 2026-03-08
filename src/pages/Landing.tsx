@@ -185,24 +185,24 @@ export default function Landing() {
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-5 pb-5 sm:pt-9 sm:pb-[74px] max-w-[1360px] px-5 sm:px-[70px] mx-auto">
+      {(() => { const r = useScrollReveal(0.1); return (
+      <section ref={r.ref} className={`pt-5 pb-5 sm:pt-9 sm:pb-[74px] max-w-[1360px] px-5 sm:px-[70px] mx-auto ${r.className}`}>
         <div>
           <h1 className="text-[40px] sm:text-[84px] font-display font-bold tracking-[-0.02em] leading-[48px] sm:leading-[100px] mb-6">
-         Syllabus-Aligned
+            Syllabus-Aligned
             <br />
             <RotatingText />
           </h1>
-
           <p className="text-[15px] sm:text-lg font-semibold text-foreground mb-6">
             Turn complex lecture notes into structured, exam-ready learning.
             Built for students. No developers required.
           </p>
-
           <Button variant="hero" size="xl" onClick={() => navigate("/signup")} className="h-[57px] leading-[57px] px-10 text-sm font-extrabold">
             Get Started
           </Button>
         </div>
       </section>
+      ); })()}
 
       {/* Feature Sections */}
       <section id="features" className="max-w-[1360px] px-5 sm:px-[70px] mx-auto py-16 sm:py-24 space-y-16 sm:space-y-28">
