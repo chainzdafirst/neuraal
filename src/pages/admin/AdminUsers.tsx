@@ -121,10 +121,10 @@ export default function AdminUsers() {
 
   return (
     <AdminLayout>
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         <div>
-          <h1 className="text-3xl font-display font-bold">User Management</h1>
-          <p className="text-muted-foreground mt-1">Manage learners, roles, and account status</p>
+          <h1 className="text-2xl sm:text-3xl font-display font-bold">User Management</h1>
+          <p className="text-muted-foreground text-sm mt-1">Manage learners, roles, and account status</p>
         </div>
 
         {/* Stats row */}
