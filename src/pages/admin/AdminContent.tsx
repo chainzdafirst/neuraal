@@ -335,9 +335,9 @@ export default function AdminContent() {
 
   // ── Tab title summary ──
   const tabSummary = (() => {
-    if (activeProgram) return "Viewing program resources";
-    if (activeInstitution) return "Viewing institution programs";
-    return null;
+    if (activeProgram) return "Program Resources";
+    if (activeInstitution) return "Institution Programs";
+    return "All Institutions";
   })();
 
   return (
@@ -348,8 +348,8 @@ export default function AdminContent() {
           <div className="min-w-0">
             <h1 className="text-2xl sm:text-3xl font-display font-bold truncate">Curriculum Content</h1>
             <p className="text-muted-foreground text-sm mt-1">Manage training data by institution and program</p>
-            {(activeInstitution || activeProgram) && (
-              <div className="flex items-center gap-2 mt-3">
+            <div className="flex items-center gap-2 mt-3">
+              {(activeInstitution || activeProgram) && (
                 <Button
                   variant="ghost"
                   size="sm"
@@ -366,9 +366,9 @@ export default function AdminContent() {
                   <ArrowLeft className="h-4 w-4 mr-1" />
                   Back
                 </Button>
-                <span className="text-xs text-muted-foreground">{tabSummary}</span>
-              </div>
-            )}
+              )}
+              <span className="text-xs text-muted-foreground">{tabSummary}</span>
+            </div>
           </div>
           <div className="flex gap-2 shrink-0">
             <Button variant="outline" size="sm" className="sm:size-default" onClick={() => setSchoolDialogOpen(true)}>
