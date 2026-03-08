@@ -83,6 +83,7 @@ export default function AdminContent() {
   const [classifying, setClassifying] = useState(false);
   const [classifyFailed, setClassifyFailed] = useState(false);
   const [uploadedFilePath, setUploadedFilePath] = useState<string | null>(null);
+  const [classifiedText, setClassifiedText] = useState<string | null>(null);
 
   // Resource upload form
   const [form, setForm] = useState({
