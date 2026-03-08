@@ -19,7 +19,7 @@ export function AdminLayout({ children }: {children: ReactNode;}) {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full">
+      <div className="h-screen flex w-full overflow-hidden">
         <AdminSidebar />
         <div className="flex-1 flex flex-col">
           <header className="h-14 border-b border-border px-4 bg-background/80 backdrop-blur-md sticky top-0 z-40 flex-row flex items-center justify-start my-[25px]">
