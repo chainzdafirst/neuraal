@@ -28,7 +28,7 @@ export function AdminLayout({ children }: {children: ReactNode;}) {
               ​
             </span>
           </header>
-          <main className="flex-1 p-3 sm:p-4 md:p-6 overflow-auto max-h-[calc(100vh-3.5rem)] border border-border rounded-lg m-2 sm:m-3 md:m-4 bg-card py-[24px] my-[5px]">{children}</main>
+          <main className="flex-1 p-3 sm:p-4 md:p-6 overflow-auto max-h-[calc(100vh-3.5rem)] border border-border rounded-lg m-2 sm:m-3 md:m-4 bg-card py-[24px] my-[56px]">{children}</main>
         </div>
       </div>
     </SidebarProvider>);
