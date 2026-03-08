@@ -10,7 +10,6 @@ import {
   FileText,
   LayoutGrid,
   Settings,
-  LogOut,
   ChevronRight,
   Sparkles,
   Target,
