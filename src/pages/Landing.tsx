@@ -3,17 +3,19 @@ import { NeuraalLogo } from "@/components/ui/NeuraalLogo";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
-  BookOpen,
   Brain,
   FileText,
-  GraduationCap,
-  Sparkles,
   Target,
-  ChevronRight,
-  Upload,
-  MessageSquare,
+  Sparkles,
   BarChart3,
+  ChevronRight,
 } from "lucide-react";
+
+import featureAiTutor from "@/assets/feature-ai-tutor.jpg";
+import featureSummaries from "@/assets/feature-summaries.jpg";
+import featureQuizzes from "@/assets/feature-quizzes.jpg";
+import featureFlashcards from "@/assets/feature-flashcards.jpg";
+import featureProgress from "@/assets/feature-progress.jpg";
 
 const rotatingWords = [
   "AI Tutor",
@@ -49,6 +51,46 @@ function RotatingText() {
   );
 }
 
+interface FeatureCardProps {
+  icon: React.ElementType;
+  title: string;
+  description: string;
+  image: string;
+  gradient: string;
+  reverse?: boolean;
+}
+
+function FeatureCard({ icon: Icon, title, description, image, gradient, reverse }: FeatureCardProps) {
+  return (
+    <div className={`flex flex-col ${reverse ? "lg:flex-row-reverse" : "lg:flex-row"} gap-6 sm:gap-10 items-center`}>
+      {/* Text side */}
+      <div className="flex-1 w-full lg:w-auto">
+        <div className="flex items-center gap-2.5 mb-3">
+          <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center`}>
+            <Icon className="w-5 h-5 text-white" />
+          </div>
+          <h3 className="text-xl sm:text-2xl font-display font-bold tracking-[-0.01em]">{title}</h3>
+        </div>
+        <p className="text-muted-foreground text-[15px] sm:text-base leading-relaxed max-w-md">
+          {description}
+        </p>
+      </div>
+
+      {/* Image side */}
+      <div className="flex-1 w-full lg:w-auto">
+        <div className={`rounded-[12px] sm:rounded-[16px] overflow-hidden border border-border shadow-lg`}>
+          <img
+            src={image}
+            alt={`${title} feature preview`}
+            className="w-full h-auto object-cover"
+            loading="lazy"
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function Landing() {
   const navigate = useNavigate();
 
@@ -59,6 +101,7 @@ export default function Landing() {
       description:
         "Get step-by-step explanations tailored to your syllabus. Ask questions and get instant, curriculum-aware answers.",
       gradient: "from-[hsl(234,89%,54%)] to-[hsl(270,80%,60%)]",
+      image: featureAiTutor,
     },
     {
       icon: FileText,
@@ -66,6 +109,7 @@ export default function Landing() {
       description:
         "Transform bulky lecture notes into exam-ready summaries. Structured and easy to revise from.",
       gradient: "from-[hsl(187,85%,43%)] to-[hsl(210,90%,55%)]",
+      image: featureSummaries,
     },
     {
       icon: Target,
@@ -73,6 +117,7 @@ export default function Landing() {
       description:
         "Practice with auto-generated exam-style questions. Track your accuracy and improve weak areas.",
       gradient: "from-[hsl(38,92%,50%)] to-[hsl(350,89%,60%)]",
+      image: featureQuizzes,
     },
     {
       icon: Sparkles,
@@ -80,13 +125,7 @@ export default function Landing() {
       description:
         "Master concepts with spaced repetition. AI generates flashcards from your notes automatically.",
       gradient: "from-[hsl(160,84%,39%)] to-[hsl(187,85%,43%)]",
-    },
-    {
-      icon: Upload,
-      title: "Upload Anything",
-      description:
-        "PDF, DOCX, PPTX, EPUB — upload your notes in any format. We extract the text and make it study-ready.",
-      gradient: "from-[hsl(270,80%,60%)] to-[hsl(234,89%,54%)]",
+      image: featureFlashcards,
     },
     {
       icon: BarChart3,
@@ -94,6 +133,7 @@ export default function Landing() {
       description:
         "Monitor your study performance over time. See how much you've revised and where you need to focus.",
       gradient: "from-[hsl(350,89%,60%)] to-[hsl(38,92%,50%)]",
+      image: featureProgress,
     },
   ];
 
@@ -130,7 +170,7 @@ export default function Landing() {
         </div>
       </nav>
 
-      {/* Hero Section — Left-aligned like Flook */}
+      {/* Hero Section */}
       <section className="pt-5 pb-5 sm:pt-9 sm:pb-[74px] max-w-[1360px] px-5 sm:px-[70px] mx-auto">
         <div>
           <h1 className="text-[40px] sm:text-[84px] font-display font-bold tracking-[-0.02em] leading-[48px] sm:leading-[100px] mb-6">
@@ -150,39 +190,22 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Feature Cards — 2-column grid with gradient backgrounds like Flook */}
-      <section className="max-w-[1360px] px-5 sm:px-[70px] mx-auto">
-        <div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-9">
-            {features.map((feature) => (
-              <div
-                key={feature.title}
-                className={`relative rounded-[9px] sm:rounded-[16px] bg-gradient-to-r ${feature.gradient} p-8 min-h-[260px] sm:min-h-[574px] flex flex-col justify-end text-white overflow-hidden group hover:-translate-y-1 transition-transform duration-300`}
-              >
-                {/* Subtle overlay for readability */}
-                <div className="absolute inset-0 bg-black/10 rounded-3xl" />
-
-                {/* Icon floating top-right */}
-                <div className="absolute top-6 right-6 opacity-20 group-hover:opacity-30 transition-opacity">
-                  <feature.icon className="w-20 h-20" strokeWidth={1} />
-                </div>
-
-                <div className="relative z-10">
-                  <div className="flex items-center gap-2.5 mb-3">
-                    <feature.icon className="w-5 h-5" />
-                    <h3 className="text-lg font-display font-semibold">{feature.title}</h3>
-                  </div>
-                  <p className="text-white/80 text-sm leading-relaxed max-w-sm">
-                    {feature.description}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+      {/* Feature Sections — Alternating layout with screenshots */}
+      <section className="max-w-[1360px] px-5 sm:px-[70px] mx-auto py-16 sm:py-24 space-y-16 sm:space-y-28">
+        {features.map((feature, i) => (
+          <FeatureCard
+            key={feature.title}
+            icon={feature.icon}
+            title={feature.title}
+            description={feature.description}
+            image={feature.image}
+            gradient={feature.gradient}
+            reverse={i % 2 !== 0}
+          />
+        ))}
       </section>
 
-      {/* Social Proof / Stats — Clean card */}
+      {/* Social Proof / Stats */}
       <section className="py-24 max-w-[1360px] px-5 sm:px-[70px] mx-auto">
         <div>
           <div className="rounded-[16px] border border-border bg-card p-10 md:p-14">
@@ -205,7 +228,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* How it works — Numbered steps like Flook */}
+      {/* How it works */}
       <section className="py-24 bg-secondary/30">
         <div className="max-w-[1360px] px-5 sm:px-[70px] mx-auto max-w-3xl">
           <h2 className="text-[28px] sm:text-[40px] font-display font-bold text-center mb-16 tracking-[-0.02em]">
@@ -213,7 +236,7 @@ export default function Landing() {
           </h2>
 
           <div className="space-y-12">
-            {steps.map((item, i) => (
+            {steps.map((item) => (
               <div key={item.step} className="flex gap-6 items-start">
                 <div className="flex-shrink-0 text-xs font-semibold text-accent uppercase tracking-wider pt-1">
                   {item.step}
