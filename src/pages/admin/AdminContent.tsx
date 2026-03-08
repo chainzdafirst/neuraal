@@ -475,36 +475,34 @@ export default function AdminContent() {
           <>
             {/* Filters */}
             <div className="flex flex-col gap-3">
-              <div className="flex flex-col sm:flex-row gap-3 flex-1">
-                <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input placeholder="Search resources..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
-                </div>
-                <div className="flex gap-2 flex-wrap">
-                  {["all", "syllabus", "past_paper", "reference_material"].map((t) => (
-                    <Button key={t} size="sm" variant={typeFilter === t ? "default" : "outline"} onClick={() => setTypeFilter(t)}>
-                      {t === "all" ? "All" : resourceTypeLabels[t] || t}
-                    </Button>
-                  ))}
-                </div>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input placeholder="Search resources..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
               </div>
-              {selected.size > 0 && (
-                <Button size="sm" variant="destructive" onClick={bulkDelete} className="self-start">
-                  <Trash2 className="h-4 w-4 mr-2" /> Delete {selected.size}
-                </Button>
-              )}
+              <div className="flex flex-wrap gap-2 items-center">
+                {["all", "syllabus", "past_paper", "reference_material"].map((t) => (
+                  <Button key={t} size="sm" variant={typeFilter === t ? "default" : "outline"} onClick={() => setTypeFilter(t)} className="text-xs">
+                    {t === "all" ? "All" : resourceTypeLabels[t] || t}
+                  </Button>
+                ))}
+                {selected.size > 0 && (
+                  <Button size="sm" variant="destructive" onClick={bulkDelete} className="text-xs ml-auto">
+                    <Trash2 className="h-4 w-4 mr-1" /> Delete {selected.size}
+                  </Button>
+                )}
+              </div>
             </div>
 
             <Card>
               <CardContent className="p-0 overflow-x-auto">
-                <Table className="min-w-[600px]">
+                <Table>
                   <TableHeader>
                     <TableRow>
                       <TableHead className="w-10"><Checkbox checked={filtered.length > 0 && selected.size === filtered.length} onCheckedChange={toggleAll} /></TableHead>
                       <TableHead>Title</TableHead>
-                      <TableHead>Type</TableHead>
+                      <TableHead className="hidden sm:table-cell">Type</TableHead>
                       <TableHead>Status</TableHead>
-                      <TableHead>Date</TableHead>
+                      <TableHead className="hidden md:table-cell">Date</TableHead>
                       <TableHead className="w-12" />
                     </TableRow>
                   </TableHeader>
@@ -515,17 +513,18 @@ export default function AdminContent() {
                       <TableRow key={res.id}>
                         <TableCell><Checkbox checked={selected.has(res.id)} onCheckedChange={() => toggleSelect(res.id)} /></TableCell>
                         <TableCell>
-                          <div>
-                            <span className="font-medium">{res.title}</span>
-                            {res.file_name && <p className="text-xs text-muted-foreground truncate max-w-[250px]">{res.file_name} · {formatBytes(res.file_size)}</p>}
+                          <div className="min-w-0">
+                            <span className="font-medium block truncate">{res.title}</span>
+                            {res.file_name && <p className="text-xs text-muted-foreground truncate">{res.file_name} · {formatBytes(res.file_size)}</p>}
+                            <span className="sm:hidden"><Badge variant="outline" className="text-xs mt-1">{resourceTypeLabels[res.resource_type] || res.resource_type}</Badge></span>
                           </div>
                         </TableCell>
-                        <TableCell><Badge variant="outline" className="text-xs">{resourceTypeLabels[res.resource_type] || res.resource_type}</Badge></TableCell>
+                        <TableCell className="hidden sm:table-cell"><Badge variant="outline" className="text-xs">{resourceTypeLabels[res.resource_type] || res.resource_type}</Badge></TableCell>
                         <TableCell><Badge variant={res.is_active ? "default" : "secondary"} className="text-xs">{res.is_active ? "Active" : "Inactive"}</Badge></TableCell>
-                        <TableCell className="text-sm text-muted-foreground">{format(new Date(res.created_at), "MMM d, yyyy")}</TableCell>
+                        <TableCell className="hidden md:table-cell text-sm text-muted-foreground">{format(new Date(res.created_at), "MMM d, yyyy")}</TableCell>
                         <TableCell>
                           <DropdownMenu>
-                            <DropdownMenuTrigger asChild><Button variant="ghost" size="icon"><MoreHorizontal className="h-4 w-4" /></Button></DropdownMenuTrigger>
+                            <DropdownMenuTrigger asChild><Button variant="ghost" size="icon" className="h-8 w-8"><MoreHorizontal className="h-4 w-4" /></Button></DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                               <DropdownMenuItem onClick={() => toggleActive(res.id, res.is_active)}>
                                 {res.is_active ? <><EyeOff className="h-4 w-4 mr-2" /> Deactivate</> : <><Eye className="h-4 w-4 mr-2" /> Activate</>}
@@ -547,7 +546,7 @@ export default function AdminContent() {
 
         {/* ── Add Resource Dialog ── */}
         <Dialog open={resourceDialogOpen} onOpenChange={(open) => { if (!open) resetUploadForm(); setResourceDialogOpen(open); }}>
-          <DialogContent className="max-w-lg w-[calc(100%-2rem)] max-h-[85vh] overflow-y-auto mx-4 w-[calc(100%-2rem)] max-h-[85vh] overflow-y-auto mx-4">
+          <DialogContent className="max-w-lg w-[calc(100%-2rem)] max-h-[85vh] overflow-y-auto mx-4">
             <DialogHeader><DialogTitle>Upload Curriculum Resource</DialogTitle></DialogHeader>
             <div className="space-y-4 py-2">
               {/* Step 1: File selection with auto-classify */}
