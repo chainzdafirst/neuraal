@@ -507,17 +507,25 @@ export default function AITutor() {
               </Button>
 
               {showAttachMenu && (
-                <div className="absolute bottom-12 left-0 bg-popover border border-border rounded-xl shadow-lg p-2 flex flex-col gap-1 min-w-[160px] animate-scale-in z-10">
+                <div className="absolute bottom-12 left-0 bg-popover border border-border rounded-xl shadow-lg p-2 flex flex-col gap-1 min-w-[160px] animate-scale-in z-50">
                   <button
                     className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-muted transition-colors text-sm"
-                    onClick={() => fileInputRef.current?.click()}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowAttachMenu(false);
+                      setTimeout(() => fileInputRef.current?.click(), 100);
+                    }}
                   >
                     <Paperclip className="w-4 h-4" />
                     Attach File
                   </button>
                   <button
                     className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-muted transition-colors text-sm"
-                    onClick={() => cameraInputRef.current?.click()}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowAttachMenu(false);
+                      setTimeout(() => cameraInputRef.current?.click(), 100);
+                    }}
                   >
                     <Camera className="w-4 h-4" />
                     Take Photo
