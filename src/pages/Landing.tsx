@@ -210,7 +210,7 @@ export default function Landing() {
 
       {/* Hero Section */}
       <ScrollReveal threshold={0.1}>
-        <section className="pt-5 pb-5 sm:pt-9 sm:pb-[74px] max-w-[1360px] px-5 sm:px-[70px] mx-auto">
+        <section className="pt-5 pb-5 sm:pt-9 sm:pb-[74px] max-w-[1360px] px-5 sm:px-[70px] mx-auto overflow-hidden">
           <div>
             <h1 className="text-[40px] sm:text-[84px] font-display font-bold tracking-[-0.02em] leading-[48px] sm:leading-[100px] mb-6">
               Syllabus-Aligned
