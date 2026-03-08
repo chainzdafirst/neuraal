@@ -26,6 +26,7 @@ import AdminAI from "./pages/admin/AdminAI";
 import AdminPlaceholder from "./pages/admin/AdminPlaceholder";
 import AdminContent from "./pages/admin/AdminContent";
 import AdminAnalytics from "./pages/admin/AdminAnalytics";
+import AdminBanners from "./pages/admin/AdminBanners";
 import AdminLogin from "./pages/admin/AdminLogin";
 
 const queryClient = new QueryClient();
