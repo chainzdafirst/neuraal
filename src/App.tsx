@@ -45,7 +45,8 @@ const App = () => (
             <Route path="/quiz" element={<Quiz />} />
             <Route path="/flashcards" element={<Flashcards />} />
             <Route path="/progress" element={<Progress />} />
-            {/* Admin routes - fully separate from consumer app */}
+            {/* Admin routes — secret entry via /portal/n3ur44l-8f42 then standard /admin/* after auth */}
+            <Route path="/portal/n3ur44l-8f42" element={<AdminLogin />} />
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/admin" element={<AdminOverview />} />
             <Route path="/admin/users" element={<AdminUsers />} />
