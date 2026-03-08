@@ -206,6 +206,7 @@ export default function Landing() {
           </div>
         </div>
       </nav>
+      </header>
 
       {/* Hero Section */}
       <ScrollReveal threshold={0.1}>
