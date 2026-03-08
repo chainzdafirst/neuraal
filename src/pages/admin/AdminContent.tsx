@@ -538,6 +538,7 @@ export default function AdminContent() {
                           </div>
                         </TableCell>
                         <TableCell className="hidden sm:table-cell"><Badge variant="outline" className="text-xs">{resourceTypeLabels[res.resource_type] || res.resource_type}</Badge></TableCell>
+                        <TableCell className="hidden sm:table-cell text-sm text-muted-foreground">{(res as any).year_of_study ? `Year ${(res as any).year_of_study}` : "—"}</TableCell>
                         <TableCell><Badge variant={res.is_active ? "default" : "secondary"} className="text-xs">{res.is_active ? "Active" : "Inactive"}</Badge></TableCell>
                         <TableCell className="hidden md:table-cell text-sm text-muted-foreground">{format(new Date(res.created_at), "MMM d, yyyy")}</TableCell>
                         <TableCell>
