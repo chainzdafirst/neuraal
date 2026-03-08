@@ -97,10 +97,7 @@ PROCESS (follow strictly):
 3. For EACH Learning Activity:
    - Under a sub-heading "📝 Learning Activity", describe how the document content fulfills or relates to the activity
    - If the activity asks students to compare, list, or analyze — do that using the document's content
-4. COVERAGE INDICATORS: After each LO section, add a tag:
-   - ✅ **Fully covered** — document thoroughly addresses this LO
-   - ⚠️ **Partially covered** — document touches on it but lacks depth
-   - ❌ **Not covered** — document does not address this LO (note what's missing)
+4. If the document does not adequately cover a Learning Outcome, still include the heading but note briefly that the document lacks sufficient information on this topic.
 
 If NO curriculum context is available, organize by the document's own topic structure and create a standard summary.
 
