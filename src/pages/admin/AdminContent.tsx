@@ -349,24 +349,22 @@ export default function AdminContent() {
             <h1 className="text-2xl sm:text-3xl font-display font-bold truncate">Curriculum Content</h1>
             <p className="text-muted-foreground text-sm mt-1">Manage training data by institution and program</p>
             <div className="flex items-center gap-2 mt-3">
-              {(activeInstitution || activeProgram) && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-8 px-2 text-muted-foreground hover:text-foreground"
-                  onClick={() => {
-                    if (activeProgram) {
-                      setActiveProgram(null);
-                    } else {
-                      setActiveInstitution(null);
-                    }
-                    setSelected(new Set());
-                  }}
-                >
-                  <ArrowLeft className="h-4 w-4 mr-1" />
-                  Back
-                </Button>
-              )}
+              <Button
+                variant="ghost"
+                size="sm"
+                className={cn("h-8 px-2 text-muted-foreground hover:text-foreground", !(activeInstitution || activeProgram) && "invisible")}
+                onClick={() => {
+                  if (activeProgram) {
+                    setActiveProgram(null);
+                  } else {
+                    setActiveInstitution(null);
+                  }
+                  setSelected(new Set());
+                }}
+              >
+                <ArrowLeft className="h-4 w-4 mr-1" />
+                Back
+              </Button>
               <span className="text-xs text-muted-foreground">{tabSummary}</span>
             </div>
           </div>
