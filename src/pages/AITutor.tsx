@@ -460,7 +460,7 @@ export default function AITutor() {
       </main>
 
       {/* Input Bar - ChatGPT style */}
-      <footer className="sticky bottom-0 bg-background border-t border-border/50 px-4 py-3">
+      <footer className="sticky bottom-0 bg-background/95 backdrop-blur-md border-t border-border px-4 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
         <div className="container mx-auto max-w-3xl">
           {/* Attachment previews */}
           {attachments.length > 0 && (
