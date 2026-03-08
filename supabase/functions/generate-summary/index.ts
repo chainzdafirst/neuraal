@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.89.0";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -18,16 +19,42 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    const summaryStyles = {
+    // Fetch matching curriculum resources for this user's institution/program
+    let curriculumContext = "";
+    if (userProfile?.institution && userProfile?.program) {
+      const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+      const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+      const sb = createClient(supabaseUrl, supabaseKey);
+
+      const { data: resources } = await sb
+        .from("curriculum_resources")
+        .select("title, resource_type, content_text")
+        .eq("institution", userProfile.institution)
+        .eq("program", userProfile.program)
+        .eq("is_active", true)
+        .limit(5);
+
+      if (resources && resources.length > 0) {
+        const snippets = resources
+          .filter((r: any) => r.content_text)
+          .map((r: any) => `[${r.resource_type.toUpperCase()}: ${r.title}]\n${r.content_text!.slice(0, 3000)}`)
+          .join("\n\n---\n\n");
+        if (snippets) {
+          curriculumContext = `\n\nIMPORTANT — Use the following official curriculum resources from ${userProfile.institution} (${userProfile.program}) to align the summary with the syllabus. Highlight topics that appear in the syllabus/past papers and flag exam-relevant areas:\n\n${snippets}`;
+        }
+      }
+    }
+
+    const summaryStyles: Record<string, string> = {
       concise: "Create a brief, exam-focused summary highlighting only the most critical points",
       detailed: "Create a comprehensive summary that covers all important concepts with examples",
       bullet: "Create a bullet-point summary organized by topic with key terms highlighted",
       outline: "Create a hierarchical outline format with main topics and subtopics"
     };
 
-    const systemPrompt = `You are an expert academic summarizer for ${userProfile?.program || 'university'} students.
+    const systemPrompt = `You are an expert academic summarizer for ${userProfile?.program || 'university'} students${userProfile?.institution ? ` at ${userProfile.institution}` : ''}.
 
-${summaryStyles[summaryType as keyof typeof summaryStyles] || summaryStyles.concise}
+${summaryStyles[summaryType as string] || summaryStyles.concise}
 
 Requirements:
 - Focus on exam-relevant content
@@ -35,7 +62,8 @@ Requirements:
 - Include important formulas, mechanisms, or processes
 - Organize logically by topic
 - Use clear headings and formatting
-- Keep the summary focused and actionable for studying`;
+- Keep the summary focused and actionable for studying
+- If curriculum/syllabus context is provided, align the summary to match syllabus topics and flag past-paper-relevant areas${curriculumContext}`;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",

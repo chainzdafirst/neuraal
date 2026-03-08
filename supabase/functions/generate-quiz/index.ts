@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.89.0";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -18,7 +19,30 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    const systemPrompt = `You are an expert exam question generator for ${userProfile?.program || 'university'} students.
+    // Fetch matching curriculum resources
+    let curriculumContext = "";
+    if (userProfile?.institution && userProfile?.program) {
+      const sb = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
+      const { data: resources } = await sb
+        .from("curriculum_resources")
+        .select("title, resource_type, content_text")
+        .eq("institution", userProfile.institution)
+        .eq("program", userProfile.program)
+        .eq("is_active", true)
+        .limit(5);
+
+      if (resources && resources.length > 0) {
+        const snippets = resources
+          .filter((r: any) => r.content_text)
+          .map((r: any) => `[${r.resource_type.toUpperCase()}: ${r.title}]\n${r.content_text!.slice(0, 3000)}`)
+          .join("\n\n---\n\n");
+        if (snippets) {
+          curriculumContext = `\n\nUse these official curriculum resources from ${userProfile.institution} (${userProfile.program}) to ensure questions align with the syllabus and mirror past-paper styles:\n\n${snippets}`;
+        }
+      }
+    }
+
+    const systemPrompt = `You are an expert exam question generator for ${userProfile?.program || 'university'} students${userProfile?.institution ? ` at ${userProfile.institution}` : ''}.
 
 Generate ${questionCount || 5} multiple-choice questions based on the provided content.
 
@@ -30,6 +54,7 @@ Requirements:
 - Include one clearly correct answer
 - Provide a brief explanation for the correct answer
 - Tag each question with its topic
+- If curriculum/syllabus context is provided, align questions with syllabus topics and use past-paper question styles${curriculumContext}
 
 Return ONLY valid JSON in this exact format:
 {
@@ -55,7 +80,7 @@ Return ONLY valid JSON in this exact format:
         model: "google/gemini-2.5-flash",
         messages: [
           { role: "system", content: systemPrompt },
-          { role: "user", content: `Generate quiz questions from this content:\n\n${documentText || 'General pharmacy and medical sciences topics including pharmacology, drug mechanisms, pharmacokinetics, and therapeutics.'}` },
+          { role: "user", content: `Generate quiz questions from this content:\n\n${documentText || 'General academic topics.'}` },
         ],
       }),
     });
@@ -69,11 +94,8 @@ Return ONLY valid JSON in this exact format:
     const data = await response.json();
     const content = data.choices?.[0]?.message?.content;
     
-    // Parse the JSON from the response
     const jsonMatch = content.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
-      throw new Error("Invalid response format");
-    }
+    if (!jsonMatch) throw new Error("Invalid response format");
     
     const quizData = JSON.parse(jsonMatch[0]);
 
