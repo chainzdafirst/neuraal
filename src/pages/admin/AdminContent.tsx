@@ -176,27 +176,84 @@ export default function AdminContent() {
     fetchData();
   };
 
+  // ── Classify file via AI ──
+  const handleFileSelected = async (selectedFile: File) => {
+    setFile(selectedFile);
+    setClassifying(true);
+    setClassifyFailed(false);
+    setUploadedFilePath(null);
+
+    try {
+      // Upload to storage first
+      const filePath = `curriculum/${Date.now()}_${selectedFile.name}`;
+      const { error: uploadError } = await supabase.storage.from("documents").upload(filePath, selectedFile);
+      if (uploadError) throw uploadError;
+      setUploadedFilePath(filePath);
+
+      // Call classify-curriculum edge function
+      const { data: session } = await supabase.auth.getSession();
+      const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/classify-curriculum`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session?.session?.access_token || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        },
+        body: JSON.stringify({ filePath, fileName: selectedFile.name }),
+      });
+
+      if (!res.ok) throw new Error("Classification failed");
+
+      const { metadata } = await res.json();
+      setForm((prev) => ({
+        ...prev,
+        title: metadata.title || prev.title,
+        description: metadata.description || prev.description,
+        resource_type: metadata.resource_type || prev.resource_type,
+        institution: metadata.institution || prev.institution,
+        program: metadata.program || prev.program,
+        education_level: metadata.education_level || prev.education_level,
+        exam_type: metadata.exam_type || prev.exam_type,
+      }));
+      toast.success("Document classified! Review the details below.");
+    } catch (err) {
+      console.error("Classification error:", err);
+      setClassifyFailed(true);
+      toast.warning("AI classification failed. Please fill in details manually.");
+    } finally {
+      setClassifying(false);
+    }
+  };
+
   const handleUpload = async () => {
     if (!form.title || !form.institution || !form.program) {
       toast.error("Title, institution, and program are required"); return;
     }
     setUploading(true);
     try {
-      let filePath = "", fileName = "", fileSize: number | null = null, fileType: string | null = null, contentText: string | null = null;
-      if (file) {
-        fileName = file.name; fileSize = file.size;
-        fileType = file.name.split(".").pop()?.toLowerCase() || null;
+      let filePath = uploadedFilePath || "";
+      let fileName = file?.name || "";
+      let fileSize: number | null = file?.size || null;
+      let fileType: string | null = file?.name.split(".").pop()?.toLowerCase() || null;
+      let contentText: string | null = null;
+
+      // If file wasn't uploaded during classification (e.g. no file), upload now
+      if (file && !uploadedFilePath) {
         filePath = `curriculum/${Date.now()}_${file.name}`;
         const { error: uploadError } = await supabase.storage.from("documents").upload(filePath, file);
         if (uploadError) throw uploadError;
+      }
+
+      // Extract text
+      if (filePath) {
         const { data: session } = await supabase.auth.getSession();
         const extractRes = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/extract-text`, {
           method: "POST",
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${session?.session?.access_token || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}` },
-          body: JSON.stringify({ filePath, fileType }),
+          body: JSON.stringify({ filePath, fileType, fileName }),
         });
-        if (extractRes.ok) { const d = await extractRes.json(); contentText = d.text || null; }
+        if (extractRes.ok) { const d = await extractRes.json(); contentText = d.extractedText || null; }
       }
+
       const { error } = await supabase.from("curriculum_resources").insert({
         title: form.title, description: form.description || null, resource_type: form.resource_type,
         institution: form.institution, program: form.program, education_level: form.education_level,
@@ -206,48 +263,23 @@ export default function AdminContent() {
       if (error) throw error;
       toast.success("Resource uploaded");
       setResourceDialogOpen(false);
-      setForm({ title: "", description: "", resource_type: "syllabus", institution: activeInstitution || "", program: activeProgram || "", education_level: "degree", exam_type: "semester" });
-      setFile(null);
+      resetUploadForm();
       fetchData();
     } catch (err: any) { toast.error(err.message || "Upload failed"); }
     finally { setUploading(false); }
   };
 
-  // ── Add new school: creates a placeholder resource per program ──
-  const handleAddSchool = async () => {
-    if (!schoolForm.institution || !schoolForm.programs.trim()) {
-      toast.error("Institution and at least one program are required"); return;
-    }
-    setAddingSchool(true);
-    try {
-      const programs = schoolForm.programs.split(",").map((p) => p.trim()).filter(Boolean);
-      const rows = programs.map((program) => ({
-        title: `${program} — Curriculum Placeholder`,
-        description: `Initial setup for ${program} at ${schoolForm.institution}`,
-        resource_type: "syllabus" as const,
-        institution: schoolForm.institution,
-        program,
-        education_level: schoolForm.education_level,
-        exam_type: schoolForm.exam_type,
-        is_active: false,
-      }));
-      const { error } = await supabase.from("curriculum_resources").insert(rows);
-      if (error) throw error;
-      toast.success(`${schoolForm.institution} added with ${programs.length} program(s)`);
-      setSchoolDialogOpen(false);
-      setSchoolForm({ institution: "", programs: "", education_level: "degree", exam_type: "semester" });
-      fetchData();
-    } catch (err: any) { toast.error(err.message || "Failed to add school"); }
-    finally { setAddingSchool(false); }
+  const resetUploadForm = () => {
+    setForm({ title: "", description: "", resource_type: "syllabus", institution: activeInstitution || "", program: activeProgram || "", education_level: "degree", exam_type: "semester" });
+    setFile(null);
+    setUploadedFilePath(null);
+    setClassifying(false);
+    setClassifyFailed(false);
   };
 
   // ── Open upload dialog pre-filled with current context ──
   const openUploadDialog = () => {
-    setForm((prev) => ({
-      ...prev,
-      institution: activeInstitution || "",
-      program: activeProgram || "",
-    }));
+    resetUploadForm();
     setResourceDialogOpen(true);
   };
 
