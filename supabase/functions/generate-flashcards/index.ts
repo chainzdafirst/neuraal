@@ -48,12 +48,21 @@ serve(async (req) => {
 
 Generate ${count || 10} flashcards based on the provided content.
 
+SYLLABUS-ALIGNMENT PROCESS (follow strictly):
+1. IDENTIFY TOPICS: Read the uploaded document and identify all academic topics, key terms, and concepts it covers.
+2. CROSS-REFERENCE: Match these against the curriculum/syllabus learning objectives provided below.
+3. PRIORITIZE: Create flashcards that focus on terms, definitions, and concepts that appear in the syllabus learning objectives. Prioritize:
+   - Key terms the syllabus explicitly requires students to define or explain
+   - Concepts tied to specific learning outcomes
+   - Material that appears in past papers (if past paper context is available)
+4. TAG each flashcard with the syllabus topic/learning objective it addresses.
+
+If NO curriculum context is available, create flashcards based on the document's own key concepts.
+
 Requirements:
-- Front should be a clear, concise question or term
+- Front should be a clear, concise question or term aligned to a learning objective
 - Back should be a comprehensive but concise answer/definition
-- Focus on key concepts, definitions, and exam-relevant material
-- Tag each card with its topic
-- If curriculum/syllabus context is provided, prioritize terms and concepts that appear in the syllabus${curriculumContext}
+- Focus on exam-relevant material as defined by the syllabus${curriculumContext}
 
 Return ONLY valid JSON in this exact format:
 {

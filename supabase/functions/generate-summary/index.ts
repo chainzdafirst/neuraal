@@ -58,14 +58,26 @@ serve(async (req) => {
 
 ${summaryStyles[summaryType as string] || summaryStyles.concise}
 
+SYLLABUS-ALIGNMENT PROCESS (follow strictly):
+1. IDENTIFY TOPICS: First, read the uploaded document and identify all academic topics, concepts, and subject areas it covers.
+2. CROSS-REFERENCE: Compare the identified topics against the curriculum/syllabus learning objectives provided below. Find which syllabus topics, learning outcomes, and competencies the document maps to.
+3. ALIGN OUTPUT: Structure your summary around the matching syllabus learning objectives. For each matched objective:
+   - Use the syllabus topic heading or learning objective as the section header
+   - Summarize the document content that addresses that objective
+   - Highlight key terms, definitions, formulas, and mechanisms the syllabus expects students to know
+   - Flag content that frequently appears in past papers (if past paper context is available)
+4. GAPS & EXTRAS: At the end, briefly note:
+   - Any syllabus learning objectives the document partially covers (so the student knows to supplement)
+   - Any document content that goes beyond the syllabus (mark as "supplementary")
+
+If NO curriculum context is available, organize by the document's own topic structure but still focus on exam-relevance.
+
 Requirements:
-- Focus on exam-relevant content
-- Highlight key terms and definitions
+- Focus on exam-relevant content aligned to learning objectives
+- Highlight key terms and definitions as specified by the syllabus
 - Include important formulas, mechanisms, or processes
-- Organize logically by topic
-- Use clear headings and formatting
-- Keep the summary focused and actionable for studying
-- If curriculum/syllabus context is provided, align the summary to match syllabus topics and flag past-paper-relevant areas${curriculumContext}`;
+- Use clear headings matching syllabus topic names where possible
+- Keep the summary focused and actionable for studying${curriculumContext}`;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",

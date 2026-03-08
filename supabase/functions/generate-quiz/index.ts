@@ -50,13 +50,22 @@ Generate ${questionCount || 5} multiple-choice questions based on the provided c
 
 Difficulty level: ${difficulty || 'moderate'}
 
+SYLLABUS-ALIGNMENT PROCESS (follow strictly):
+1. IDENTIFY TOPICS: Read the uploaded document and identify all academic topics and concepts it covers.
+2. CROSS-REFERENCE: Match these topics against the curriculum/syllabus learning objectives provided below.
+3. ALIGN QUESTIONS: Generate questions that test the specific learning objectives from the syllabus that the document content addresses. Each question should:
+   - Target a specific syllabus learning objective or competency
+   - Use question styles and depth matching past-paper patterns (if past paper context is available)
+   - Test understanding of concepts as the syllabus expects, not just surface memorization
+4. TAG with the syllabus topic/learning objective each question maps to.
+
+If NO curriculum context is available, generate questions based on the document's own topic structure.
+
 Requirements:
-- Questions should test understanding, not just memorization
 - Each question should have exactly 4 options (A, B, C, D)
 - Include one clearly correct answer
-- Provide a brief explanation for the correct answer
-- Tag each question with its topic
-- If curriculum/syllabus context is provided, align questions with syllabus topics and use past-paper question styles${curriculumContext}
+- Provide a brief explanation referencing the relevant learning objective
+- Tag each question with its matching syllabus topic${curriculumContext}
 
 Return ONLY valid JSON in this exact format:
 {
