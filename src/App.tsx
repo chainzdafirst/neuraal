@@ -46,6 +46,7 @@ const App = () => (
             <Route path="/quiz" element={<Quiz />} />
             <Route path="/flashcards" element={<Flashcards />} />
             <Route path="/progress" element={<Progress />} />
+            <Route path="/upgrade" element={<Upgrade />} />
             {/* Admin routes — secret entry via /portal/n3ur44l-8f42 then standard /admin/* after auth */}
             <Route path="/portal/n3ur44l-8f42" element={<AdminLogin />} />
             <Route path="/admin/login" element={<AdminLogin />} />
