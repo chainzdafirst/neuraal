@@ -370,6 +370,24 @@ export default function AdminUsers() {
           )}
         </div>
       </div>
+
+      {/* Delete confirmation dialog */}
+      <Dialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+        <DialogContent className="w-[calc(100%-2rem)] sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Delete User Account</DialogTitle>
+            <DialogDescription>
+              This will permanently delete <span className="font-semibold text-foreground">{deleteTarget?.full_name || deleteTarget?.email || "this user"}</span>'s account and all associated data. This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="outline" onClick={() => setDeleteTarget(null)} disabled={deleting}>Cancel</Button>
+            <Button variant="destructive" onClick={deleteUser} disabled={deleting}>
+              {deleting ? "Deleting..." : "Delete Account"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </AdminLayout>
   );
 }
