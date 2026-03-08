@@ -91,12 +91,8 @@ function FeatureCard({ icon: Icon, title, description, preview, gradient }: Feat
         <p className="text-muted-foreground text-[15px] sm:text-base leading-relaxed max-w-2xl">
           {description}
         </p>
-        <div className="w-full md:rounded-[16px] md:border md:border-border md:bg-muted/30 md:overflow-hidden md:flex md:flex-col">
-          {/* On desktop: preview header becomes frame header, content is centered in remaining space */}
-          <div className="md:hidden">{preview}</div>
-          <div className="hidden md:block">{/* Frame header extracted from preview */}
-            <FramePreview>{preview}</FramePreview>
-          </div>
+        <div className="w-full md:rounded-[16px] md:border md:border-border md:bg-muted/30 md:overflow-hidden md:[&>div]:rounded-none md:[&>div]:border-0 md:[&>div]:shadow-none">
+          {preview}
         </div>
       </div>
     </ScrollReveal>);
