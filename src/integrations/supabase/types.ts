@@ -46,6 +46,66 @@ export type Database = {
           },
         ]
       }
+      curriculum_resources: {
+        Row: {
+          content_text: string | null
+          created_at: string
+          description: string | null
+          education_level: string | null
+          exam_type: string | null
+          file_name: string | null
+          file_path: string | null
+          file_size: number | null
+          file_type: string | null
+          id: string
+          institution: string
+          is_active: boolean
+          program: string
+          resource_type: string
+          title: string
+          updated_at: string
+          uploaded_by: string | null
+        }
+        Insert: {
+          content_text?: string | null
+          created_at?: string
+          description?: string | null
+          education_level?: string | null
+          exam_type?: string | null
+          file_name?: string | null
+          file_path?: string | null
+          file_size?: number | null
+          file_type?: string | null
+          id?: string
+          institution: string
+          is_active?: boolean
+          program: string
+          resource_type?: string
+          title: string
+          updated_at?: string
+          uploaded_by?: string | null
+        }
+        Update: {
+          content_text?: string | null
+          created_at?: string
+          description?: string | null
+          education_level?: string | null
+          exam_type?: string | null
+          file_name?: string | null
+          file_path?: string | null
+          file_size?: number | null
+          file_type?: string | null
+          id?: string
+          institution?: string
+          is_active?: boolean
+          program?: string
+          resource_type?: string
+          title?: string
+          updated_at?: string
+          uploaded_by?: string | null
+        }
+        Relationships: []
+      }
       documents: {
         Row: {
           created_at: string
