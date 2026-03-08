@@ -28,7 +28,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
               Neuraal Admin Dashboard
             </span>
           </header>
-          <main className="flex-1 p-6 overflow-auto">{children}</main>
+          <main className="flex-1 p-3 sm:p-4 md:p-6 overflow-auto">{children}</main>
         </div>
       </div>
     </SidebarProvider>
