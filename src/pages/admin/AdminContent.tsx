@@ -631,8 +631,8 @@ export default function AdminContent() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-        <Dialog open={schoolDialogOpen} onOpenChange={setSchoolDia w-[calc(100%-2rem)] max-h-[85vh] overflow-y-auto mx-4logOpen}>
-          <DialogContent className="max-w-md">
+        <Dialog open={schoolDialogOpen} onOpenChange={setSchoolDialogOpen}>
+          <DialogContent className="max-w-md w-[calc(100%-2rem)] max-h-[85vh] overflow-y-auto mx-4">
             <DialogHeader><DialogTitle>Add New School</DialogTitle></DialogHeader>
             <div className="space-y-4 py-2">
               <div><Label>Institution Name *</Label><Input value={schoolForm.institution} onChange={(e) => setSchoolForm({ ...schoolForm, institution: e.target.value })} placeholder="e.g. University of Nairobi" /></div>
