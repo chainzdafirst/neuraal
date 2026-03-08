@@ -471,7 +471,7 @@ export default function AITutor() {
                     <img
                       src={att.preview}
                       alt={att.file.name}
-                      className="w-14 h-14 rounded-lg object-cover border border-border"
+                      className="w-14 h-14 rounded-lg object-cover"
                     />
                   ) : (
                     <div className="w-14 h-14 rounded-lg border border-border bg-muted flex flex-col items-center justify-center">
