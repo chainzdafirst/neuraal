@@ -188,9 +188,9 @@ export default function Landing() {
       </section>
 
       {/* Social Proof / Stats — Clean card */}
-      <section className="py-24 px-6">
-        <div className="container mx-auto max-w-5xl">
-          <div className="rounded-3xl border border-border bg-card p-10 md:p-14">
+      <section className="py-24 max-w-[1360px] px-5 sm:px-[70px] mx-auto">
+        <div>
+          <div className="rounded-[16px] border border-border bg-card p-10 md:p-14">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
               {[
                 { value: "300K+", label: "Students in Zambia" },
