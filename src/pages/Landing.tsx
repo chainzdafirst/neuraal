@@ -211,9 +211,9 @@ export default function Landing() {
       </section>
 
       {/* How it works — Numbered steps like Flook */}
-      <section className="py-24 px-6 bg-secondary/30">
-        <div className="container mx-auto max-w-3xl">
-          <h2 className="text-3xl sm:text-4xl font-display font-bold text-center mb-16">
+      <section className="py-24 bg-secondary/30">
+        <div className="max-w-[1360px] px-5 sm:px-[70px] mx-auto max-w-3xl">
+          <h2 className="text-[28px] sm:text-[40px] font-display font-bold text-center mb-16 tracking-[-0.02em]">
             Simple to get started
           </h2>
 
