@@ -54,18 +54,18 @@ export function PreviewQuiz() {
       </div>
       <div className="p-4 space-y-3">
         <div className="flex items-center justify-between text-[10px] text-muted-foreground">
-          <span>Question 5 of 10</span><span className="font-medium text-foreground">Computer Science</span>
+          <span>Question 5 of 10</span><span className="font-medium text-foreground">Communication Skills</span>
         </div>
         <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
           <div className="h-full bg-gradient-to-r from-primary to-accent" style={{ width: "50%" }} />
         </div>
-        <p className="text-sm font-semibold mt-2">What is the worst-case time complexity of QuickSort?</p>
+        <p className="text-sm font-semibold mt-2">Which of the following best describes "active listening"?</p>
         <div className="space-y-2 text-[11px]">
           {[
-            { label: "O(n log n)", correct: false },
-            { label: "O(n²)", correct: true },
-            { label: "O(n)", correct: false },
-            { label: "O(log n)", correct: false },
+            { label: "Waiting for your turn to speak", correct: false },
+            { label: "Fully engaging with the speaker's message", correct: true },
+            { label: "Taking notes without responding", correct: false },
+            { label: "Repeating everything verbatim", correct: false },
           ].map((o, i) => (
             <div key={i} className={`p-2.5 rounded-lg border-2 flex items-center gap-2 ${o.correct ? "border-neuraal-emerald bg-neuraal-emerald/10" : "border-border opacity-50"}`}>
               <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-medium ${o.correct ? "bg-neuraal-emerald text-white" : "bg-secondary"}`}>
@@ -77,7 +77,7 @@ export function PreviewQuiz() {
         </div>
         <div className="bg-accent/5 border border-accent/20 rounded-lg p-3 text-[11px]">
           <div className="flex items-center gap-1.5 font-semibold mb-1"><BookOpen className="w-3 h-3 text-accent" /> Explanation</div>
-          <p className="text-muted-foreground">QuickSort's worst case occurs when the pivot is always the smallest or largest element, leading to O(n²) comparisons.</p>
+          <p className="text-muted-foreground">Active listening involves fully concentrating on the speaker, understanding their message, and responding thoughtfully — rather than passively hearing words.</p>
         </div>
       </div>
     </div>
@@ -95,31 +95,32 @@ export function PreviewSummary() {
           <span className="text-[9px] text-muted-foreground ml-2">Project_Management.pdf</span>
         </div>
       </div>
-      <div className="p-4 text-[11px] leading-relaxed max-h-[280px] overflow-hidden space-y-3">
+      <div className="p-4 text-[11px] leading-relaxed max-h-[320px] overflow-hidden space-y-3">
         <div>
-          <h3 className="text-sm font-bold font-display">Project Management — Chapter 3 Summary</h3>
-          <p className="text-[10px] text-muted-foreground">9 key concepts identified</p>
+          <h3 className="text-sm font-bold font-display">Project Management — The Triple Constraint</h3>
+          <p className="text-[10px] text-muted-foreground">7 key concepts identified</p>
         </div>
         <div>
-          <h4 className="font-semibold mb-1.5">📋 Key Concepts</h4>
+          <h4 className="font-semibold mb-1.5">📐 The Triple Constraint (Iron Triangle)</h4>
+          <p className="mb-1.5">Every project is governed by three interdependent constraints. Changing one inevitably affects the others, requiring trade-off decisions throughout the project lifecycle.</p>
           <ul className="list-disc pl-4 space-y-1">
-            <li><strong>Triple Constraint</strong> — Scope, Time, and Cost balance</li>
-            <li><strong>Critical Path Method</strong> — Longest sequence of dependent tasks</li>
-            <li><strong>Stakeholder Analysis</strong> — Power/interest grid for engagement</li>
+            <li><strong>Scope</strong> — The work required to deliver the project's objectives. Expanding scope without adjusting time or cost leads to scope creep.</li>
+            <li><strong>Time</strong> — The schedule and deadlines. Compressing timelines often demands more resources or reduced scope.</li>
+            <li><strong>Cost</strong> — The budget and resources allocated. Budget cuts may force trade-offs in quality or deliverables.</li>
           </ul>
         </div>
         <div>
-          <h4 className="font-semibold mb-1.5">🔄 Agile Methodology</h4>
+          <h4 className="font-semibold mb-1.5">⚖️ Balancing the Constraints</h4>
+          <p className="mb-1.5">A project manager's core challenge is maintaining equilibrium. For example, a client requesting additional features (scope ↑) must accept either a later deadline (time ↑) or higher budget (cost ↑).</p>
           <ul className="list-disc pl-4 space-y-1">
-            <li><strong>Sprints</strong> — Time-boxed iterations (2-4 weeks)</li>
-            <li><strong>Scrum Roles</strong> — Product Owner, Scrum Master, Dev Team</li>
-            <li><strong>Retrospectives</strong> — Continuous improvement after each sprint</li>
+            <li><strong>Quality</strong> — Often placed at the centre of the triangle; it's the outcome of how well the three constraints are balanced.</li>
+            <li><strong>Risk Management</strong> — Identifying which constraint has the least flexibility helps prioritise mitigation strategies.</li>
           </ul>
         </div>
         <div className="bg-card rounded-lg border border-border/50 p-2.5 text-[10px] space-y-1">
-          <p>✅ Define the triple constraint triangle</p>
-          <p>✅ Identify the critical path in a project</p>
-          <p>✅ Compare Agile vs Waterfall methodologies</p>
+          <p>✅ Explain how the triple constraint affects project decisions</p>
+          <p>✅ Identify trade-offs when scope, time, or cost changes</p>
+          <p>✅ Describe the role of quality within the iron triangle</p>
         </div>
       </div>
     </div>
@@ -226,7 +227,7 @@ export function PreviewProgress() {
         <div className="grid grid-cols-2 gap-2">
           <div className="bg-card rounded-lg border border-border/50 p-2.5">
             <div className="text-[10px] font-semibold mb-2 flex items-center gap-1"><AlertTriangle className="w-3 h-3 text-neuraal-amber" /> Improve</div>
-            {[{ t: "Data Structures", s: 35 }, { t: "Microeconomics", s: 42 }].map((a) => (
+            {[{ t: "Communication", s: 35 }, { t: "Microeconomics", s: 42 }].map((a) => (
               <div key={a.t} className="mb-1.5">
                 <div className="flex justify-between text-[9px] mb-0.5"><span>{a.t}</span><span className="text-neuraal-amber">{a.s}%</span></div>
                 <div className="h-1 bg-secondary rounded-full"><div className="h-full bg-neuraal-amber rounded-full" style={{ width: `${a.s}%` }} /></div>
@@ -235,7 +236,7 @@ export function PreviewProgress() {
           </div>
           <div className="bg-card rounded-lg border border-border/50 p-2.5">
             <div className="text-[10px] font-semibold mb-2 flex items-center gap-1"><Zap className="w-3 h-3 text-neuraal-emerald" /> Strengths</div>
-            {[{ t: "Agile Methods", s: 92 }, { t: "Algorithms", s: 85 }].map((a) => (
+            {[{ t: "Agile Methods", s: 92 }, { t: "Project Mgmt", s: 85 }].map((a) => (
               <div key={a.t} className="mb-1.5">
                 <div className="flex justify-between text-[9px] mb-0.5"><span>{a.t}</span><span className="text-neuraal-emerald">{a.s}%</span></div>
                 <div className="h-1 bg-secondary rounded-full"><div className="h-full bg-neuraal-emerald rounded-full" style={{ width: `${a.s}%` }} /></div>
