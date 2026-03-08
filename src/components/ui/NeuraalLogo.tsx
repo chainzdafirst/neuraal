@@ -70,7 +70,7 @@ export function NeuraalLogo({ className, size = "md", showText = true }: Neuraal
       </div>
       
       {showText &&
-      <span className={cn("font-display font-bold neuraal-gradient-text text-4xl", textSizeMap[size])}>
+      <span className={cn("font-display font-bold neuraal-gradient-text my-0 text-2xl", textSizeMap[size])}>
           Neuraal
         </span>
       }

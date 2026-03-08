@@ -8,8 +8,8 @@ import {
   Settings,
   MessageSquare,
   CreditCard,
-  LogOut,
-} from "lucide-react";
+  LogOut } from
+"lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation, useNavigate } from "react-router-dom";
 import { NeuraalLogo } from "@/components/ui/NeuraalLogo";
@@ -24,25 +24,25 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarFooter,
-  useSidebar,
-} from "@/components/ui/sidebar";
+  useSidebar } from
+"@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
 const mainItems = [
-  { title: "Overview", url: "/admin", icon: LayoutDashboard },
-  { title: "Users", url: "/admin/users", icon: Users },
-  { title: "AI Management", url: "/admin/ai", icon: Brain },
-  { title: "Content", url: "/admin/content", icon: FileText },
-  { title: "Analytics", url: "/admin/analytics", icon: BarChart3 },
-];
+{ title: "Overview", url: "/admin", icon: LayoutDashboard },
+{ title: "Users", url: "/admin/users", icon: Users },
+{ title: "AI Management", url: "/admin/ai", icon: Brain },
+{ title: "Content", url: "/admin/content", icon: FileText },
+{ title: "Analytics", url: "/admin/analytics", icon: BarChart3 }];
+
 
 const systemItems = [
-  { title: "Feedback", url: "/admin/feedback", icon: MessageSquare },
-  { title: "Billing", url: "/admin/billing", icon: CreditCard },
-  { title: "Security", url: "/admin/security", icon: Shield },
-  { title: "Settings", url: "/admin/settings", icon: Settings },
-];
+{ title: "Feedback", url: "/admin/feedback", icon: MessageSquare },
+{ title: "Billing", url: "/admin/billing", icon: CreditCard },
+{ title: "Security", url: "/admin/security", icon: Shield },
+{ title: "Settings", url: "/admin/settings", icon: Settings }];
+
 
 export function AdminSidebar() {
   const { state } = useSidebar();
@@ -59,11 +59,12 @@ export function AdminSidebar() {
     <Sidebar collapsible="icon" className="border-r border-border">
       <div className="p-4 flex items-center gap-2">
         <NeuraalLogo size="sm" />
-        {!collapsed && (
-          <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+        {!collapsed &&
+        <span className="uppercase tracking-widest text-muted-foreground py-0 px-px my-0 pr-0 pb-0 pt-[16px] text-xs font-semibold">
             Admin
-          </span>
-        )}
+Dashboard
+
+          </span>}
       </div>
       <Separator />
       <SidebarContent>
@@ -71,21 +72,20 @@ export function AdminSidebar() {
           <SidebarGroupLabel>Main</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {mainItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
+              {mainItems.map((item) => <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <NavLink
-                      to={item.url}
-                      end={item.url === "/admin"}
-                      className="hover:bg-muted/50"
-                      activeClassName="bg-primary/10 text-primary font-medium"
-                    >
+                    to={item.url}
+                    end={item.url === "/admin"}
+                    className="hover:bg-muted/50"
+                    activeClassName="bg-primary/10 text-primary font-medium">
+                    
                       <item.icon className="mr-2 h-4 w-4" />
                       {!collapsed && <span>{item.title}</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
-              ))}
+              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
@@ -94,20 +94,20 @@ export function AdminSidebar() {
           <SidebarGroupLabel>System</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {systemItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
+              {systemItems.map((item) =>
+              <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <NavLink
-                      to={item.url}
-                      className="hover:bg-muted/50"
-                      activeClassName="bg-primary/10 text-primary font-medium"
-                    >
+                    to={item.url}
+                    className="hover:bg-muted/50"
+                    activeClassName="bg-primary/10 text-primary font-medium">
+                    
                       <item.icon className="mr-2 h-4 w-4" />
                       {!collapsed && <span>{item.title}</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
-              ))}
+              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
@@ -118,12 +118,12 @@ export function AdminSidebar() {
           variant="ghost"
           size="sm"
           className="w-full justify-start text-muted-foreground hover:text-destructive"
-          onClick={handleLogout}
-        >
+          onClick={handleLogout}>
+          
           <LogOut className="mr-2 h-4 w-4" />
           {!collapsed && "Logout"}
         </Button>
       </SidebarFooter>
-    </Sidebar>
-  );
+    </Sidebar>);
+
 }
