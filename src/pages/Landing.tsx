@@ -156,7 +156,7 @@ export default function Landing() {
   {
     step: "Step 1",
     title: "Choose your study tool",
-    description: "AI tutoring Summaries, quizzes, or flashcards."
+    description: "AI tutoring, Summaries, quizzes, or flashcards."
   },
   {
     step: "Step 2",
