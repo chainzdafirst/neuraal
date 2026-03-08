@@ -10,7 +10,7 @@ export function PreviewAITutor() {
         <span className="text-xs font-semibold">Neuraal Tutor</span>
       </div>
       {/* Chat */}
-      <div className="p-3 space-y-3 text-[11px] leading-relaxed max-h-[260px] overflow-hidden px-0 mx-[100px]">
+      <div className="p-3 sm:p-4 md:px-8 space-y-3 text-[11px] leading-relaxed max-h-[260px] overflow-hidden">
         {/* User */}
         <div className="flex justify-end">
           <div className="bg-primary text-primary-foreground rounded-xl rounded-br-sm px-3 py-2 max-w-[75%]">
@@ -40,8 +40,8 @@ export function PreviewAITutor() {
         <div className="flex-1 h-7 rounded-md border border-border bg-background px-2 text-[10px] text-muted-foreground flex items-center">Ask Neuraal anything...</div>
         <div className="w-7 h-7 rounded-full bg-gradient-to-r from-primary to-accent flex items-center justify-center"><Send className="w-3 h-3 text-white" /></div>
       </div>
-    </div>);
-
+    </div>
+  );
 }
 
 /* ─── QUIZ PREVIEW ─── */
@@ -52,7 +52,7 @@ export function PreviewQuiz() {
         <div className="p-1 rounded-md bg-neuraal-amber/10"><Target className="w-3 h-3 text-neuraal-amber" /></div>
         <span className="text-xs font-semibold">Quizzes & Tests</span>
       </div>
-      <div className="p-4 space-y-3 px-0 mx-[100px]">
+      <div className="p-3 sm:p-4 md:px-8 space-y-3">
         <div className="flex items-center justify-between text-[10px] text-muted-foreground">
           <span>Question 5 of 10</span><span className="font-medium text-foreground">Communication Skills</span>
         </div>
@@ -80,8 +80,8 @@ export function PreviewQuiz() {
           <p className="text-muted-foreground">Active listening involves fully concentrating on the speaker, understanding their message, and responding thoughtfully — rather than passively hearing words.</p>
         </div>
       </div>
-    </div>);
-
+    </div>
+  );
 }
 
 /* ─── SUMMARY PREVIEW ─── */
@@ -95,7 +95,7 @@ export function PreviewSummary() {
           <span className="text-[9px] text-muted-foreground ml-2">Project_Management.pdf</span>
         </div>
       </div>
-      <div className="p-4 text-[11px] leading-relaxed max-h-[320px] overflow-hidden space-y-3 py-[16px] px-0 ml-[100px] pb-[100px] pr-[100px]">
+      <div className="p-3 sm:p-4 md:px-8 text-[11px] leading-relaxed max-h-[320px] overflow-hidden space-y-3">
         <div>
           <h3 className="text-sm font-bold font-display">Project Management — The Triple Constraint</h3>
           <p className="text-[10px] text-muted-foreground">7 key concepts identified</p>
@@ -123,8 +123,8 @@ export function PreviewSummary() {
           <p>✅ Describe the role of quality within the iron triangle</p>
         </div>
       </div>
-    </div>);
-
+    </div>
+  );
 }
 
 /* ─── FLASHCARDS PREVIEW ─── */
@@ -135,7 +135,7 @@ export function PreviewFlashcards() {
         <div className="p-1 rounded-md bg-neuraal-emerald/10"><LayoutGrid className="w-3 h-3 text-neuraal-emerald" /></div>
         <span className="text-xs font-semibold">Flashcards</span>
       </div>
-      <div className="p-4 px-0 mx-[100px]">
+      <div className="p-3 sm:p-4 md:px-8">
         <div className="flex items-center justify-between text-[10px] mb-2">
           <span className="text-muted-foreground">Card 7 of 20</span>
           <div className="flex gap-1.5"><span className="text-neuraal-emerald font-medium">6 mastered</span><span className="text-muted-foreground">· 14 remaining</span></div>
@@ -167,8 +167,8 @@ export function PreviewFlashcards() {
           <ChevronRight className="w-4 h-4" />
         </div>
       </div>
-    </div>);
-
+    </div>
+  );
 }
 
 /* ─── PROGRESS PREVIEW ─── */
@@ -190,9 +190,9 @@ export function PreviewProgress() {
         <div className="p-1 rounded-md bg-accent/10"><BarChart3 className="w-3 h-3 text-accent" /></div>
         <span className="text-xs font-semibold">Progress</span>
       </div>
-      <div className="p-4 space-y-4 mx-[100px]">
+      <div className="p-3 sm:p-4 md:px-8 space-y-4">
         {/* Stats */}
-        <div className="grid grid-cols-4 gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           {[
           { label: "Streak", value: "12 days", icon: Zap, color: "text-neuraal-amber", bg: "bg-neuraal-amber/10" },
           { label: "Quizzes", value: "24", icon: Target, color: "text-primary", bg: "bg-primary/10" },
@@ -224,7 +224,7 @@ export function PreviewProgress() {
           </div>
         </div>
         {/* Strengths/Weak */}
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           <div className="bg-card rounded-lg border border-border/50 p-2.5">
             <div className="text-[10px] font-semibold mb-2 flex items-center gap-1"><AlertTriangle className="w-3 h-3 text-neuraal-amber" /> Improve</div>
             {[{ t: "Communication", s: 35 }, { t: "Microeconomics", s: 42 }].map((a) =>
@@ -245,6 +245,6 @@ export function PreviewProgress() {
           </div>
         </div>
       </div>
-    </div>);
-
+    </div>
+  );
 }
