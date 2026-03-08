@@ -13,17 +13,20 @@ serve(async (req) => {
   }
 
   try {
-    const { documentText, summaryType, userProfile, filePath, fileName } = await req.json();
+    const { documentText, summaryType, userProfile, filePath, fileName, part, previousParts } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     
     if (!LOVABLE_API_KEY) {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    // Determine if we should process a PDF directly (skip separate extraction)
+    const currentPart = part || 1;
+    const totalParts = 4;
+
+    // Determine if we should process a PDF directly
     const isPdfDirect = filePath && (fileName || filePath).toLowerCase().endsWith('.pdf') && !documentText;
 
-    // Fetch matching curriculum resources for this user's institution/program
+    // Fetch matching curriculum resources
     let curriculumContext = "";
     let identifiedCourse: string | null = null;
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
@@ -45,13 +48,12 @@ serve(async (req) => {
         curriculumContext = result.context;
         identifiedCourse = result.identifiedCourse;
       } else if (resources && resources.length > 0) {
-        // PDF direct mode — no documentText yet, fall back to metadata-only matching
         const snippets = resources
           .filter((r: any) => r.content_text)
           .map((r: any) => `[${r.resource_type.toUpperCase()}: ${r.title}]\n${r.content_text!.slice(0, 2000)}`)
           .join("\n\n---\n\n");
         if (snippets) {
-          curriculumContext = `\n\nIMPORTANT — Use the following official curriculum resources from ${userProfile.institution} (${userProfile.program}) to align the summary with the syllabus. Highlight topics that appear in the syllabus/past papers and flag exam-relevant areas:\n\n${snippets}`;
+          curriculumContext = `\n\nIMPORTANT — Use the following official curriculum resources from ${userProfile.institution} (${userProfile.program}) to align the summary with the syllabus:\n\n${snippets}`;
         }
       }
     }
@@ -64,8 +66,24 @@ serve(async (req) => {
     };
 
     const courseIdentification = identifiedCourse
-      ? `The uploaded document has been identified as belonging to the course "${identifiedCourse}". Focus ONLY on this subject area and ignore unrelated curriculum content.`
+      ? `The uploaded document has been identified as belonging to the course "${identifiedCourse}". Focus ONLY on this subject area.`
       : "";
+
+    // Part-based generation instructions
+    let partInstruction = "";
+    if (currentPart === 1) {
+      partInstruction = `\n\nCRITICAL — CHUNKED OUTPUT: You are generating Part ${currentPart} of ${totalParts} of this summary. 
+Mentally divide the document's content into ${totalParts} roughly equal sections by topic coverage.
+For Part 1: Summarize ONLY the first quarter of topics/content. Cover the introduction and the first major topic areas.
+At the END of your output, add a line: "---\n**Topics covered so far:** [list the topic headings you covered]"
+Keep this part focused and complete for the topics it covers — do NOT rush through everything.`;
+    } else {
+      partInstruction = `\n\nCRITICAL — CHUNKED OUTPUT: You are generating Part ${currentPart} of ${totalParts} of this summary.
+The previous parts already covered the following:\n${previousParts || "(no previous content provided)"}\n
+Do NOT repeat any content from previous parts. Continue from where the previous part left off.
+For Part ${currentPart}: Cover the next quarter of remaining topics/content that hasn't been summarized yet.${currentPart === totalParts ? " This is the FINAL part — cover all remaining topics and include any conclusion or gap analysis." : ""}
+At the END of your output, add a line: "---\n**Topics covered so far:** [list ALL topic headings covered across all parts including this one]"`;
+    }
 
     const yearContext = userProfile?.yearOfStudy ? ` (Year ${userProfile.yearOfStudy})` : '';
     const systemPrompt = `You are an expert academic summarizer for ${userProfile?.program || 'university'} students${userProfile?.institution ? ` at ${userProfile.institution}` : ''}${yearContext}.
@@ -91,12 +109,12 @@ Requirements:
 - Highlight key terms and definitions
 - Include important formulas, mechanisms, or processes
 - Use clear headings matching syllabus topic names where possible
-- Keep the summary focused and actionable for studying${curriculumContext}`;
+- Keep the summary focused and actionable for studying${curriculumContext}${partInstruction}`;
 
     let userContent: any;
 
     if (isPdfDirect) {
-      console.log("PDF direct mode: downloading and summarizing in one pass");
+      console.log(`PDF direct mode (Part ${currentPart}/${totalParts}): downloading and summarizing`);
       const { data: fileData, error: downloadError } = await sb.storage
         .from('documents')
         .download(filePath);
@@ -117,14 +135,14 @@ Requirements:
       const base64 = btoa(binary);
 
       userContent = [
-        { type: "text", text: "Please read and summarize this document according to your instructions." },
+        { type: "text", text: `Please summarize this document — Part ${currentPart} of ${totalParts}.` },
         { type: "image_url", image_url: { url: `data:application/pdf;base64,${base64}` } },
       ];
     } else if (documentText) {
       const cappedText = documentText.length > 20000 
-        ? documentText.slice(0, 20000) + "\n\n[Document truncated for processing speed — first 20,000 characters shown]"
+        ? documentText.slice(0, 20000) + "\n\n[Document truncated — first 20,000 characters shown]"
         : documentText;
-      userContent = `Please summarize the following content:\n\n${cappedText}`;
+      userContent = `Please summarize the following content (Part ${currentPart} of ${totalParts}):\n\n${cappedText}`;
     } else {
       throw new Error("Either documentText or filePath is required");
     }
@@ -153,11 +171,9 @@ Requirements:
     const data = await response.json();
     const summary = data.choices?.[0]?.message?.content;
 
-    if (isPdfDirect && summary) {
-      console.log("PDF direct summary generated successfully");
-    }
+    console.log(`Summary Part ${currentPart}/${totalParts} generated successfully`);
 
-    return new Response(JSON.stringify({ summary }), {
+    return new Response(JSON.stringify({ summary, part: currentPart, totalParts }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error) {

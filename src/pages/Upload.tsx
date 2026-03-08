@@ -120,12 +120,13 @@ export default function UploadDocument() {
       const data = await response.json();
       
       if (data.summary) {
+        // Store part 1 summary; mark that more parts are available
         await supabase
           .from("documents")
           .update({ summary: data.summary })
           .eq("id", uploadedDocumentId);
 
-        toast.success("Summary generated!");
+        toast.success("Summary Part 1 generated!");
         navigate(`/summary/${uploadedDocumentId}`);
       } else {
         throw new Error("No summary generated");
