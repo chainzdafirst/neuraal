@@ -33,7 +33,7 @@ export default function AITutor() {
     {
       id: "1",
       role: "assistant",
-      content: "Hey there! I'm Neuraal, your study companion. I'm here to help you break down complex topics, answer your questions, and keep you motivated. What would you like to explore today?",
+      content: "Hey! 👋 I'm Neuraal, your study buddy. What are you working on today?",
     },
   ]);
   const [input, setInput] = useState("");
