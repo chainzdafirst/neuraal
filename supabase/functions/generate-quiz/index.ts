@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.89.0";
+import { buildCurriculumContext } from "../_shared/match-curriculum.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -19,8 +20,9 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    // Fetch matching curriculum resources
+    // Fetch matching curriculum resources then score by document content
     let curriculumContext = "";
+    let identifiedCourse: string | null = null;
     if (userProfile?.institution && userProfile?.program) {
       const sb = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
       const { data: resources } = await sb
@@ -32,19 +34,21 @@ serve(async (req) => {
         .match(userProfile.yearOfStudy ? { year_of_study: userProfile.yearOfStudy } : {})
         .limit(15);
 
-      if (resources && resources.length > 0) {
-        const snippets = resources
-          .filter((r: any) => r.content_text)
-          .map((r: any) => `[${r.resource_type.toUpperCase()}: ${r.title}]\n${r.content_text!.slice(0, 3000)}`)
-          .join("\n\n---\n\n");
-        if (snippets) {
-          curriculumContext = `\n\nUse these official curriculum resources from ${userProfile.institution} (${userProfile.program}) to ensure questions align with the syllabus and mirror past-paper styles:\n\n${snippets}`;
-        }
+      if (resources && resources.length > 0 && documentText) {
+        const result = buildCurriculumContext(documentText, resources, userProfile);
+        curriculumContext = result.context;
+        identifiedCourse = result.identifiedCourse;
       }
     }
 
+    const courseIdentification = identifiedCourse
+      ? `The uploaded document has been identified as belonging to the course "${identifiedCourse}". Generate questions ONLY for this subject.`
+      : "";
+
     const yearContext = userProfile?.yearOfStudy ? ` (Year ${userProfile.yearOfStudy})` : '';
     const systemPrompt = `You are an expert exam question generator for ${userProfile?.program || 'university'} students${userProfile?.institution ? ` at ${userProfile.institution}` : ''}${yearContext}.
+
+${courseIdentification}
 
 Generate ${questionCount || 5} multiple-choice questions based on the provided content.
 

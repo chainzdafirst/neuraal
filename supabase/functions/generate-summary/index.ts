@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.89.0";
+import { buildCurriculumContext } from "../_shared/match-curriculum.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -24,6 +25,7 @@ serve(async (req) => {
 
     // Fetch matching curriculum resources for this user's institution/program
     let curriculumContext = "";
+    let identifiedCourse: string | null = null;
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const sb = createClient(supabaseUrl, supabaseKey);
@@ -38,7 +40,12 @@ serve(async (req) => {
         .match(userProfile.yearOfStudy ? { year_of_study: userProfile.yearOfStudy } : {})
         .limit(15);
 
-      if (resources && resources.length > 0) {
+      if (resources && resources.length > 0 && documentText) {
+        const result = buildCurriculumContext(documentText, resources, userProfile);
+        curriculumContext = result.context;
+        identifiedCourse = result.identifiedCourse;
+      } else if (resources && resources.length > 0) {
+        // PDF direct mode — no documentText yet, fall back to metadata-only matching
         const snippets = resources
           .filter((r: any) => r.content_text)
           .map((r: any) => `[${r.resource_type.toUpperCase()}: ${r.title}]\n${r.content_text!.slice(0, 2000)}`)
@@ -56,8 +63,14 @@ serve(async (req) => {
       outline: "Create a hierarchical outline format with main topics and subtopics"
     };
 
+    const courseIdentification = identifiedCourse
+      ? `The uploaded document has been identified as belonging to the course "${identifiedCourse}". Focus ONLY on this subject area and ignore unrelated curriculum content.`
+      : "";
+
     const yearContext = userProfile?.yearOfStudy ? ` (Year ${userProfile.yearOfStudy})` : '';
     const systemPrompt = `You are an expert academic summarizer for ${userProfile?.program || 'university'} students${userProfile?.institution ? ` at ${userProfile.institution}` : ''}${yearContext}.
+
+${courseIdentification}
 
 ${summaryStyles[summaryType as string] || summaryStyles.concise}
 
@@ -83,7 +96,6 @@ Requirements:
     let userContent: any;
 
     if (isPdfDirect) {
-      // PDF direct mode: download file and send as multimodal input (single AI call)
       console.log("PDF direct mode: downloading and summarizing in one pass");
       const { data: fileData, error: downloadError } = await sb.storage
         .from('documents')
@@ -96,7 +108,6 @@ Requirements:
       const arrayBuffer = await fileData.arrayBuffer();
       const uint8 = new Uint8Array(arrayBuffer);
 
-      // Chunked base64 encoding
       let binary = "";
       const chunkSize = 8192;
       for (let i = 0; i < uint8.length; i += chunkSize) {
@@ -110,7 +121,6 @@ Requirements:
         { type: "image_url", image_url: { url: `data:application/pdf;base64,${base64}` } },
       ];
     } else if (documentText) {
-      // Text mode: cap at 20k chars to reduce token processing time
       const cappedText = documentText.length > 20000 
         ? documentText.slice(0, 20000) + "\n\n[Document truncated for processing speed — first 20,000 characters shown]"
         : documentText;
@@ -143,10 +153,7 @@ Requirements:
     const data = await response.json();
     const summary = data.choices?.[0]?.message?.content;
 
-    // If PDF direct mode, also save extracted text for other features
     if (isPdfDirect && summary) {
-      // We don't have separate extracted text in this mode, 
-      // but the summary itself serves as the processed output
       console.log("PDF direct summary generated successfully");
     }
 
