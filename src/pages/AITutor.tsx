@@ -326,7 +326,10 @@ export default function AITutor() {
         className="hidden"
         multiple
         accept="image/*,.pdf,.doc,.docx,.txt"
-        onChange={(e) => handleFileSelect(e.target.files)}
+        onChange={(e) => {
+          handleFileSelect(e.target.files);
+          e.target.value = "";
+        }}
       />
       <input
         ref={cameraInputRef}
@@ -334,7 +337,10 @@ export default function AITutor() {
         className="hidden"
         accept="image/*"
         capture="environment"
-        onChange={(e) => handleFileSelect(e.target.files)}
+        onChange={(e) => {
+          handleFileSelect(e.target.files);
+          e.target.value = "";
+        }}
       />
 
       {/* Chat Sidebar */}
