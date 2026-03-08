@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { NeuraalLogo } from "@/components/ui/NeuraalLogo";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
-import { Check, ArrowLeft, Crown, Zap, Star } from "lucide-react";
+import { Check, ArrowLeft, Crown, Zap, Star, Shield, Sparkles } from "lucide-react";
 
 const plans = [
   {
@@ -60,7 +60,12 @@ export default function Upgrade() {
   const [selectedPlan, setSelectedPlan] = useState("monthly");
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative overflow-hidden">
+      {/* Background decorations */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] rounded-full bg-primary/5 blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-[400px] h-[400px] rounded-full bg-accent/5 blur-3xl pointer-events-none" />
+
+      {/* Header */}
       <header className="sticky top-0 z-50 neuraal-glass border-b border-border/50">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -72,22 +77,25 @@ export default function Upgrade() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-10 max-w-5xl">
-        <div className="text-center mb-10">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-neuraal-amber/20 to-neuraal-rose/20 text-neuraal-amber mb-4">
-            <Crown className="w-4 h-4" />
-            <span className="text-sm font-semibold">Upgrade to Premium</span>
+      <main className="container mx-auto px-4 py-12 sm:py-16 max-w-5xl relative z-10">
+        {/* Hero */}
+        <div className="text-center mb-12 sm:mb-16 animate-fade-up">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/20 bg-primary/5 mb-6">
+            <Sparkles className="w-4 h-4 text-primary" />
+            <span className="text-sm font-semibold text-primary">Upgrade to Premium</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-display font-bold mb-3">
-            Unlock Your Full Potential
+          <h1 className="text-4xl sm:text-5xl font-display font-extrabold mb-4 tracking-tight">
+            Unlock Your{" "}
+            <span className="neuraal-gradient-text">Full Potential</span>
           </h1>
-          <p className="text-muted-foreground max-w-lg mx-auto">
-            Choose the plan that fits your study schedule. Cancel anytime.
+          <p className="text-muted-foreground text-lg max-w-md mx-auto leading-relaxed">
+            Choose the plan that fits your study schedule. Start with a free trial, cancel anytime.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {plans.map((plan) => {
+        {/* Plans grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6 mb-12">
+          {plans.map((plan, index) => {
             const isSelected = selectedPlan === plan.id;
             const isPopular = plan.popular;
 
@@ -95,96 +103,154 @@ export default function Upgrade() {
               <button
                 key={plan.id}
                 onClick={() => setSelectedPlan(plan.id)}
-                className={`relative neuraal-card p-6 text-left transition-all duration-300 hover:shadow-lg hover:-translate-y-1 flex flex-col ${
-                  isPopular
-                    ? "border-primary shadow-lg shadow-primary/10 ring-2 ring-primary/20"
+                className={`
+                  group relative text-left rounded-2xl p-[1px] transition-all duration-300
+                  animate-fade-up
+                  ${isPopular
+                    ? "bg-gradient-to-b from-primary via-primary/60 to-accent shadow-glow scale-[1.02] md:-mt-4 md:mb-4"
                     : isSelected
-                    ? "border-primary/50"
-                    : ""
-                }`}
+                    ? "bg-gradient-to-b from-primary/40 to-primary/10"
+                    : "bg-border/60 hover:bg-border"
+                  }
+                `}
+                style={{ animationDelay: `${index * 100}ms` }}
               >
-                {/* Badges */}
-                <div className="flex items-center gap-2 mb-4 min-h-[28px]">
+                {/* Inner card */}
+                <div className={`
+                  relative h-full rounded-[15px] p-6 sm:p-7 flex flex-col
+                  ${isPopular
+                    ? "bg-card"
+                    : "bg-card"
+                  }
+                `}>
+                  {/* Popular ribbon */}
                   {isPopular && (
-                    <Badge className="bg-primary text-primary-foreground text-[10px] px-2 py-0.5">
-                      Most Popular
-                    </Badge>
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                      <Badge className="bg-gradient-primary text-primary-foreground text-xs px-4 py-1 font-bold shadow-md border-0">
+                        Most Popular
+                      </Badge>
+                    </div>
                   )}
+
+                  {/* Discount badge */}
                   {plan.discount && (
-                    <Badge variant="secondary" className="text-neuraal-emerald bg-neuraal-emerald/10 border-neuraal-emerald/20 text-[10px] px-2 py-0.5">
-                      Save {plan.discount}%
-                    </Badge>
+                    <div className="mb-5 flex">
+                      <Badge
+                        variant="secondary"
+                        className="bg-neuraal-emerald/10 text-neuraal-emerald border-neuraal-emerald/20 text-xs font-bold px-3 py-1"
+                      >
+                        Save {plan.discount}%
+                      </Badge>
+                    </div>
                   )}
-                </div>
+                  {!plan.discount && <div className="mb-5 h-[26px]" />}
 
-                {/* Icon & Name */}
-                <div className="flex items-center gap-3 mb-4">
-                  <div
-                    className={`p-2.5 rounded-xl ${
-                      isPopular
-                        ? "bg-primary/10"
-                        : plan.id === "yearly"
-                        ? "bg-neuraal-amber/10"
-                        : "bg-secondary"
-                    }`}
-                  >
-                    <plan.icon
-                      className={`w-5 h-5 ${
-                        isPopular
-                          ? "text-primary"
+                  {/* Icon & Name */}
+                  <div className="flex items-center gap-3 mb-5">
+                    <div
+                      className={`
+                        p-2.5 rounded-xl transition-colors
+                        ${isPopular
+                          ? "bg-primary/10"
                           : plan.id === "yearly"
-                          ? "text-neuraal-amber"
-                          : "text-muted-foreground"
-                      }`}
-                    />
+                          ? "bg-neuraal-amber/10"
+                          : "bg-secondary"
+                        }
+                      `}
+                    >
+                      <plan.icon
+                        className={`w-5 h-5 ${
+                          isPopular
+                            ? "text-primary"
+                            : plan.id === "yearly"
+                            ? "text-neuraal-amber"
+                            : "text-muted-foreground"
+                        }`}
+                      />
+                    </div>
+                    <h3 className="text-lg font-display font-bold text-foreground">
+                      {plan.name}
+                    </h3>
                   </div>
-                  <h3 className="text-lg font-display font-semibold">{plan.name}</h3>
-                </div>
 
-                {/* Price */}
-                <div className="mb-6">
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-3xl font-bold">ZMW {plan.price}</span>
-                    <span className="text-sm text-muted-foreground">/{plan.period}</span>
+                  {/* Price */}
+                  <div className="mb-6">
+                    <div className="flex items-baseline gap-1.5">
+                      <span className="text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight">
+                        ZMW {plan.price}
+                      </span>
+                      <span className="text-sm font-medium text-muted-foreground">
+                        /{plan.period}
+                      </span>
+                    </div>
+                    {plan.id === "yearly" && (
+                      <p className="text-xs text-muted-foreground mt-1.5 font-medium">
+                        That's ZMW {(plan.price / 12).toFixed(2)}/month
+                      </p>
+                    )}
                   </div>
-                  {plan.id === "yearly" && (
-                    <p className="text-xs text-muted-foreground mt-1">
-                      That's ZMW {(plan.price / 12).toFixed(2)}/month
-                    </p>
-                  )}
+
+                  {/* Divider */}
+                  <div className="h-px bg-border/60 mb-6" />
+
+                  {/* Features */}
+                  <ul className="space-y-3.5 flex-1 mb-8">
+                    {plan.features.map((feature) => (
+                      <li key={feature} className="flex items-start gap-3 text-sm">
+                        <div className={`
+                          mt-0.5 flex-shrink-0 w-4.5 h-4.5 rounded-full flex items-center justify-center
+                          ${isPopular ? "text-primary" : "text-neuraal-emerald"}
+                        `}>
+                          <Check className="w-4 h-4" strokeWidth={2.5} />
+                        </div>
+                        <span className="text-foreground/80 leading-tight">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  {/* CTAs */}
+                  <div className="space-y-2.5">
+                    <Button
+                      variant={isPopular ? "gradient" : "outline"}
+                      className="w-full h-12 font-bold text-sm"
+                    >
+                      Start 7-Day Free Trial
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      className="w-full h-10 text-xs font-semibold text-muted-foreground hover:text-foreground"
+                    >
+                      Subscribe Now
+                    </Button>
+                  </div>
                 </div>
-
-                {/* Features */}
-                <ul className="space-y-3 flex-1 mb-6">
-                  {plan.features.map((feature) => (
-                    <li key={feature} className="flex items-start gap-2.5 text-sm">
-                      <Check className="w-4 h-4 text-neuraal-emerald shrink-0 mt-0.5" />
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                {/* CTA */}
-                <Button
-                  variant={isPopular ? "gradient" : "outline"}
-                  className="w-full"
-                >
-                  Start 7-Day Free Trial
-                </Button>
-                <Button
-                  variant={isPopular ? "default" : "ghost"}
-                  className="w-full mt-2"
-                >
-                  Subscribe Now
-                </Button>
               </button>
             );
           })}
         </div>
 
-        <p className="text-center text-xs text-muted-foreground mt-8">
-          All plans include a 7-day free trial. No commitment, cancel anytime.
-        </p>
+        {/* Trust footer */}
+        <div className="text-center space-y-4 animate-fade-up" style={{ animationDelay: "400ms" }}>
+          <div className="flex items-center justify-center gap-6 text-muted-foreground">
+            <div className="flex items-center gap-1.5 text-xs font-medium">
+              <Shield className="w-3.5 h-3.5" />
+              <span>Cancel anytime</span>
+            </div>
+            <div className="w-1 h-1 rounded-full bg-border" />
+            <div className="flex items-center gap-1.5 text-xs font-medium">
+              <Zap className="w-3.5 h-3.5" />
+              <span>Instant access</span>
+            </div>
+            <div className="w-1 h-1 rounded-full bg-border" />
+            <div className="flex items-center gap-1.5 text-xs font-medium">
+              <Shield className="w-3.5 h-3.5" />
+              <span>Secure payment</span>
+            </div>
+          </div>
+          <p className="text-xs text-muted-foreground/60">
+            All plans include a 7-day free trial. No commitment required.
+          </p>
+        </div>
       </main>
     </div>
   );
