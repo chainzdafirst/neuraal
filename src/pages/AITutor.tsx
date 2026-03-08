@@ -5,6 +5,7 @@ import { NeuraalLogo } from "@/components/ui/NeuraalLogo";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import MarkdownContent from "@/components/MarkdownContent";
+import TypingIndicator from "@/components/chat/TypingIndicator";
 import {
   ArrowLeft,
   Send,
@@ -32,7 +33,7 @@ export default function AITutor() {
     {
       id: "1",
       role: "assistant",
-      content: "Hey there! I'm Neuraal, your study companion. I'm here to help you break down complex topics, answer your questions, and keep you motivated. What would you like to explore today?",
+      content: "Hey! 👋 I'm Neuraal, your study buddy. What are you working on today?",
     },
   ]);
   const [input, setInput] = useState("");
@@ -181,21 +182,12 @@ export default function AITutor() {
                 className={`max-w-[85%] ${
                   message.role === "user"
                     ? "bg-primary text-primary-foreground rounded-2xl rounded-br-md px-4 py-3"
-                    : "neuraal-card p-4"
+                    : "bg-muted rounded-2xl rounded-bl-md px-4 py-3"
                 }`}
               >
-                {message.role === "assistant" && (
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="p-1.5 rounded-lg bg-primary/10">
-                      <Brain className="w-4 h-4 text-primary" />
-                    </div>
-                    <span className="text-sm font-medium">Neuraal</span>
-                  </div>
-                )}
-
                 {message.role === "assistant" ? (
                   <MarkdownContent
-                    content={message.content || (isLoading ? "Thinking..." : "")}
+                    content={message.content || (isLoading ? "" : "")}
                   />
                 ) : (
                   <div className="whitespace-pre-wrap">
@@ -204,11 +196,11 @@ export default function AITutor() {
                 )}
 
                 {message.role === "assistant" && message.content && (
-                  <div className="flex items-center gap-2 mt-3 pt-3 border-t border-border">
+                  <div className="flex items-center gap-2 mt-2 -mb-1">
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="h-8 text-xs"
+                      className="h-6 text-xs px-2 opacity-50 hover:opacity-100"
                       onClick={() => handleCopy(message.content, message.id)}
                     >
                       {copiedId === message.id ? (
@@ -224,14 +216,7 @@ export default function AITutor() {
           ))}
 
           {isLoading && messages[messages.length - 1]?.role !== "assistant" && (
-            <div className="flex justify-start">
-              <div className="neuraal-card p-4">
-                <div className="flex items-center gap-3">
-                  <Loader2 className="w-5 h-5 text-primary animate-spin" />
-                  <span className="text-sm text-muted-foreground">Thinking...</span>
-                </div>
-              </div>
-            </div>
+            <TypingIndicator />
           )}
           <div ref={messagesEndRef} />
         </div>
