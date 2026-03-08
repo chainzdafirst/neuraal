@@ -475,24 +475,22 @@ export default function AdminContent() {
           <>
             {/* Filters */}
             <div className="flex flex-col gap-3">
-              <div className="flex flex-col sm:flex-row gap-3 flex-1">
-                <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input placeholder="Search resources..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
-                </div>
-                <div className="flex gap-2 flex-wrap">
-                  {["all", "syllabus", "past_paper", "reference_material"].map((t) => (
-                    <Button key={t} size="sm" variant={typeFilter === t ? "default" : "outline"} onClick={() => setTypeFilter(t)}>
-                      {t === "all" ? "All" : resourceTypeLabels[t] || t}
-                    </Button>
-                  ))}
-                </div>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input placeholder="Search resources..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
               </div>
-              {selected.size > 0 && (
-                <Button size="sm" variant="destructive" onClick={bulkDelete} className="self-start">
-                  <Trash2 className="h-4 w-4 mr-2" /> Delete {selected.size}
-                </Button>
-              )}
+              <div className="flex flex-wrap gap-2 items-center">
+                {["all", "syllabus", "past_paper", "reference_material"].map((t) => (
+                  <Button key={t} size="sm" variant={typeFilter === t ? "default" : "outline"} onClick={() => setTypeFilter(t)} className="text-xs">
+                    {t === "all" ? "All" : resourceTypeLabels[t] || t}
+                  </Button>
+                ))}
+                {selected.size > 0 && (
+                  <Button size="sm" variant="destructive" onClick={bulkDelete} className="text-xs ml-auto">
+                    <Trash2 className="h-4 w-4 mr-1" /> Delete {selected.size}
+                  </Button>
+                )}
+              </div>
             </div>
 
             <Card>
