@@ -88,7 +88,7 @@ export default function AdminContent() {
   // Resource upload form
   const [form, setForm] = useState({
     title: "", description: "", resource_type: "syllabus",
-    institution: "", program: "", education_level: "degree", exam_type: "semester",
+    institution: "", program: "", education_level: "degree", exam_type: "semester", year_of_study: "" as string,
   });
   const [file, setFile] = useState<File | null>(null);
 
