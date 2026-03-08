@@ -95,31 +95,32 @@ export function PreviewSummary() {
           <span className="text-[9px] text-muted-foreground ml-2">Project_Management.pdf</span>
         </div>
       </div>
-      <div className="p-4 text-[11px] leading-relaxed max-h-[280px] overflow-hidden space-y-3">
+      <div className="p-4 text-[11px] leading-relaxed max-h-[320px] overflow-hidden space-y-3">
         <div>
-          <h3 className="text-sm font-bold font-display">Project Management — Chapter 3 Summary</h3>
-          <p className="text-[10px] text-muted-foreground">9 key concepts identified</p>
+          <h3 className="text-sm font-bold font-display">Project Management — The Triple Constraint</h3>
+          <p className="text-[10px] text-muted-foreground">7 key concepts identified</p>
         </div>
         <div>
-          <h4 className="font-semibold mb-1.5">📋 Key Concepts</h4>
+          <h4 className="font-semibold mb-1.5">📐 The Triple Constraint (Iron Triangle)</h4>
+          <p className="mb-1.5">Every project is governed by three interdependent constraints. Changing one inevitably affects the others, requiring trade-off decisions throughout the project lifecycle.</p>
           <ul className="list-disc pl-4 space-y-1">
-            <li><strong>Triple Constraint</strong> — Scope, Time, and Cost balance</li>
-            <li><strong>Critical Path Method</strong> — Longest sequence of dependent tasks</li>
-            <li><strong>Stakeholder Analysis</strong> — Power/interest grid for engagement</li>
+            <li><strong>Scope</strong> — The work required to deliver the project's objectives. Expanding scope without adjusting time or cost leads to scope creep.</li>
+            <li><strong>Time</strong> — The schedule and deadlines. Compressing timelines often demands more resources or reduced scope.</li>
+            <li><strong>Cost</strong> — The budget and resources allocated. Budget cuts may force trade-offs in quality or deliverables.</li>
           </ul>
         </div>
         <div>
-          <h4 className="font-semibold mb-1.5">🔄 Agile Methodology</h4>
+          <h4 className="font-semibold mb-1.5">⚖️ Balancing the Constraints</h4>
+          <p className="mb-1.5">A project manager's core challenge is maintaining equilibrium. For example, a client requesting additional features (scope ↑) must accept either a later deadline (time ↑) or higher budget (cost ↑).</p>
           <ul className="list-disc pl-4 space-y-1">
-            <li><strong>Sprints</strong> — Time-boxed iterations (2-4 weeks)</li>
-            <li><strong>Scrum Roles</strong> — Product Owner, Scrum Master, Dev Team</li>
-            <li><strong>Retrospectives</strong> — Continuous improvement after each sprint</li>
+            <li><strong>Quality</strong> — Often placed at the centre of the triangle; it's the outcome of how well the three constraints are balanced.</li>
+            <li><strong>Risk Management</strong> — Identifying which constraint has the least flexibility helps prioritise mitigation strategies.</li>
           </ul>
         </div>
         <div className="bg-card rounded-lg border border-border/50 p-2.5 text-[10px] space-y-1">
-          <p>✅ Define the triple constraint triangle</p>
-          <p>✅ Identify the critical path in a project</p>
-          <p>✅ Compare Agile vs Waterfall methodologies</p>
+          <p>✅ Explain how the triple constraint affects project decisions</p>
+          <p>✅ Identify trade-offs when scope, time, or cost changes</p>
+          <p>✅ Describe the role of quality within the iron triangle</p>
         </div>
       </div>
     </div>
