@@ -344,20 +344,20 @@ export default function AdminContent() {
 
   return (
     <AdminLayout>
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         {/* Header */}
-        <div className="flex items-start justify-between">
-          <div>
+        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+          <div className="min-w-0">
             {breadcrumb}
-            <h1 className="text-3xl font-display font-bold">Curriculum Content</h1>
-            <p className="text-muted-foreground mt-1">Manage training data by institution and program</p>
+            <h1 className="text-2xl sm:text-3xl font-display font-bold truncate">Curriculum Content</h1>
+            <p className="text-muted-foreground text-sm mt-1">Manage training data by institution and program</p>
           </div>
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={() => setSchoolDialogOpen(true)}>
-              <Building2 className="h-4 w-4 mr-2" /> Add School
+          <div className="flex gap-2 shrink-0">
+            <Button variant="outline" size="sm" className="sm:size-default" onClick={() => setSchoolDialogOpen(true)}>
+              <Building2 className="h-4 w-4 sm:mr-2" /> <span className="hidden sm:inline">Add School</span>
             </Button>
-            <Button onClick={openUploadDialog}>
-              <Plus className="h-4 w-4 mr-2" /> Add Resource
+            <Button size="sm" className="sm:size-default" onClick={openUploadDialog}>
+              <Plus className="h-4 w-4 sm:mr-2" /> <span className="hidden sm:inline">Add Resource</span>
             </Button>
           </div>
         </div>
