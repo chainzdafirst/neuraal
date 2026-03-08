@@ -87,7 +87,7 @@ export default function UploadDocument() {
           Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
         },
         body: JSON.stringify({
-          documentText: doc.extracted_text,
+          documentText: extractedText,
           summaryType: "detailed",
           userProfile: profile ? {
             program: profile.program,
