@@ -94,7 +94,7 @@ function FeatureCard({ icon: Icon, title, description, preview, gradient, revers
             {description}
           </p>
         </div>
-        <div className="flex-1 w-full lg:w-auto">
+        <div className="flex-1 w-full lg:w-auto md:aspect-video md:overflow-hidden md:rounded-[16px]">
           {preview}
         </div>
       </div>
