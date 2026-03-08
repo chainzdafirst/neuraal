@@ -61,15 +61,15 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[hsl(222,47%,6%)] relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center bg-background relative overflow-hidden">
       {/* Background grid effect */}
-      <div className="absolute inset-0 opacity-[0.03]" style={{
-        backgroundImage: `linear-gradient(hsl(234 89% 64%) 1px, transparent 1px), linear-gradient(90deg, hsl(234 89% 64%) 1px, transparent 1px)`,
+      <div className="absolute inset-0 opacity-[0.04]" style={{
+        backgroundImage: `linear-gradient(hsl(var(--primary)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--primary)) 1px, transparent 1px)`,
         backgroundSize: "40px 40px",
       }} />
 
       {/* Glow */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[500px] h-[500px] rounded-full bg-primary/10 blur-[120px]" />
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[500px] h-[500px] rounded-full bg-primary/5 blur-[120px]" />
 
       <div className="relative z-10 w-full max-w-md mx-4">
         {/* Header */}
@@ -77,52 +77,52 @@ export default function AdminLogin() {
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 mb-4">
             <Shield className="w-8 h-8 text-primary" />
           </div>
-          <h1 className="text-2xl font-display font-bold text-[hsl(210,40%,98%)]">
+          <h1 className="text-2xl font-display font-bold text-foreground">
             Neuraal Admin
           </h1>
-          <p className="text-[hsl(215,20%,65%)] mt-1 text-sm">
+          <p className="text-muted-foreground mt-1 text-sm">
             Authorized personnel only
           </p>
         </div>
 
         {/* Card */}
-        <div className="rounded-xl border border-[hsl(217,33%,17%)] bg-[hsl(222,47%,8%)] p-8 shadow-2xl">
+        <div className="rounded-xl border border-border bg-card p-8 shadow-lg">
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-[hsl(210,40%,98%)]">
+              <Label htmlFor="email">
                 Admin Email
               </Label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[hsl(215,20%,65%)]" />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
                   id="email"
                   type="email"
                   placeholder="admin@neuraal.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="pl-10 h-11 bg-[hsl(222,47%,6%)] border-[hsl(217,33%,17%)] text-[hsl(210,40%,98%)] placeholder:text-[hsl(215,20%,45%)] focus-visible:ring-primary"
+                  className="pl-10 h-11"
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-[hsl(210,40%,98%)]">
+              <Label htmlFor="password">
                 Password
               </Label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[hsl(215,20%,65%)]" />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="pl-10 pr-10 h-11 bg-[hsl(222,47%,6%)] border-[hsl(217,33%,17%)] text-[hsl(210,40%,98%)] placeholder:text-[hsl(215,20%,45%)] focus-visible:ring-primary"
+                  className="pl-10 pr-10 h-11"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[hsl(215,20%,65%)] hover:text-[hsl(210,40%,98%)]"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -131,7 +131,7 @@ export default function AdminLogin() {
 
             <Button
               type="submit"
-              className="w-full h-11 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
+              className="w-full h-11 font-semibold"
               disabled={isLoading || checking}
             >
               {isLoading || checking ? (
@@ -143,7 +143,7 @@ export default function AdminLogin() {
           </form>
         </div>
 
-        <p className="text-center text-[hsl(215,20%,45%)] text-xs mt-6">
+        <p className="text-center text-muted-foreground text-xs mt-6">
           This portal is restricted to Neuraal administrators.
         </p>
       </div>
