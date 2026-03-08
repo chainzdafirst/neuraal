@@ -51,15 +51,14 @@ interface FeatureCardProps {
   icon: React.ElementType;
   title: string;
   description: string;
-  image: string;
+  preview: React.ReactNode;
   gradient: string;
   reverse?: boolean;
 }
 
-function FeatureCard({ icon: Icon, title, description, image, gradient, reverse }: FeatureCardProps) {
+function FeatureCard({ icon: Icon, title, description, preview, gradient, reverse }: FeatureCardProps) {
   return (
     <div className={`flex flex-col ${reverse ? "lg:flex-row-reverse" : "lg:flex-row"} gap-6 sm:gap-10 items-center`}>
-      {/* Text side */}
       <div className="flex-1 w-full lg:w-auto">
         <div className="flex items-center gap-2.5 mb-3">
           <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center`}>
@@ -71,17 +70,8 @@ function FeatureCard({ icon: Icon, title, description, image, gradient, reverse 
           {description}
         </p>
       </div>
-
-      {/* Image side */}
       <div className="flex-1 w-full lg:w-auto">
-        <div className={`rounded-[12px] sm:rounded-[16px] overflow-hidden border border-border shadow-lg`}>
-          <img
-            src={image}
-            alt={`${title} feature preview`}
-            className="w-full h-auto object-cover"
-            loading="lazy"
-          />
-        </div>
+        {preview}
       </div>
     </div>
   );
@@ -94,42 +84,37 @@ export default function Landing() {
     {
       icon: Brain,
       title: "AI Tutor",
-      description:
-        "Get step-by-step explanations tailored to your syllabus. Ask questions and get instant, curriculum-aware answers.",
+      description: "Get step-by-step explanations tailored to your syllabus. Ask questions and get instant, curriculum-aware answers.",
       gradient: "from-[hsl(234,89%,54%)] to-[hsl(270,80%,60%)]",
-      image: featureAiTutor,
+      preview: <PreviewAITutor />,
     },
     {
       icon: FileText,
       title: "Smart Summaries",
-      description:
-        "Transform bulky lecture notes into exam-ready summaries. Structured and easy to revise from.",
+      description: "Transform bulky lecture notes into exam-ready summaries. Structured and easy to revise from.",
       gradient: "from-[hsl(187,85%,43%)] to-[hsl(210,90%,55%)]",
-      image: featureSummaries,
+      preview: <PreviewSummary />,
     },
     {
       icon: Target,
       title: "Quizzes & Tests",
-      description:
-        "Practice with auto-generated exam-style questions. Track your accuracy and improve weak areas.",
+      description: "Practice with auto-generated exam-style questions. Track your accuracy and improve weak areas.",
       gradient: "from-[hsl(38,92%,50%)] to-[hsl(350,89%,60%)]",
-      image: featureQuizzes,
+      preview: <PreviewQuiz />,
     },
     {
       icon: Sparkles,
       title: "Flashcards",
-      description:
-        "Master concepts with spaced repetition. AI generates flashcards from your notes automatically.",
+      description: "Master concepts with spaced repetition. AI generates flashcards from your notes automatically.",
       gradient: "from-[hsl(160,84%,39%)] to-[hsl(187,85%,43%)]",
-      image: featureFlashcards,
+      preview: <PreviewFlashcards />,
     },
     {
       icon: BarChart3,
       title: "Track Progress",
-      description:
-        "Monitor your study performance over time. See how much you've revised and where you need to focus.",
+      description: "Monitor your study performance over time. See how much you've revised and where you need to focus.",
       gradient: "from-[hsl(350,89%,60%)] to-[hsl(38,92%,50%)]",
-      image: featureProgress,
+      preview: <PreviewProgress />,
     },
   ];
 
