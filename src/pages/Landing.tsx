@@ -236,8 +236,8 @@ export default function Landing() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-28 px-6">
-        <div className="container mx-auto max-w-3xl text-center">
+      <section className="py-28 max-w-[1360px] px-5 sm:px-[70px] mx-auto">
+        <div className="max-w-3xl mx-auto text-center">
           <NeuraalLogo size="lg" showText={false} className="justify-center mb-8" />
           <h2 className="text-3xl sm:text-4xl font-display font-bold mb-4">
             Ready to study smarter?
