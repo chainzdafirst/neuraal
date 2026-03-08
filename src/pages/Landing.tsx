@@ -76,7 +76,9 @@ interface FeatureCardProps {
   description: string;
   preview: React.ReactNode;
   gradient: string;
-  reCard({ icon: Icon, title, description, preview, gradient }: FeatureCardProps) {
+}
+
+function FeatureCard({ icon: Icon, title, description, preview, gradient }: FeatureCardProps) {
   return (
     <ScrollReveal>
       <div className="flex flex-col gap-4 sm:gap-5">
