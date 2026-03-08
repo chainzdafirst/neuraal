@@ -46,6 +46,30 @@ function RotatingText() {
   );
 }
 
+function ScrollReveal({ children, className = "", threshold = 0.15, delay = 0 }: { children: React.ReactNode; className?: string; threshold?: number; delay?: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setVisible(true); obs.disconnect(); } },
+      { threshold }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [threshold]);
+  return (
+    <div
+      ref={ref}
+      className={`transition-all duration-700 ease-out ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"} ${className}`}
+      style={{ transitionDelay: `${delay}ms` }}
+    >
+      {children}
+    </div>
+  );
+}
+
 interface FeatureCardProps {
   icon: React.ElementType;
   title: string;
@@ -57,22 +81,24 @@ interface FeatureCardProps {
 
 function FeatureCard({ icon: Icon, title, description, preview, gradient, reverse }: FeatureCardProps) {
   return (
-    <div className={`flex flex-col ${reverse ? "md:flex-row-reverse" : "md:flex-row"} gap-6 sm:gap-10 items-center`}>
-      <div className="flex-1 w-full lg:w-auto">
-        <div className="flex items-center gap-2.5 mb-3">
-          <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center`}>
-            <Icon className="w-5 h-5 text-white" />
+    <ScrollReveal>
+      <div className={`flex flex-col ${reverse ? "md:flex-row-reverse" : "md:flex-row"} gap-6 sm:gap-10 items-center`}>
+        <div className="flex-1 w-full lg:w-auto">
+          <div className="flex items-center gap-2.5 mb-3">
+            <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center`}>
+              <Icon className="w-5 h-5 text-white" />
+            </div>
+            <h3 className="text-xl sm:text-2xl font-display font-bold tracking-[-0.01em]">{title}</h3>
           </div>
-          <h3 className="text-xl sm:text-2xl font-display font-bold tracking-[-0.01em]">{title}</h3>
+          <p className="text-muted-foreground text-[15px] sm:text-base leading-relaxed max-w-md">
+            {description}
+          </p>
         </div>
-        <p className="text-muted-foreground text-[15px] sm:text-base leading-relaxed max-w-md">
-          {description}
-        </p>
+        <div className="flex-1 w-full lg:w-auto">
+          {preview}
+        </div>
       </div>
-      <div className="flex-1 w-full lg:w-auto">
-        {preview}
-      </div>
-    </div>
+    </ScrollReveal>
   );
 }
 
@@ -95,7 +121,7 @@ export default function Landing() {
   const features = [
     {
       icon: Brain,
-      title: "AI Tutoringing",
+      title: "AI Tutoring",
       description: "Get step-by-step explanations tailored to your syllabus. Ask questions and get instant, curriculum-aware answers.",
       gradient: "from-[hsl(234,89%,54%)] to-[hsl(270,80%,60%)]",
       preview: <PreviewAITutor />,
@@ -154,7 +180,7 @@ export default function Landing() {
       <nav className="max-w-[1360px] px-5 sm:px-[70px] mx-auto flex items-center justify-between py-4 relative">
         <NeuraalLogo size="lg" />
 
-        {/* Hamburger / X toggle — always visible */}
+        {/* Hamburger / X toggle */}
         <div className="relative z-50">
           <button
             onClick={() => setMenuOpen((v) => !v)}
@@ -185,30 +211,32 @@ export default function Landing() {
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-5 pb-5 sm:pt-9 sm:pb-[74px] max-w-[1360px] px-5 sm:px-[70px] mx-auto">
-        <div>
-          <h1 className="text-[40px] sm:text-[84px] font-display font-bold tracking-[-0.02em] leading-[48px] sm:leading-[100px] mb-6">
-         Syllabus-Aligned
-            <br />
-            <RotatingText />
-          </h1>
-
-          <p className="text-[15px] sm:text-lg font-semibold text-foreground mb-6">
-            Turn complex lecture notes into structured, exam-ready learning.
-            Built for students. No developers required.
-          </p>
-
-          <Button variant="hero" size="xl" onClick={() => navigate("/signup")} className="h-[57px] leading-[57px] px-10 text-sm font-extrabold">
-            Get Started
-          </Button>
-        </div>
-      </section>
+      <ScrollReveal threshold={0.1}>
+        <section className="pt-5 pb-5 sm:pt-9 sm:pb-[74px] max-w-[1360px] px-5 sm:px-[70px] mx-auto">
+          <div>
+            <h1 className="text-[40px] sm:text-[84px] font-display font-bold tracking-[-0.02em] leading-[48px] sm:leading-[100px] mb-6">
+              Syllabus-Aligned
+              <br />
+              <RotatingText />
+            </h1>
+            <p className="text-[15px] sm:text-lg font-semibold text-foreground mb-6">
+              Turn complex lecture notes into structured, exam-ready learning.
+              Built for students. No developers required.
+            </p>
+            <Button variant="hero" size="xl" onClick={() => navigate("/signup")} className="h-[57px] leading-[57px] px-10 text-sm font-extrabold">
+              Get Started
+            </Button>
+          </div>
+        </section>
+      </ScrollReveal>
 
       {/* Feature Sections */}
       <section id="features" className="max-w-[1360px] px-5 sm:px-[70px] mx-auto py-16 sm:py-24 space-y-16 sm:space-y-28">
-        <h2 className="text-[32px] sm:text-[48px] font-display font-bold tracking-[-0.02em] text-center">
-          Features
-        </h2>
+        <ScrollReveal>
+          <h2 className="text-[32px] sm:text-[48px] font-display font-bold tracking-[-0.02em] text-center">
+            Features
+          </h2>
+        </ScrollReveal>
         {features.map((feature, i) => (
           <FeatureCard
             key={feature.title}
@@ -223,69 +251,77 @@ export default function Landing() {
       </section>
 
       {/* Social Proof / Stats */}
-      <section id="pricing" className="py-24 max-w-[1360px] px-5 sm:px-[70px] mx-auto">
-        <div>
-          <div className="rounded-[16px] border border-border bg-card p-10 md:p-14">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-              {[
-                { value: "300K+", label: "Students in Zambia" },
-                { value: "24/7", label: "AI Availability" },
-                { value: "100%", label: "Syllabus Aligned" },
-                { value: "ZMW 25", label: "Monthly Price" },
-              ].map((stat) => (
-                <div key={stat.label}>
-                  <div className="text-3xl md:text-4xl font-display font-bold text-foreground mb-1">
-                    {stat.value}
+      <ScrollReveal>
+        <section id="pricing" className="py-24 max-w-[1360px] px-5 sm:px-[70px] mx-auto">
+          <div>
+            <div className="rounded-[16px] border border-border bg-card p-10 md:p-14">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                {[
+                  { value: "300K+", label: "Students in Zambia" },
+                  { value: "24/7", label: "AI Availability" },
+                  { value: "100%", label: "Syllabus Aligned" },
+                  { value: "ZMW 25", label: "Monthly Price" },
+                ].map((stat) => (
+                  <div key={stat.label}>
+                    <div className="text-3xl md:text-4xl font-display font-bold text-foreground mb-1">
+                      {stat.value}
+                    </div>
+                    <div className="text-muted-foreground text-sm">{stat.label}</div>
                   </div>
-                  <div className="text-muted-foreground text-sm">{stat.label}</div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </ScrollReveal>
 
       {/* How it works */}
       <section id="how-it-works" className="py-24 bg-secondary/30">
         <div className="max-w-[1360px] px-5 sm:px-[70px] mx-auto max-w-3xl">
-          <h2 className="text-[28px] sm:text-[40px] font-display font-bold text-center mb-16 tracking-[-0.02em]">
-            Simple to get started
-          </h2>
+          <ScrollReveal>
+            <h2 className="text-[28px] sm:text-[40px] font-display font-bold text-center mb-16 tracking-[-0.02em]">
+              Simple to get started
+            </h2>
+          </ScrollReveal>
 
           <div className="space-y-12">
-            {steps.map((item) => (
-              <div key={item.step} className="flex gap-6 items-start">
-                <div className="flex-shrink-0 text-xs font-semibold text-accent uppercase tracking-wider pt-1">
-                  {item.step}
+            {steps.map((item, i) => (
+              <ScrollReveal key={item.step} delay={i * 150}>
+                <div className="flex gap-6 items-start">
+                  <div className="flex-shrink-0 text-xs font-semibold text-accent uppercase tracking-wider pt-1">
+                    {item.step}
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-display font-semibold mb-1">{item.title}</h3>
+                    <p className="text-muted-foreground text-base leading-relaxed">
+                      {item.description}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="text-xl font-display font-semibold mb-1">{item.title}</h3>
-                  <p className="text-muted-foreground text-base leading-relaxed">
-                    {item.description}
-                  </p>
-                </div>
-              </div>
+              </ScrollReveal>
             ))}
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-28 max-w-[1360px] px-5 sm:px-[70px] mx-auto">
-        <div className="max-w-3xl mx-auto text-center">
-          <NeuraalLogo size="lg" showText={false} className="justify-center mb-8" />
-          <h2 className="text-[28px] sm:text-[40px] font-display font-bold mb-4 tracking-[-0.02em]">
-            Ready to study smarter?
-          </h2>
-          <p className="text-muted-foreground text-[15px] sm:text-lg font-semibold max-w-xl mx-auto mb-10">
-            Join thousands of students transforming their academic performance with Neuraal.
-          </p>
-          <Button variant="hero" size="xl" onClick={() => navigate("/signup")} className="h-[57px] leading-[57px] px-10 text-sm font-extrabold">
-            Get Started — It's Free
-            <ChevronRight className="w-5 h-5 ml-1" />
-          </Button>
-        </div>
-      </section>
+      <ScrollReveal>
+        <section className="py-28 max-w-[1360px] px-5 sm:px-[70px] mx-auto">
+          <div className="max-w-3xl mx-auto text-center">
+            <NeuraalLogo size="lg" showText={false} className="justify-center mb-8" />
+            <h2 className="text-[28px] sm:text-[40px] font-display font-bold mb-4 tracking-[-0.02em]">
+              Ready to study smarter?
+            </h2>
+            <p className="text-muted-foreground text-[15px] sm:text-lg font-semibold max-w-xl mx-auto mb-10">
+              Join thousands of students transforming their academic performance with Neuraal.
+            </p>
+            <Button variant="hero" size="xl" onClick={() => navigate("/signup")} className="h-[57px] leading-[57px] px-10 text-sm font-extrabold">
+              Get Started — It's Free
+              <ChevronRight className="w-5 h-5 ml-1" />
+            </Button>
+          </div>
+        </section>
+      </ScrollReveal>
 
       {/* Footer */}
       <footer className="py-8 px-6 border-t border-border">
