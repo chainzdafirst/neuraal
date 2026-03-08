@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {
   Search, FileText, MoreHorizontal, Trash2, Plus, BookOpen, GraduationCap,
-  Upload, Loader2, Eye, EyeOff, Building2, ChevronRight, FolderOpen,
+  Upload, Loader2, Eye, EyeOff, Building2, ChevronRight, FolderOpen, Sparkles, AlertCircle,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
