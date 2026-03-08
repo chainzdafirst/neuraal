@@ -14,7 +14,7 @@ import {
 import { PreviewAITutor, PreviewQuiz, PreviewSummary, PreviewFlashcards, PreviewProgress } from "@/components/FeaturePreviews";
 
 const rotatingWords = [
-  "AI Tutoring",
+  "AI Tutor",
   "Smart Summaries",
   "Flashcards",
   "Quizzes",
