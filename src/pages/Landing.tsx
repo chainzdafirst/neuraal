@@ -156,9 +156,9 @@ export default function Landing() {
       </section>
 
       {/* Feature Cards — 2-column grid with gradient backgrounds like Flook */}
-      <section className="py-24 px-6">
-        <div className="container mx-auto max-w-5xl">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <section className="max-w-[1360px] px-5 sm:px-[70px] mx-auto">
+        <div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-9">
             {features.map((feature) => (
               <div
                 key={feature.title}
