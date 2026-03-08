@@ -22,7 +22,7 @@ interface UploadedFile {
 }
 
 interface FileUploaderProps {
-  onFileReady?: (documentId: string, fileName: string) => void;
+  onFileReady?: (documentId: string, fileName: string, filePath?: string) => void;
 }
 
 export default function FileUploader({ onFileReady }: FileUploaderProps) {
