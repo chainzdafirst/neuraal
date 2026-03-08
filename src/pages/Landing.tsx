@@ -118,8 +118,8 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-background overflow-hidden">
       {/* Top Banner */}
-      <div className="bg-foreground text-background text-center py-2.5 text-sm font-medium tracking-wide">
-        🎓 Free for Zambian students — Start studying smarter today
+      <div className="bg-muted h-[38px] flex items-center justify-center">
+        <p className="text-foreground text-sm font-semibold">🎓 Free for Zambian students — Start studying smarter today</p>
       </div>
 
       {/* Navigation */}
