@@ -571,7 +571,7 @@ export default function AdminContent() {
                     <Checkbox checked={selected.has(res.id)} onCheckedChange={() => toggleSelect(res.id)} className="mt-1 shrink-0" />
                     <div className="min-w-0 flex-1">
                       <p className="font-medium text-sm leading-tight line-clamp-2">{res.title}</p>
-                      {res.file_name && <p className="text-xs text-muted-foreground mt-0.5 truncate">{res.file_name} · {formatBytes(res.file_size)}</p>}
+                      {res.file_name && <p className="text-xs text-muted-foreground mt-0.5 truncate max-w-[calc(100vw-7rem)]">{res.file_name} · {formatBytes(res.file_size)}</p>}
                       <div className="flex flex-wrap items-center gap-1.5 mt-2">
                         <Badge variant="outline" className="text-[10px] px-1.5 py-0">{resourceTypeLabels[res.resource_type] || res.resource_type}</Badge>
                         <Badge variant={res.is_active ? "default" : "secondary"} className="text-[10px] px-1.5 py-0">{res.is_active ? "Active" : "Inactive"}</Badge>
