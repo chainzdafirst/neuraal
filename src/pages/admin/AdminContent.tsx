@@ -254,11 +254,13 @@ export default function AdminContent() {
         if (extractRes.ok) { const d = await extractRes.json(); contentText = d.extractedText || null; }
       }
 
+      const { data: { user: currentUser } } = await supabase.auth.getUser();
       const { error } = await supabase.from("curriculum_resources").insert({
         title: form.title, description: form.description || null, resource_type: form.resource_type,
         institution: form.institution, program: form.program, education_level: form.education_level,
         exam_type: form.exam_type, content_text: contentText,
         file_name: fileName || null, file_path: filePath || null, file_size: fileSize, file_type: fileType,
+        uploaded_by: currentUser?.id || null,
       });
       if (error) throw error;
       toast.success("Resource uploaded");
