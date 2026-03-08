@@ -1,10 +1,12 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { NeuraalLogo } from "@/components/ui/NeuraalLogo";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import MarkdownContent from "@/components/MarkdownContent";
 import TypingIndicator from "@/components/chat/TypingIndicator";
+import ChatSidebar from "@/components/chat/ChatSidebar";
 import {
   ArrowLeft,
   Send,
@@ -12,11 +14,12 @@ import {
   Loader2,
   Copy,
   Check,
+  Plus,
   Paperclip,
   Camera,
   X,
-  Image as ImageIcon,
   FileText,
+  Menu,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -36,41 +39,93 @@ interface Message {
 
 export default function AITutor() {
   const navigate = useNavigate();
-  const { profile, isAuthenticated } = useAuth();
+  const { user, profile, isAuthenticated } = useAuth();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
 
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "1",
-      role: "assistant",
-      content: "Hey! 👋 I'm Neuraal, your study buddy. What are you working on today?",
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [attachments, setAttachments] = useState<Attachment[]>([]);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [conversationId, setConversationId] = useState<string | null>(null);
+  const [showAttachMenu, setShowAttachMenu] = useState(false);
+
+  const welcomeMessage: Message = {
+    id: "welcome",
+    role: "assistant",
+    content: "Hey! 👋 I'm Neuraal, your study buddy. What are you working on today?",
+  };
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      navigate("/login");
-    }
+    if (!isAuthenticated) navigate("/login");
   }, [isAuthenticated, navigate]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Auto-resize textarea
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.style.height = "auto";
       inputRef.current.style.height = Math.min(inputRef.current.scrollHeight, 120) + "px";
     }
   }, [input]);
+
+  // Load conversation messages
+  const loadConversation = useCallback(async (convId: string) => {
+    const { data, error } = await supabase
+      .from("chat_messages")
+      .select("*")
+      .eq("conversation_id", convId)
+      .order("created_at", { ascending: true });
+
+    if (!error && data) {
+      const loaded: Message[] = data.map((m: any) => ({
+        id: m.id,
+        role: m.role as "user" | "assistant",
+        content: m.content,
+      }));
+      setMessages(loaded);
+      setConversationId(convId);
+    }
+  }, []);
+
+  const handleNewChat = () => {
+    setConversationId(null);
+    setMessages([]);
+    setInput("");
+    setAttachments([]);
+  };
+
+  const createConversation = async (firstMessage: string): Promise<string | null> => {
+    if (!user) return null;
+    const title = firstMessage.slice(0, 50) + (firstMessage.length > 50 ? "..." : "");
+    const { data, error } = await supabase
+      .from("conversations")
+      .insert({ user_id: user.id, title })
+      .select("id")
+      .single();
+
+    if (error || !data) {
+      console.error("Failed to create conversation:", error);
+      return null;
+    }
+    return data.id;
+  };
+
+  const saveMessage = async (convId: string, role: string, content: string) => {
+    if (!user) return;
+    await supabase.from("chat_messages").insert({
+      conversation_id: convId,
+      user_id: user.id,
+      role,
+      content,
+    });
+  };
 
   const fileToBase64 = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -84,16 +139,13 @@ export default function AITutor() {
   const handleFileSelect = async (files: FileList | null) => {
     if (!files) return;
     const newAttachments: Attachment[] = [];
-
     for (const file of Array.from(files)) {
       if (file.size > 10 * 1024 * 1024) {
         toast.error(`${file.name} is too large (max 10MB)`);
         continue;
       }
-
       const isImage = file.type.startsWith("image/");
       const base64 = await fileToBase64(file);
-
       newAttachments.push({
         file,
         preview: isImage ? base64 : undefined,
@@ -101,18 +153,18 @@ export default function AITutor() {
         type: isImage ? "image" : "file",
       });
     }
-
-    setAttachments(prev => [...prev, ...newAttachments].slice(0, 5));
+    setAttachments((prev) => [...prev, ...newAttachments].slice(0, 5));
+    setShowAttachMenu(false);
   };
 
   const removeAttachment = (index: number) => {
-    setAttachments(prev => prev.filter((_, i) => i !== index));
+    setAttachments((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleSend = async () => {
     if ((!input.trim() && attachments.length === 0) || isLoading) return;
 
-    const msgAttachments = attachments.map(a => ({
+    const msgAttachments = attachments.map((a) => ({
       preview: a.preview,
       name: a.file.name,
       type: a.type,
@@ -128,60 +180,71 @@ export default function AITutor() {
     const updatedMessages = [...messages, userMessage];
     setMessages(updatedMessages);
 
-    // Build the API message content (multimodal for images)
-    const imageAttachments = attachments.filter(a => a.type === "image");
+    // Build multimodal content for API
+    const imageAttachments = attachments.filter((a) => a.type === "image");
     let userContent: any;
-
     if (imageAttachments.length > 0) {
       const parts: any[] = [];
       for (const att of imageAttachments) {
         if (att.base64) {
-          parts.push({
-            type: "image_url",
-            image_url: { url: att.base64 },
-          });
+          parts.push({ type: "image_url", image_url: { url: att.base64 } });
         }
       }
-      if (input.trim()) {
-        parts.push({ type: "text", text: input.trim() });
-      } else {
-        parts.push({ type: "text", text: "What's in this image? Explain it in the context of studying." });
-      }
+      parts.push({
+        type: "text",
+        text: input.trim() || "What's in this image? Explain it in the context of studying.",
+      });
       userContent = parts;
     } else {
       userContent = input.trim();
     }
 
+    const messageText = input.trim();
     setInput("");
     setAttachments([]);
     setIsLoading(true);
 
     try {
-      // Build messages for API - convert previous messages to simple format, last one is multimodal
-      const apiMessages = updatedMessages.slice(1).map((m, i) => {
-        if (i === updatedMessages.length - 2 && m.role === "user") {
-          // This is the current user message
+      // Create conversation if new
+      let activeConvId = conversationId;
+      if (!activeConvId) {
+        activeConvId = await createConversation(messageText || "Image chat");
+        if (!activeConvId) throw new Error("Failed to create conversation");
+        setConversationId(activeConvId);
+      }
+
+      // Save user message
+      await saveMessage(activeConvId, "user", messageText || "[Image attachment]");
+
+      // Build API messages
+      const apiMessages = updatedMessages.map((m, i) => {
+        if (i === updatedMessages.length - 1 && m.role === "user") {
           return { role: m.role, content: userContent };
         }
         return { role: m.role, content: m.content };
       });
 
-      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-chat`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-        },
-        body: JSON.stringify({
-          messages: apiMessages,
-          userProfile: profile ? {
-            program: profile.program,
-            institution: profile.institution,
-            educationLevel: profile.education_level,
-            yearOfStudy: profile.year_of_study,
-          } : null,
-        }),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-chat`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+          },
+          body: JSON.stringify({
+            messages: apiMessages,
+            userProfile: profile
+              ? {
+                  program: profile.program,
+                  institution: profile.institution,
+                  educationLevel: profile.education_level,
+                  yearOfStudy: profile.year_of_study,
+                }
+              : null,
+          }),
+        }
+      );
 
       if (!response.ok) throw new Error("Failed to get response");
 
@@ -192,13 +255,15 @@ export default function AITutor() {
       let assistantContent = "";
       const assistantId = (Date.now() + 1).toString();
 
-      setMessages(prev => [...prev, { id: assistantId, role: "assistant", content: "" }]);
+      setMessages((prev) => [
+        ...prev,
+        { id: assistantId, role: "assistant", content: "" },
+      ]);
 
       let buffer = "";
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-
         buffer += decoder.decode(value, { stream: true });
 
         let newlineIndex: number;
@@ -215,17 +280,29 @@ export default function AITutor() {
             const content = parsed.choices?.[0]?.delta?.content;
             if (content) {
               assistantContent += content;
-              setMessages(prev =>
-                prev.map(m => m.id === assistantId ? { ...m, content: assistantContent } : m)
+              setMessages((prev) =>
+                prev.map((m) =>
+                  m.id === assistantId ? { ...m, content: assistantContent } : m
+                )
               );
             }
           } catch {}
         }
       }
+
+      // Save assistant message
+      if (assistantContent && activeConvId) {
+        await saveMessage(activeConvId, "assistant", assistantContent);
+        // Update conversation updated_at
+        await supabase
+          .from("conversations")
+          .update({ updated_at: new Date().toISOString() })
+          .eq("id", activeConvId);
+      }
     } catch (error) {
       console.error("Chat error:", error);
       toast.error("Failed to get response. Please try again.");
-      setMessages(prev => prev.slice(0, -1));
+      setMessages((prev) => prev.slice(0, -1));
     } finally {
       setIsLoading(false);
     }
@@ -237,6 +314,8 @@ export default function AITutor() {
     toast.success("Copied to clipboard");
     setTimeout(() => setCopiedId(null), 2000);
   };
+
+  const displayMessages = messages.length > 0 ? messages : [welcomeMessage];
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -258,29 +337,57 @@ export default function AITutor() {
         onChange={(e) => handleFileSelect(e.target.files)}
       />
 
-      <header className="sticky top-0 z-50 neuraal-glass border-b border-border/50">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" onClick={() => navigate("/dashboard")}>
-              <ArrowLeft className="w-5 h-5" />
+      {/* Chat Sidebar */}
+      <ChatSidebar
+        open={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+        activeConversationId={conversationId}
+        onSelectConversation={loadConversation}
+        onNewChat={handleNewChat}
+      />
+
+      {/* Header */}
+      <header className="sticky top-0 z-30 neuraal-glass border-b border-border/50">
+        <div className="container mx-auto px-4 h-14 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-9 w-9"
+              onClick={() => setSidebarOpen(true)}
+            >
+              <Menu className="w-5 h-5" />
             </Button>
             <div className="flex items-center gap-2">
-              <div className="p-2 rounded-lg bg-primary/10">
-                <Brain className="w-5 h-5 text-primary" />
-              </div>
-              <div>
-                <h1 className="font-display font-semibold">Neuraal Tutor</h1>
-                <p className="text-xs text-muted-foreground">Your study companion</p>
-              </div>
+              <Brain className="w-5 h-5 text-primary" />
+              <h1 className="font-display font-semibold text-sm">Neuraal Tutor</h1>
             </div>
           </div>
-          <NeuraalLogo size="sm" showText={false} />
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-9 w-9"
+              onClick={handleNewChat}
+            >
+              <Plus className="w-5 h-5" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-9 w-9"
+              onClick={() => navigate("/dashboard")}
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </Button>
+          </div>
         </div>
       </header>
 
+      {/* Messages */}
       <main className="flex-1 overflow-y-auto">
-        <div className="container mx-auto px-4 py-6 max-w-3xl space-y-6">
-          {messages.map((message) => (
+        <div className="container mx-auto px-4 py-6 max-w-3xl space-y-4">
+          {displayMessages.map((message) => (
             <div
               key={message.id}
               className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
@@ -292,7 +399,6 @@ export default function AITutor() {
                     : "bg-muted rounded-2xl rounded-bl-md px-4 py-3"
                 }`}
               >
-                {/* Show image attachments in user messages */}
                 {message.attachments && message.attachments.length > 0 && (
                   <div className="flex flex-wrap gap-2 mb-2">
                     {message.attachments.map((att, i) => (
@@ -315,18 +421,14 @@ export default function AITutor() {
                 )}
 
                 {message.role === "assistant" ? (
-                  <MarkdownContent
-                    content={message.content || (isLoading ? "" : "")}
-                  />
+                  <MarkdownContent content={message.content || ""} />
                 ) : (
                   message.content && (
-                    <div className="whitespace-pre-wrap">
-                      {message.content}
-                    </div>
+                    <div className="whitespace-pre-wrap">{message.content}</div>
                   )
                 )}
 
-                {message.role === "assistant" && message.content && (
+                {message.role === "assistant" && message.content && message.id !== "welcome" && (
                   <div className="flex items-center gap-2 mt-2 -mb-1">
                     <Button
                       variant="ghost"
@@ -335,9 +437,13 @@ export default function AITutor() {
                       onClick={() => handleCopy(message.content, message.id)}
                     >
                       {copiedId === message.id ? (
-                        <><Check className="w-3 h-3 mr-1" /> Copied</>
+                        <>
+                          <Check className="w-3 h-3 mr-1" /> Copied
+                        </>
                       ) : (
-                        <><Copy className="w-3 h-3 mr-1" /> Copy</>
+                        <>
+                          <Copy className="w-3 h-3 mr-1" /> Copy
+                        </>
                       )}
                     </Button>
                   </div>
@@ -353,7 +459,8 @@ export default function AITutor() {
         </div>
       </main>
 
-      <footer className="sticky bottom-0 neuraal-glass border-t border-border/50 p-4">
+      {/* Input Bar - ChatGPT style */}
+      <footer className="sticky bottom-0 bg-background border-t border-border/50 px-4 py-3">
         <div className="container mx-auto max-w-3xl">
           {/* Attachment previews */}
           {attachments.length > 0 && (
@@ -364,13 +471,13 @@ export default function AITutor() {
                     <img
                       src={att.preview}
                       alt={att.file.name}
-                      className="w-16 h-16 rounded-lg object-cover border border-border"
+                      className="w-14 h-14 rounded-lg object-cover border border-border"
                     />
                   ) : (
-                    <div className="w-16 h-16 rounded-lg border border-border bg-muted flex flex-col items-center justify-center">
-                      <FileText className="w-5 h-5 text-muted-foreground" />
-                      <span className="text-[10px] text-muted-foreground mt-1 truncate max-w-[56px] px-1">
-                        {att.file.name.split('.').pop()}
+                    <div className="w-14 h-14 rounded-lg border border-border bg-muted flex flex-col items-center justify-center">
+                      <FileText className="w-4 h-4 text-muted-foreground" />
+                      <span className="text-[9px] text-muted-foreground mt-0.5 truncate max-w-[48px] px-1">
+                        {att.file.name.split(".").pop()}
                       </span>
                     </div>
                   )}
@@ -385,54 +492,79 @@ export default function AITutor() {
             </div>
           )}
 
-          <div className="flex items-end gap-2">
-            <div className="flex gap-1">
+          {/* Input row */}
+          <div className="relative flex items-end gap-2">
+            {/* + Button with popup */}
+            <div className="relative">
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-10 w-10 shrink-0"
-                onClick={() => fileInputRef.current?.click()}
+                className="h-10 w-10 shrink-0 rounded-full"
+                onClick={() => setShowAttachMenu(!showAttachMenu)}
                 disabled={isLoading}
               >
-                <Paperclip className="w-5 h-5" />
+                <Plus className="w-5 h-5" />
               </Button>
+
+              {showAttachMenu && (
+                <div className="absolute bottom-12 left-0 bg-popover border border-border rounded-xl shadow-lg p-2 flex flex-col gap-1 min-w-[160px] animate-scale-in z-10">
+                  <button
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-muted transition-colors text-sm"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    <Paperclip className="w-4 h-4" />
+                    Attach File
+                  </button>
+                  <button
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-muted transition-colors text-sm"
+                    onClick={() => cameraInputRef.current?.click()}
+                  >
+                    <Camera className="w-4 h-4" />
+                    Take Photo
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Text input */}
+            <div className="flex-1 relative">
+              <textarea
+                ref={inputRef}
+                placeholder="Message"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSend();
+                  }
+                }}
+                className="w-full min-h-[44px] max-h-[120px] resize-none rounded-2xl bg-muted px-4 py-3 pr-12 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                disabled={isLoading}
+                rows={1}
+              />
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-10 w-10 shrink-0"
-                onClick={() => cameraInputRef.current?.click()}
-                disabled={isLoading}
+                className="absolute right-1 bottom-1 h-9 w-9 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-30 disabled:bg-muted disabled:text-muted-foreground"
+                onClick={handleSend}
+                disabled={(!input.trim() && attachments.length === 0) || isLoading}
               >
-                <Camera className="w-5 h-5" />
+                {isLoading ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Send className="w-4 h-4" />
+                )}
               </Button>
             </div>
-            <textarea
-              ref={inputRef}
-              placeholder="Ask Neuraal anything..."
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault();
-                  handleSend();
-                }
-              }}
-              className="flex-1 min-h-[44px] max-h-[120px] resize-none rounded-xl border border-input bg-background px-4 py-3 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              disabled={isLoading}
-              rows={1}
-            />
-            <Button
-              variant="gradient"
-              size="icon"
-              className="h-10 w-10 shrink-0"
-              onClick={handleSend}
-              disabled={(!input.trim() && attachments.length === 0) || isLoading}
-            >
-              {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
-            </Button>
           </div>
         </div>
       </footer>
+
+      {/* Close attach menu on click outside */}
+      {showAttachMenu && (
+        <div className="fixed inset-0 z-0" onClick={() => setShowAttachMenu(false)} />
+      )}
     </div>
   );
 }
