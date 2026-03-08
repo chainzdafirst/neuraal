@@ -221,7 +221,7 @@ export default function Landing() {
               Turn bulky lecture notes into structured, exam-ready learning within minutes.  
             
             </p>
-            <Button variant="hero" size="xl" onClick={() => navigate("/signup")} className="h-[57px] leading-[57px] px-10 text-sm font-extrabold">
+            <Button variant="hero" size="xl" onClick={() => navigate("/signup")} className="h-12 sm:h-[57px] leading-normal px-8 sm:px-10 text-sm font-extrabold w-full sm:w-auto">
               Get Started
             </Button>
           </div>
