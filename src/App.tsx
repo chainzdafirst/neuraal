@@ -43,7 +43,8 @@ const App = () => (
             <Route path="/quiz" element={<Quiz />} />
             <Route path="/flashcards" element={<Flashcards />} />
             <Route path="/progress" element={<Progress />} />
-            {/* Admin routes */}
+            {/* Admin routes - fully separate from consumer app */}
+            <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/admin" element={<AdminOverview />} />
             <Route path="/admin/users" element={<AdminUsers />} />
             <Route path="/admin/ai" element={<AdminAI />} />
