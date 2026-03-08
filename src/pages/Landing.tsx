@@ -80,6 +80,7 @@ function FeatureCard({ icon: Icon, title, description, preview, gradient, revers
 
 export default function Landing() {
   const navigate = useNavigate();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const features = [
     {
