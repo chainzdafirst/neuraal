@@ -182,21 +182,12 @@ export default function AITutor() {
                 className={`max-w-[85%] ${
                   message.role === "user"
                     ? "bg-primary text-primary-foreground rounded-2xl rounded-br-md px-4 py-3"
-                    : "neuraal-card p-4"
+                    : "bg-muted rounded-2xl rounded-bl-md px-4 py-3"
                 }`}
               >
-                {message.role === "assistant" && (
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="p-1.5 rounded-lg bg-primary/10">
-                      <Brain className="w-4 h-4 text-primary" />
-                    </div>
-                    <span className="text-sm font-medium">Neuraal</span>
-                  </div>
-                )}
-
                 {message.role === "assistant" ? (
                   <MarkdownContent
-                    content={message.content || (isLoading ? "Thinking..." : "")}
+                    content={message.content || (isLoading ? "" : "")}
                   />
                 ) : (
                   <div className="whitespace-pre-wrap">
