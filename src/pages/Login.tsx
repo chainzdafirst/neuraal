@@ -35,7 +35,9 @@ export default function Login() {
       navigate("/dashboard");
     } catch (error: any) {
       const message = error?.message || "Login failed. Please try again.";
-      if (message.includes("Invalid login")) {
+      if (message.includes("Load failed") || message.includes("fetch")) {
+        toast.error("Unable to connect to the server. Please check your internet connection and try again.");
+      } else if (message.includes("Invalid login")) {
         toast.error("Invalid email or password");
       } else {
         toast.error(message);
