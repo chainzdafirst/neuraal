@@ -575,9 +575,8 @@ export default function AITutor() {
         </div>
       </footer>
 
-      {/* Close attach menu on click outside */}
       {showAttachMenu && (
-        <div className="fixed inset-0 z-0" onClick={() => setShowAttachMenu(false)} />
+        <div className="fixed inset-0 z-40" onClick={() => setShowAttachMenu(false)} />
       )}
     </div>
   );
