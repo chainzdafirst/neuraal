@@ -225,14 +225,7 @@ export default function AITutor() {
           ))}
 
           {isLoading && messages[messages.length - 1]?.role !== "assistant" && (
-            <div className="flex justify-start">
-              <div className="neuraal-card p-4">
-                <div className="flex items-center gap-3">
-                  <Loader2 className="w-5 h-5 text-primary animate-spin" />
-                  <span className="text-sm text-muted-foreground">Thinking...</span>
-                </div>
-              </div>
-            </div>
+            <TypingIndicator />
           )}
           <div ref={messagesEndRef} />
         </div>
