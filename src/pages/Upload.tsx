@@ -27,11 +27,6 @@ export default function UploadDocument() {
     }
   }, [isAuthenticated, navigate]);
 
-  const handleFileReady = (documentId: string, fileName: string) => {
-    setUploadedDocumentId(documentId);
-    setDocumentName(fileName);
-  };
-
   const [documentFilePath, setDocumentFilePath] = useState<string | null>(null);
   const [documentFileName, setDocumentFileName] = useState<string | null>(null);
 
