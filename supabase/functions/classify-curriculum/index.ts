@@ -102,7 +102,14 @@ Focus on the first/cover page for metadata. If the document appears to be a scan
         { role: "user", content: `${userPrompt}\n\nDocument text (first page):\n${firstPageText}` },
       ];
     } else if (lowerName.endsWith('.pdf')) {
-      const base64 = btoa(String.fromCharCode(...uint8));
+      // Chunk the conversion to avoid stack overflow on large files
+      let binary = '';
+      const chunkSize = 8192;
+      for (let i = 0; i < uint8.length; i += chunkSize) {
+        const chunk = uint8.subarray(i, i + chunkSize);
+        binary += String.fromCharCode(...chunk);
+      }
+      const base64 = btoa(binary);
       messages = [
         { role: "system", content: systemPrompt },
         {
