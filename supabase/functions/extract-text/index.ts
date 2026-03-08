@@ -48,11 +48,23 @@ async function extractEpub(data: Uint8Array): Promise<string> {
   return texts.join("\n\n");
 }
 
-async function extractPdfViaAI(data: Uint8Array): Promise<string> {
+async function extractPdfViaAI(data: Uint8Array, firstPageOnly: boolean): Promise<string> {
   const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
   if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
   const base64 = btoa(String.fromCharCode(...data));
+  const fileSizeMB = data.length / (1024 * 1024);
+
+  let extractionPrompt = firstPageOnly
+    ? "Extract ALL text content from the FIRST PAGE ONLY of this PDF document. Return only the extracted text, nothing else."
+    : "Extract ALL text content from this PDF document verbatim. Preserve the structure, headings, paragraphs, lists, and tables as closely as possible. Return only the extracted text, nothing else.";
+
+  if (!firstPageOnly && fileSizeMB > 5) {
+    extractionPrompt += " This is a large document — focus on efficient, accurate text extraction.";
+  }
+
+  // Use flash-lite for simple text extraction (cheaper/faster), flash for first-page (used by classify which needs accuracy)
+  const model = "google/gemini-2.5-flash-lite";
 
   const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
     method: "POST",
@@ -61,23 +73,15 @@ async function extractPdfViaAI(data: Uint8Array): Promise<string> {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      model: "google/gemini-2.5-flash",
+      model,
       messages: [
         {
           role: "user",
           content: [
-            {
-              type: "text",
-              text: "Extract ALL text content from this PDF document verbatim. Preserve the structure, headings, paragraphs, lists, and tables as closely as possible. Return only the extracted text, nothing else."
-            },
-            {
-              type: "image_url",
-              image_url: {
-                url: `data:application/pdf;base64,${base64}`
-              }
-            }
-          ]
-        }
+            { type: "text", text: extractionPrompt },
+            { type: "image_url", image_url: { url: `data:application/pdf;base64,${base64}` } },
+          ],
+        },
       ],
     }),
   });
@@ -100,14 +104,13 @@ serve(async (req) => {
   }
 
   try {
-    const { filePath, fileType, fileName } = await req.json();
+    const { filePath, fileType, fileName, firstPageOnly = false } = await req.json();
     if (!filePath) throw new Error("filePath is required");
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, serviceRoleKey);
 
-    // Download file from storage
     const { data: fileData, error: downloadError } = await supabase.storage
       .from('documents')
       .download(filePath);
@@ -123,13 +126,16 @@ serve(async (req) => {
     const lowerName = (fileName || filePath).toLowerCase();
 
     if (lowerName.endsWith('.pdf')) {
-      extractedText = await extractPdfViaAI(uint8);
+      extractedText = await extractPdfViaAI(uint8, firstPageOnly);
     } else if (lowerName.endsWith('.docx') || lowerName.endsWith('.doc')) {
       extractedText = await extractDocx(uint8);
+      if (firstPageOnly) extractedText = extractedText.slice(0, 3000);
     } else if (lowerName.endsWith('.pptx') || lowerName.endsWith('.ppt')) {
       extractedText = await extractPptx(uint8);
+      if (firstPageOnly) extractedText = extractedText.slice(0, 3000);
     } else if (lowerName.endsWith('.epub')) {
       extractedText = await extractEpub(uint8);
+      if (firstPageOnly) extractedText = extractedText.slice(0, 3000);
     } else {
       throw new Error(`Unsupported file type: ${lowerName}`);
     }

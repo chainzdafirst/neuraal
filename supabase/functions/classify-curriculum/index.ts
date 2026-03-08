@@ -19,7 +19,6 @@ async function getFirstPageText(data: Uint8Array, fileName: string): Promise<str
     const docXml = await zip.file("word/document.xml")?.async("string");
     if (!docXml) return null;
     const text = stripXmlTags(docXml);
-    // Return first ~2000 chars as approximation of first page
     return text.slice(0, 2000);
   }
 
@@ -57,7 +56,6 @@ serve(async (req) => {
 
     const supabase = createClient(supabaseUrl, serviceRoleKey);
 
-    // Download file
     const { data: fileData, error: downloadError } = await supabase.storage
       .from('documents')
       .download(filePath);
@@ -75,7 +73,6 @@ serve(async (req) => {
     const knownInstitutions = [...new Set((existingResources || []).map(r => r.institution))];
     const knownPrograms = [...new Set((existingResources || []).map(r => r.program))];
 
-    // Try text extraction for non-PDF, or use multimodal for PDF
     const lowerName = (fileName || filePath).toLowerCase();
     const firstPageText = await getFirstPageText(uint8, lowerName);
 
@@ -94,10 +91,10 @@ If the document matches a known institution or program, use the EXACT same spell
 5. education_level: "diploma" or "degree"
 6. exam_type: "board" or "semester"
 7. description: A one-sentence summary of the document
+8. first_page_text: The full text content you can read from the first page/cover page of the document
 
 Focus on the first/cover page for metadata. If the document appears to be a scanned image, use OCR to read all visible text before classifying.`;
 
-    // Build messages based on whether we have text or need multimodal
     let messages: any[];
     if (firstPageText) {
       messages = [
@@ -105,7 +102,6 @@ Focus on the first/cover page for metadata. If the document appears to be a scan
         { role: "user", content: `${userPrompt}\n\nDocument text (first page):\n${firstPageText}` },
       ];
     } else if (lowerName.endsWith('.pdf')) {
-      // For PDFs, send as inline_data with proper PDF mime type for OCR
       const base64 = btoa(String.fromCharCode(...uint8));
       messages = [
         { role: "system", content: systemPrompt },
@@ -135,7 +131,7 @@ Focus on the first/cover page for metadata. If the document appears to be a scan
             type: "function",
             function: {
               name: "classify_document",
-              description: "Return structured metadata extracted from the academic document.",
+              description: "Return structured metadata and first-page text extracted from the academic document.",
               parameters: {
                 type: "object",
                 properties: {
@@ -146,8 +142,9 @@ Focus on the first/cover page for metadata. If the document appears to be a scan
                   education_level: { type: "string", enum: ["diploma", "degree"] },
                   exam_type: { type: "string", enum: ["board", "semester"] },
                   description: { type: "string", description: "One-sentence summary" },
+                  first_page_text: { type: "string", description: "Full text content from the first page/cover page of the document" },
                 },
-                required: ["title", "resource_type", "institution", "program", "education_level", "exam_type", "description"],
+                required: ["title", "resource_type", "institution", "program", "education_level", "exam_type", "description", "first_page_text"],
                 additionalProperties: false,
               },
             },
@@ -174,9 +171,12 @@ Focus on the first/cover page for metadata. If the document appears to be a scan
       throw new Error("AI did not return structured classification");
     }
 
-    const metadata = JSON.parse(toolCall.function.arguments);
+    const parsed = JSON.parse(toolCall.function.arguments);
+    
+    // Separate first_page_text from metadata
+    const { first_page_text, ...metadata } = parsed;
 
-    return new Response(JSON.stringify({ metadata }), {
+    return new Response(JSON.stringify({ metadata, extractedText: first_page_text || firstPageText || null }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error) {

@@ -83,6 +83,7 @@ export default function AdminContent() {
   const [classifying, setClassifying] = useState(false);
   const [classifyFailed, setClassifyFailed] = useState(false);
   const [uploadedFilePath, setUploadedFilePath] = useState<string | null>(null);
+  const [classifiedText, setClassifiedText] = useState<string | null>(null);
 
   // Resource upload form
   const [form, setForm] = useState({
@@ -182,6 +183,7 @@ export default function AdminContent() {
     setClassifying(true);
     setClassifyFailed(false);
     setUploadedFilePath(null);
+    setClassifiedText(null);
 
     try {
       // Upload to storage first
@@ -203,7 +205,11 @@ export default function AdminContent() {
 
       if (!res.ok) throw new Error("Classification failed");
 
-      const { metadata } = await res.json();
+      const { metadata, extractedText } = await res.json();
+      
+      // Store extracted text from classification to avoid redundant AI call
+      if (extractedText) setClassifiedText(extractedText);
+      
       setForm((prev) => ({
         ...prev,
         title: metadata.title || prev.title,
@@ -243,15 +249,20 @@ export default function AdminContent() {
         if (uploadError) throw uploadError;
       }
 
-      // Extract text
+      // Use text from classification if available, otherwise extract
       if (filePath) {
-        const { data: session } = await supabase.auth.getSession();
-        const extractRes = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/extract-text`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", Authorization: `Bearer ${session?.session?.access_token || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}` },
-          body: JSON.stringify({ filePath, fileType, fileName }),
-        });
-        if (extractRes.ok) { const d = await extractRes.json(); contentText = d.extractedText || null; }
+        if (classifiedText) {
+          // Reuse text already extracted during classification (saves an AI call)
+          contentText = classifiedText;
+        } else {
+          const { data: session } = await supabase.auth.getSession();
+          const extractRes = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/extract-text`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${session?.session?.access_token || import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}` },
+            body: JSON.stringify({ filePath, fileType, fileName }),
+          });
+          if (extractRes.ok) { const d = await extractRes.json(); contentText = d.extractedText || null; }
+        }
       }
 
       const { data: { user: currentUser } } = await supabase.auth.getUser();
@@ -275,6 +286,7 @@ export default function AdminContent() {
     setForm({ title: "", description: "", resource_type: "syllabus", institution: activeInstitution || "", program: activeProgram || "", education_level: "degree", exam_type: "semester" });
     setFile(null);
     setUploadedFilePath(null);
+    setClassifiedText(null);
     setClassifying(false);
     setClassifyFailed(false);
   };
