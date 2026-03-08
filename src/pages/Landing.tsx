@@ -118,53 +118,51 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-background overflow-hidden">
       {/* Top Banner */}
-      <div className="bg-foreground text-background text-center py-2.5 text-sm font-medium tracking-wide">
-        🎓 Free for Zambian students — Start studying smarter today
+      <div className="bg-muted h-[38px] flex items-center justify-center">
+        <p className="text-foreground text-sm font-semibold">🎓 Free for Zambian students — Start studying smarter today</p>
       </div>
 
       {/* Navigation */}
-      <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border/50">
-        <div className="container mx-auto px-6 h-16 flex items-center justify-between">
-          <NeuraalLogo size="sm" />
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" size="default" onClick={() => navigate("/login")}>
-              Sign In
-            </Button>
-            <Button variant="hero" size="default" onClick={() => navigate("/signup")}>
-              Sign Up
-            </Button>
-          </div>
+      <nav className="max-w-[1360px] px-5 sm:px-[70px] mx-auto flex items-center justify-between py-4">
+        <NeuraalLogo size="sm" />
+        <div className="flex items-center gap-3">
+          <Button variant="ghost" size="default" className="text-sm font-semibold" onClick={() => navigate("/login")}>
+            Sign In
+          </Button>
+          <Button variant="hero" size="default" className="text-sm font-extrabold" onClick={() => navigate("/signup")}>
+            Sign Up
+          </Button>
         </div>
       </nav>
 
       {/* Hero Section — Left-aligned like Flook */}
-      <section className="pt-24 pb-32 px-6">
-        <div className="container mx-auto max-w-5xl">
-          <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-display font-bold tracking-tight leading-[1.05] mb-6">
+      <section className="pt-5 pb-5 sm:pt-9 sm:pb-[74px] max-w-[1360px] px-5 sm:px-[70px] mx-auto">
+        <div>
+          <h1 className="text-[40px] sm:text-[84px] font-display font-bold tracking-[-0.02em] leading-[48px] sm:leading-[100px] mb-6">
             Your Syllabus-Aligned
             <br />
             <RotatingText />
           </h1>
 
-          <p className="text-lg sm:text-xl text-muted-foreground max-w-xl mb-10 leading-relaxed">
+          <p className="text-[15px] sm:text-lg font-semibold text-foreground mb-6">
             Turn complex lecture notes into structured, exam-ready learning.
             Built for students. No developers required.
           </p>
 
-          <Button variant="hero" size="xl" onClick={() => navigate("/signup")}>
+          <Button variant="hero" size="xl" onClick={() => navigate("/signup")} className="h-[57px] leading-[57px] px-10 text-sm font-extrabold">
             Get Started
           </Button>
         </div>
       </section>
 
       {/* Feature Cards — 2-column grid with gradient backgrounds like Flook */}
-      <section className="py-24 px-6">
-        <div className="container mx-auto max-w-5xl">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <section className="max-w-[1360px] px-5 sm:px-[70px] mx-auto">
+        <div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-9">
             {features.map((feature) => (
               <div
                 key={feature.title}
-                className={`relative rounded-3xl bg-gradient-to-br ${feature.gradient} p-8 min-h-[260px] flex flex-col justify-end text-white overflow-hidden group hover:-translate-y-1 transition-transform duration-300`}
+                className={`relative rounded-[9px] sm:rounded-[16px] bg-gradient-to-r ${feature.gradient} p-8 min-h-[260px] sm:min-h-[574px] flex flex-col justify-end text-white overflow-hidden group hover:-translate-y-1 transition-transform duration-300`}
               >
                 {/* Subtle overlay for readability */}
                 <div className="absolute inset-0 bg-black/10 rounded-3xl" />
@@ -190,9 +188,9 @@ export default function Landing() {
       </section>
 
       {/* Social Proof / Stats — Clean card */}
-      <section className="py-24 px-6">
-        <div className="container mx-auto max-w-5xl">
-          <div className="rounded-3xl border border-border bg-card p-10 md:p-14">
+      <section className="py-24 max-w-[1360px] px-5 sm:px-[70px] mx-auto">
+        <div>
+          <div className="rounded-[16px] border border-border bg-card p-10 md:p-14">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
               {[
                 { value: "300K+", label: "Students in Zambia" },
@@ -213,9 +211,9 @@ export default function Landing() {
       </section>
 
       {/* How it works — Numbered steps like Flook */}
-      <section className="py-24 px-6 bg-secondary/30">
-        <div className="container mx-auto max-w-3xl">
-          <h2 className="text-3xl sm:text-4xl font-display font-bold text-center mb-16">
+      <section className="py-24 bg-secondary/30">
+        <div className="max-w-[1360px] px-5 sm:px-[70px] mx-auto max-w-3xl">
+          <h2 className="text-[28px] sm:text-[40px] font-display font-bold text-center mb-16 tracking-[-0.02em]">
             Simple to get started
           </h2>
 
@@ -238,16 +236,16 @@ export default function Landing() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-28 px-6">
-        <div className="container mx-auto max-w-3xl text-center">
+      <section className="py-28 max-w-[1360px] px-5 sm:px-[70px] mx-auto">
+        <div className="max-w-3xl mx-auto text-center">
           <NeuraalLogo size="lg" showText={false} className="justify-center mb-8" />
-          <h2 className="text-3xl sm:text-4xl font-display font-bold mb-4">
+          <h2 className="text-[28px] sm:text-[40px] font-display font-bold mb-4 tracking-[-0.02em]">
             Ready to study smarter?
           </h2>
-          <p className="text-muted-foreground text-lg max-w-xl mx-auto mb-10 leading-relaxed">
+          <p className="text-muted-foreground text-[15px] sm:text-lg font-semibold max-w-xl mx-auto mb-10">
             Join thousands of students transforming their academic performance with Neuraal.
           </p>
-          <Button variant="hero" size="xl" onClick={() => navigate("/signup")}>
+          <Button variant="hero" size="xl" onClick={() => navigate("/signup")} className="h-[57px] leading-[57px] px-10 text-sm font-extrabold">
             Get Started — It's Free
             <ChevronRight className="w-5 h-5 ml-1" />
           </Button>
