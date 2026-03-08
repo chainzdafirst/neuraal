@@ -254,7 +254,7 @@ export default function Landing() {
                 { value: "300K+", label: "Students in Zambia" },
                 { value: "24/7", label: "AI Availability" },
                 { value: "100%", label: "Syllabus Aligned" },
-                { value: "ZMW 25", label: "Monthly Price" }].
+                { value: "ZMW 25", label: "Per Month" }].
                 map((stat) =>
                 <div key={stat.label}>
                     <div className="text-3xl md:text-4xl font-display font-bold text-foreground mb-1">
