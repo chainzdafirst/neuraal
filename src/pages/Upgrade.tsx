@@ -171,6 +171,12 @@ export default function Upgrade() {
                 >
                   Start 7-Day Free Trial
                 </Button>
+                <Button
+                  variant={isPopular ? "default" : "ghost"}
+                  className="w-full mt-2"
+                >
+                  Subscribe Now
+                </Button>
               </button>
             );
           })}
