@@ -10,7 +10,7 @@ export function PreviewAITutor() {
         <span className="text-xs font-semibold">Neuraal Tutor</span>
       </div>
       {/* Chat */}
-      <div className="p-3 space-y-3 text-[11px] leading-relaxed max-h-[260px] overflow-hidden">
+      <div className="p-3 space-y-3 text-[11px] leading-relaxed max-h-[260px] overflow-hidden px-0 mx-[100px]">
         {/* User */}
         <div className="flex justify-end">
           <div className="bg-primary text-primary-foreground rounded-xl rounded-br-sm px-3 py-2 max-w-[75%]">
@@ -40,8 +40,8 @@ export function PreviewAITutor() {
         <div className="flex-1 h-7 rounded-md border border-border bg-background px-2 text-[10px] text-muted-foreground flex items-center">Ask Neuraal anything...</div>
         <div className="w-7 h-7 rounded-full bg-gradient-to-r from-primary to-accent flex items-center justify-center"><Send className="w-3 h-3 text-white" /></div>
       </div>
-    </div>
-  );
+    </div>);
+
 }
 
 /* ─── QUIZ PREVIEW ─── */
@@ -52,7 +52,7 @@ export function PreviewQuiz() {
         <div className="p-1 rounded-md bg-neuraal-amber/10"><Target className="w-3 h-3 text-neuraal-amber" /></div>
         <span className="text-xs font-semibold">Quizzes & Tests</span>
       </div>
-      <div className="p-4 space-y-3">
+      <div className="p-4 space-y-3 px-0 mx-[100px]">
         <div className="flex items-center justify-between text-[10px] text-muted-foreground">
           <span>Question 5 of 10</span><span className="font-medium text-foreground">Communication Skills</span>
         </div>
@@ -62,26 +62,26 @@ export function PreviewQuiz() {
         <p className="text-sm font-semibold mt-2">Which of the following best describes "active listening"?</p>
         <div className="space-y-2 text-[11px]">
           {[
-            { label: "Waiting for your turn to speak", correct: false },
-            { label: "Fully engaging with the speaker's message", correct: true },
-            { label: "Taking notes without responding", correct: false },
-            { label: "Repeating everything verbatim", correct: false },
-          ].map((o, i) => (
-            <div key={i} className={`p-2.5 rounded-lg border-2 flex items-center gap-2 ${o.correct ? "border-neuraal-emerald bg-neuraal-emerald/10" : "border-border opacity-50"}`}>
+          { label: "Waiting for your turn to speak", correct: false },
+          { label: "Fully engaging with the speaker's message", correct: true },
+          { label: "Taking notes without responding", correct: false },
+          { label: "Repeating everything verbatim", correct: false }].
+          map((o, i) =>
+          <div key={i} className={`p-2.5 rounded-lg border-2 flex items-center gap-2 ${o.correct ? "border-neuraal-emerald bg-neuraal-emerald/10" : "border-border opacity-50"}`}>
               <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-medium ${o.correct ? "bg-neuraal-emerald text-white" : "bg-secondary"}`}>
                 {o.correct ? <Check className="w-3 h-3" /> : String.fromCharCode(65 + i)}
               </div>
               <span>{o.label}</span>
             </div>
-          ))}
+          )}
         </div>
         <div className="bg-accent/5 border border-accent/20 rounded-lg p-3 text-[11px]">
           <div className="flex items-center gap-1.5 font-semibold mb-1"><BookOpen className="w-3 h-3 text-accent" /> Explanation</div>
           <p className="text-muted-foreground">Active listening involves fully concentrating on the speaker, understanding their message, and responding thoughtfully — rather than passively hearing words.</p>
         </div>
       </div>
-    </div>
-  );
+    </div>);
+
 }
 
 /* ─── SUMMARY PREVIEW ─── */
@@ -95,7 +95,7 @@ export function PreviewSummary() {
           <span className="text-[9px] text-muted-foreground ml-2">Project_Management.pdf</span>
         </div>
       </div>
-      <div className="p-4 text-[11px] leading-relaxed max-h-[320px] overflow-hidden space-y-3">
+      <div className="p-4 text-[11px] leading-relaxed max-h-[320px] overflow-hidden space-y-3 py-[16px] px-0 ml-[100px] pb-[100px] pr-[100px]">
         <div>
           <h3 className="text-sm font-bold font-display">Project Management — The Triple Constraint</h3>
           <p className="text-[10px] text-muted-foreground">7 key concepts identified</p>
@@ -123,8 +123,8 @@ export function PreviewSummary() {
           <p>✅ Describe the role of quality within the iron triangle</p>
         </div>
       </div>
-    </div>
-  );
+    </div>);
+
 }
 
 /* ─── FLASHCARDS PREVIEW ─── */
@@ -135,7 +135,7 @@ export function PreviewFlashcards() {
         <div className="p-1 rounded-md bg-neuraal-emerald/10"><LayoutGrid className="w-3 h-3 text-neuraal-emerald" /></div>
         <span className="text-xs font-semibold">Flashcards</span>
       </div>
-      <div className="p-4">
+      <div className="p-4 px-0 mx-[100px]">
         <div className="flex items-center justify-between text-[10px] mb-2">
           <span className="text-muted-foreground">Card 7 of 20</span>
           <div className="flex gap-1.5"><span className="text-neuraal-emerald font-medium">6 mastered</span><span className="text-muted-foreground">· 14 remaining</span></div>
@@ -167,21 +167,21 @@ export function PreviewFlashcards() {
           <ChevronRight className="w-4 h-4" />
         </div>
       </div>
-    </div>
-  );
+    </div>);
+
 }
 
 /* ─── PROGRESS PREVIEW ─── */
 export function PreviewProgress() {
   const weeklyData = [
-    { day: "Mon", hours: 2.5 },
-    { day: "Tue", hours: 1.8 },
-    { day: "Wed", hours: 3.2 },
-    { day: "Thu", hours: 0.5 },
-    { day: "Fri", hours: 2.0 },
-    { day: "Sat", hours: 4.1 },
-    { day: "Sun", hours: 1.5 },
-  ];
+  { day: "Mon", hours: 2.5 },
+  { day: "Tue", hours: 1.8 },
+  { day: "Wed", hours: 3.2 },
+  { day: "Thu", hours: 0.5 },
+  { day: "Fri", hours: 2.0 },
+  { day: "Sat", hours: 4.1 },
+  { day: "Sun", hours: 1.5 }];
+
   const maxH = Math.max(...weeklyData.map((d) => d.hours));
 
   return (
@@ -190,21 +190,21 @@ export function PreviewProgress() {
         <div className="p-1 rounded-md bg-accent/10"><BarChart3 className="w-3 h-3 text-accent" /></div>
         <span className="text-xs font-semibold">Progress</span>
       </div>
-      <div className="p-4 space-y-4">
+      <div className="p-4 space-y-4 mx-[100px]">
         {/* Stats */}
         <div className="grid grid-cols-4 gap-2">
           {[
-            { label: "Streak", value: "12 days", icon: Zap, color: "text-neuraal-amber", bg: "bg-neuraal-amber/10" },
-            { label: "Quizzes", value: "24", icon: Target, color: "text-primary", bg: "bg-primary/10" },
-            { label: "Avg.", value: "78%", icon: TrendingUp, color: "text-neuraal-emerald", bg: "bg-neuraal-emerald/10" },
-            { label: "Mastered", value: "8/12", icon: BookOpen, color: "text-accent", bg: "bg-accent/10" },
-          ].map((s) => (
-            <div key={s.label} className="bg-card rounded-lg border border-border/50 p-2">
+          { label: "Streak", value: "12 days", icon: Zap, color: "text-neuraal-amber", bg: "bg-neuraal-amber/10" },
+          { label: "Quizzes", value: "24", icon: Target, color: "text-primary", bg: "bg-primary/10" },
+          { label: "Avg.", value: "78%", icon: TrendingUp, color: "text-neuraal-emerald", bg: "bg-neuraal-emerald/10" },
+          { label: "Mastered", value: "8/12", icon: BookOpen, color: "text-accent", bg: "bg-accent/10" }].
+          map((s) =>
+          <div key={s.label} className="bg-card rounded-lg border border-border/50 p-2">
               <div className={`inline-flex p-1 rounded-md ${s.bg} mb-1`}><s.icon className={`w-3 h-3 ${s.color}`} /></div>
               <div className="text-sm font-bold font-display">{s.value}</div>
               <div className="text-[9px] text-muted-foreground">{s.label}</div>
             </div>
-          ))}
+          )}
         </div>
         {/* Chart */}
         <div className="bg-card rounded-lg border border-border/50 p-3">
@@ -212,12 +212,12 @@ export function PreviewProgress() {
             <TrendingUp className="w-3 h-3 text-primary" /> This Week
           </div>
           <div className="flex items-end justify-between h-20 gap-1">
-            {weeklyData.map((d) => (
-              <div key={d.day} className="flex-1 flex flex-col items-center gap-1">
-                <div className="w-full bg-gradient-to-t from-primary to-accent rounded-t" style={{ height: `${(d.hours / maxH) * 100}%`, minHeight: "4px" }} />
+            {weeklyData.map((d) =>
+            <div key={d.day} className="flex-1 flex flex-col items-center gap-1">
+                <div className="w-full bg-gradient-to-t from-primary to-accent rounded-t" style={{ height: `${d.hours / maxH * 100}%`, minHeight: "4px" }} />
                 <span className="text-[8px] text-muted-foreground">{d.day}</span>
               </div>
-            ))}
+            )}
           </div>
           <div className="mt-2 pt-2 border-t border-border flex justify-between text-[10px]">
             <span className="text-muted-foreground">Total</span><span className="font-semibold">15.6h</span>
@@ -227,24 +227,24 @@ export function PreviewProgress() {
         <div className="grid grid-cols-2 gap-2">
           <div className="bg-card rounded-lg border border-border/50 p-2.5">
             <div className="text-[10px] font-semibold mb-2 flex items-center gap-1"><AlertTriangle className="w-3 h-3 text-neuraal-amber" /> Improve</div>
-            {[{ t: "Communication", s: 35 }, { t: "Microeconomics", s: 42 }].map((a) => (
-              <div key={a.t} className="mb-1.5">
+            {[{ t: "Communication", s: 35 }, { t: "Microeconomics", s: 42 }].map((a) =>
+            <div key={a.t} className="mb-1.5">
                 <div className="flex justify-between text-[9px] mb-0.5"><span>{a.t}</span><span className="text-neuraal-amber">{a.s}%</span></div>
                 <div className="h-1 bg-secondary rounded-full"><div className="h-full bg-neuraal-amber rounded-full" style={{ width: `${a.s}%` }} /></div>
               </div>
-            ))}
+            )}
           </div>
           <div className="bg-card rounded-lg border border-border/50 p-2.5">
             <div className="text-[10px] font-semibold mb-2 flex items-center gap-1"><Zap className="w-3 h-3 text-neuraal-emerald" /> Strengths</div>
-            {[{ t: "Agile Methods", s: 92 }, { t: "Project Mgmt", s: 85 }].map((a) => (
-              <div key={a.t} className="mb-1.5">
+            {[{ t: "Agile Methods", s: 92 }, { t: "Project Mgmt", s: 85 }].map((a) =>
+            <div key={a.t} className="mb-1.5">
                 <div className="flex justify-between text-[9px] mb-0.5"><span>{a.t}</span><span className="text-neuraal-emerald">{a.s}%</span></div>
                 <div className="h-1 bg-secondary rounded-full"><div className="h-full bg-neuraal-emerald rounded-full" style={{ width: `${a.s}%` }} /></div>
               </div>
-            ))}
+            )}
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>);
+
 }
