@@ -10,7 +10,7 @@ export function PreviewAITutor() {
         <span className="text-xs font-semibold">Neuraal Tutor</span>
       </div>
       {/* Chat */}
-      <div className="p-3 sm:p-4 md:px-8 space-y-3 text-[11px] leading-relaxed max-h-[260px] overflow-hidden">
+      <div className="p-3 sm:p-4 md:px-8 space-y-3 text-[11px] leading-relaxed max-h-[260px] overflow-hidden>
         {/* User */}
         <div className="flex justify-end">
           <div className="bg-primary text-primary-foreground rounded-xl rounded-br-sm px-3 py-2 max-w-[75%]">
@@ -52,7 +52,7 @@ export function PreviewQuiz() {
         <div className="p-1 rounded-md bg-neuraal-amber/10"><Target className="w-3 h-3 text-neuraal-amber" /></div>
         <span className="text-xs font-semibold">Quizzes & Tests</span>
       </div>
-      <div className="p-4 space-y-3 px-0 mx-[100px]">
+      <div className="p-43 sm:p-4 md:px-8 space-y-3>
         <div className="flex items-center justify-between text-[10px] text-muted-foreground">
           <span>Question 5 of 10</span><span className="font-medium text-foreground">Communication Skills</span>
         </div>
