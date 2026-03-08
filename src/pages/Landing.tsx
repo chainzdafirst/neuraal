@@ -58,7 +58,7 @@ interface FeatureCardProps {
 
 function FeatureCard({ icon: Icon, title, description, preview, gradient, reverse }: FeatureCardProps) {
   return (
-    <div className={`flex flex-col ${reverse ? "lg:flex-row-reverse" : "lg:flex-row"} gap-6 sm:gap-10 items-center`}>
+    <div className={`flex flex-col ${reverse ? "md:flex-row-reverse" : "md:flex-row"} gap-6 sm:gap-10 items-center`}>
       <div className="flex-1 w-full lg:w-auto">
         <div className="flex items-center gap-2.5 mb-3">
           <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center`}>
