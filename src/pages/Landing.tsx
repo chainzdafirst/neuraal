@@ -91,7 +91,15 @@ function FeatureCard({ icon: Icon, title, description, preview, gradient }: Feat
         <p className="text-muted-foreground text-[15px] sm:text-base leading-relaxed max-w-2xl">
           {description}
         </p>
-        <div className="w-full md:rounded-[16px] md:border md:border-border md:bg-muted/30 md:overflow-hidden md:[&>div]:rounded-none md:[&>div]:border-0 md:[&>div]:shadow-none">
+        <div className={[
+          "w-full",
+          "md:rounded-[16px] md:border md:border-border md:bg-muted/30 md:overflow-hidden",
+          // Strip preview's own outer styling on desktop
+          "md:[&>div]:rounded-none md:[&>div]:border-0 md:[&>div]:shadow-none",
+          // Make content area (child after header) landscape-centered on desktop
+          "md:[&>div>div:nth-child(2)]:aspect-video md:[&>div>div:nth-child(2)]:flex md:[&>div>div:nth-child(2)]:items-center md:[&>div>div:nth-child(2)]:justify-center md:[&>div>div:nth-child(2)]:max-h-none md:[&>div>div:nth-child(2)]:overflow-visible",
+          "md:[&>div>div:nth-child(2)>*]:w-auto md:[&>div>div:nth-child(2)>*]:max-w-none",
+        ].join(" ")}>
           {preview}
         </div>
       </div>
