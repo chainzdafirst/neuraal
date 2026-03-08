@@ -27,11 +27,9 @@ export function PreviewAITutor() {
             <p className="font-semibold text-[11px] sm:text-xs">Law of Diminishing Marginal Returns</p>
             <p>This is a key microeconomic principle. As you add more of one <strong>variable input</strong> (e.g. labour) while keeping others fixed, the additional output gained from each new unit eventually decreases:</p>
             <ul className="list-disc pl-4 space-y-1">
-              <li><strong>Phase 1 (Increasing returns)</strong> — Each additional worker adds more output than the last, as specialisation improves efficiency.</li>
-              <li><strong>Phase 2 (Diminishing returns)</strong> — Output still rises, but each new worker contributes less than the previous one.</li>
-              <li><strong>Phase 3 (Negative returns)</strong> — Too many workers cause overcrowding or inefficiency, actually reducing total output.</li>
+              <li><strong>Phase 1 (Increasing returns)</strong> — Each additional worker adds more output than the last.</li>
+              <li><strong>Phase 2 (Diminishing returns)</strong> — Output still rises, but each new worker contributes less.</li>
             </ul>
-            <p>This is why firms cannot scale infinitely by adding just one factor — they must balance all inputs for optimal production.</p>
           </div>
         </div>
       </div>
