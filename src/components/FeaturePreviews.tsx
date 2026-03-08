@@ -54,7 +54,7 @@ export function PreviewQuiz() {
       </div>
       <div className="p-4 space-y-3">
         <div className="flex items-center justify-between text-[10px] text-muted-foreground">
-          <span>Question 5 of 10</span><span className="font-medium text-foreground">Computer Science</span>
+          <span>Question 5 of 10</span><span className="font-medium text-foreground">Communication Skills</span>
         </div>
         <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
           <div className="h-full bg-gradient-to-r from-primary to-accent" style={{ width: "50%" }} />
