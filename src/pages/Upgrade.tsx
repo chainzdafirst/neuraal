@@ -9,7 +9,7 @@ const plans = [
   {
     id: "weekly",
     name: "Weekly",
-    price: 14.99,
+    price: 9.98,
     period: "week",
     icon: Zap,
     features: [
@@ -23,7 +23,7 @@ const plans = [
   {
     id: "monthly",
     name: "Monthly",
-    price: 24.99,
+    price: 21199,
     period: "month",
     icon: Star,
     popular: true,
@@ -40,7 +40,7 @@ const plans = [
   {
     id: "yearly",
     name: "Yearly",
-    price: 249.99,
+    price: 229.98,
     period: "year",
     icon: Crown,
     discount: 55,
