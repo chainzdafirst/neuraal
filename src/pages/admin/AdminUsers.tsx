@@ -160,11 +160,11 @@ export default function AdminUsers() {
 
         {/* Filters */}
         <div className="flex flex-col sm:flex-row gap-3">
-          <div className="relative flex-1 max-w-md">
+          <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input placeholder="Search by name, email, or institution..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             {["all", "active", "suspended", "deactivated"].map((s) => (
               <Button key={s} size="sm" variant={statusFilter === s ? "default" : "outline"} onClick={() => setStatusFilter(s)}>
                 {s === "all" ? "All" : s.charAt(0).toUpperCase() + s.slice(1)}
