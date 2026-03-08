@@ -518,6 +518,7 @@ export default function AdminContent() {
                       <TableHead className="w-10"><Checkbox checked={filtered.length > 0 && selected.size === filtered.length} onCheckedChange={toggleAll} /></TableHead>
                       <TableHead>Title</TableHead>
                       <TableHead className="hidden sm:table-cell">Type</TableHead>
+                      <TableHead className="hidden sm:table-cell">Year</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead className="hidden md:table-cell">Date</TableHead>
                       <TableHead className="w-12" />
