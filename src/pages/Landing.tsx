@@ -323,9 +323,14 @@ export default function Landing() {
       <footer className="py-8 px-6 border-t border-border">
         <div className="container mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <NeuraalLogo size="sm" />
-          <p className="text-sm text-muted-foreground">
-            © 2026 Neuraal. Your AI Study Companion.
-          </p>
+          <div className="flex items-center gap-6">
+            <a href="/blog" className="text-sm text-muted-foreground hover:text-foreground transition-colors font-medium">
+              Blog & Articles
+            </a>
+            <p className="text-sm text-muted-foreground">
+              © 2026 Neuraal. Your AI Study Companion.
+            </p>
+          </div>
         </div>
       </footer>
     </div>);
