@@ -54,7 +54,7 @@ export default function Onboarding() {
   };
 
   const handleComplete = async () => {
-    if (!educationLevel || !institution || !program || !examType) {
+    if (!educationLevel || !institution || !program || !examType || !yearOfStudy) {
       toast.error("Please complete all steps");
       return;
     }
@@ -66,6 +66,7 @@ export default function Onboarding() {
         institution,
         program,
         exam_type: examType,
+        year_of_study: yearOfStudy,
       });
 
       toast.success("Your study space is ready!");
