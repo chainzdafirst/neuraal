@@ -495,14 +495,14 @@ export default function AdminContent() {
 
             <Card>
               <CardContent className="p-0 overflow-x-auto">
-                <Table className="min-w-[600px]">
+                <Table>
                   <TableHeader>
                     <TableRow>
                       <TableHead className="w-10"><Checkbox checked={filtered.length > 0 && selected.size === filtered.length} onCheckedChange={toggleAll} /></TableHead>
                       <TableHead>Title</TableHead>
-                      <TableHead>Type</TableHead>
+                      <TableHead className="hidden sm:table-cell">Type</TableHead>
                       <TableHead>Status</TableHead>
-                      <TableHead>Date</TableHead>
+                      <TableHead className="hidden md:table-cell">Date</TableHead>
                       <TableHead className="w-12" />
                     </TableRow>
                   </TableHeader>
@@ -513,17 +513,18 @@ export default function AdminContent() {
                       <TableRow key={res.id}>
                         <TableCell><Checkbox checked={selected.has(res.id)} onCheckedChange={() => toggleSelect(res.id)} /></TableCell>
                         <TableCell>
-                          <div>
-                            <span className="font-medium">{res.title}</span>
-                            {res.file_name && <p className="text-xs text-muted-foreground truncate max-w-[250px]">{res.file_name} · {formatBytes(res.file_size)}</p>}
+                          <div className="min-w-0">
+                            <span className="font-medium block truncate">{res.title}</span>
+                            {res.file_name && <p className="text-xs text-muted-foreground truncate">{res.file_name} · {formatBytes(res.file_size)}</p>}
+                            <span className="sm:hidden"><Badge variant="outline" className="text-xs mt-1">{resourceTypeLabels[res.resource_type] || res.resource_type}</Badge></span>
                           </div>
                         </TableCell>
-                        <TableCell><Badge variant="outline" className="text-xs">{resourceTypeLabels[res.resource_type] || res.resource_type}</Badge></TableCell>
+                        <TableCell className="hidden sm:table-cell"><Badge variant="outline" className="text-xs">{resourceTypeLabels[res.resource_type] || res.resource_type}</Badge></TableCell>
                         <TableCell><Badge variant={res.is_active ? "default" : "secondary"} className="text-xs">{res.is_active ? "Active" : "Inactive"}</Badge></TableCell>
-                        <TableCell className="text-sm text-muted-foreground">{format(new Date(res.created_at), "MMM d, yyyy")}</TableCell>
+                        <TableCell className="hidden md:table-cell text-sm text-muted-foreground">{format(new Date(res.created_at), "MMM d, yyyy")}</TableCell>
                         <TableCell>
                           <DropdownMenu>
-                            <DropdownMenuTrigger asChild><Button variant="ghost" size="icon"><MoreHorizontal className="h-4 w-4" /></Button></DropdownMenuTrigger>
+                            <DropdownMenuTrigger asChild><Button variant="ghost" size="icon" className="h-8 w-8"><MoreHorizontal className="h-4 w-4" /></Button></DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                               <DropdownMenuItem onClick={() => toggleActive(res.id, res.is_active)}>
                                 {res.is_active ? <><EyeOff className="h-4 w-4 mr-2" /> Deactivate</> : <><Eye className="h-4 w-4 mr-2" /> Activate</>}
