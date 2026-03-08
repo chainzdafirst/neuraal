@@ -58,13 +58,6 @@ serve(async (req) => {
       }
     }
 
-    const summaryStyles: Record<string, string> = {
-      concise: "Create a brief, exam-focused summary highlighting only the most critical points",
-      detailed: "Create a comprehensive summary that covers all important concepts with examples",
-      bullet: "Create a bullet-point summary organized by topic with key terms highlighted",
-      outline: "Create a hierarchical outline format with main topics and subtopics"
-    };
-
     const courseIdentification = identifiedCourse
       ? `The uploaded document has been identified as belonging to the course "${identifiedCourse}". Focus ONLY on this subject area.`
       : "";
@@ -72,17 +65,17 @@ serve(async (req) => {
     // Part-based generation instructions
     let partInstruction = "";
     if (currentPart === 1) {
-      partInstruction = `\n\nCRITICAL — CHUNKED OUTPUT: You are generating Part ${currentPart} of ${totalParts} of this summary. 
-Mentally divide the document's content into ${totalParts} roughly equal sections by topic coverage.
-For Part 1: Summarize ONLY the first quarter of topics/content. Cover the introduction and the first major topic areas.
-At the END of your output, add a line: "---\n**Topics covered so far:** [list the topic headings you covered]"
-Keep this part focused and complete for the topics it covers — do NOT rush through everything.`;
+      partInstruction = `\n\nCRITICAL — CHUNKED OUTPUT: You are generating Part ${currentPart} of ${totalParts} of this summary.
+Mentally divide the matched Learning Outcomes into ${totalParts} roughly equal groups.
+For Part 1: Address ONLY the first quarter of Learning Outcomes and their related Learning Activities.
+At the END of your output, add a line: "---\n**Learning Outcomes covered so far:** [list the LO numbers/titles you addressed]"
+Keep this part focused and thorough — do NOT rush through everything.`;
     } else {
       partInstruction = `\n\nCRITICAL — CHUNKED OUTPUT: You are generating Part ${currentPart} of ${totalParts} of this summary.
 The previous parts already covered the following:\n${previousParts || "(no previous content provided)"}\n
-Do NOT repeat any content from previous parts. Continue from where the previous part left off.
-For Part ${currentPart}: Cover the next quarter of remaining topics/content that hasn't been summarized yet.${currentPart === totalParts ? " This is the FINAL part — cover all remaining topics and include any conclusion or gap analysis." : ""}
-At the END of your output, add a line: "---\n**Topics covered so far:** [list ALL topic headings covered across all parts including this one]"`;
+Do NOT repeat any content from previous parts. Continue with the next group of Learning Outcomes.
+For Part ${currentPart}: Address the next quarter of remaining Learning Outcomes and their Learning Activities.${currentPart === totalParts ? " This is the FINAL part — cover all remaining Learning Outcomes and include a GAP ANALYSIS listing any LOs the document does NOT adequately cover." : ""}
+At the END of your output, add a line: "---\n**Learning Outcomes covered so far:** [list ALL LO numbers/titles covered across all parts]"`;
     }
 
     const yearContext = userProfile?.yearOfStudy ? ` (Year ${userProfile.yearOfStudy})` : '';
@@ -90,26 +83,32 @@ At the END of your output, add a line: "---\n**Topics covered so far:** [list AL
 
 ${courseIdentification}
 
-${summaryStyles[summaryType as string] || summaryStyles.concise}
+YOUR TASK: Extract the **Learning Outcomes** and **Learning Activities** from the matched syllabus/curriculum below, then use the uploaded document's content to **answer and address each one**.
 
-SYLLABUS-ALIGNMENT PROCESS (follow strictly):
-1. IDENTIFY TOPICS: Read the document and identify all academic topics, concepts, and subject areas.
-2. CROSS-REFERENCE: Compare against the curriculum/syllabus learning objectives provided below.
-3. ALIGN OUTPUT: Structure your summary around matching syllabus learning objectives. For each:
-   - Use the syllabus topic heading as the section header
-   - Summarize the document content for that objective
-   - Highlight key terms, definitions, formulas, and mechanisms
-   - Flag content that frequently appears in past papers (if available)
-4. GAPS & EXTRAS: Briefly note partially covered objectives and supplementary content.
+PROCESS (follow strictly):
+1. EXTRACT from the curriculum context below:
+   - All **Learning Outcomes** (LOs) — what the student is expected to know or demonstrate
+   - All **Learning Activities** — tasks, exercises, or study activities the syllabus prescribes
+2. For EACH Learning Outcome:
+   - Use it as a **section heading** (e.g., "## LO: Explain the mechanism of antimicrobial resistance")
+   - Write a thorough answer/explanation using ONLY information found in the uploaded document
+   - Highlight **key terms**, definitions, formulas, diagrams described, and mechanisms
+   - If the document contains examples, case studies, or data relevant to this LO, include them
+3. For EACH Learning Activity:
+   - Under a sub-heading "📝 Learning Activity", describe how the document content fulfills or relates to the activity
+   - If the activity asks students to compare, list, or analyze — do that using the document's content
+4. COVERAGE INDICATORS: After each LO section, add a tag:
+   - ✅ **Fully covered** — document thoroughly addresses this LO
+   - ⚠️ **Partially covered** — document touches on it but lacks depth
+   - ❌ **Not covered** — document does not address this LO (note what's missing)
 
-If NO curriculum context is available, organize by the document's own topic structure.
+If NO curriculum context is available, organize by the document's own topic structure and create a standard summary.
 
 Requirements:
-- Focus on exam-relevant content aligned to learning objectives
-- Highlight key terms and definitions
-- Include important formulas, mechanisms, or processes
-- Use clear headings matching syllabus topic names where possible
-- Keep the summary focused and actionable for studying${curriculumContext}${partInstruction}`;
+- Every section must be grounded in actual document content — do not fabricate information
+- Use markdown formatting: headers, bold key terms, bullet points, numbered lists
+- Be thorough but concise — exam-focused, no unnecessary padding
+- Include important formulas, mechanisms, or processes verbatim from the document${curriculumContext}${partInstruction}`;
 
     let userContent: any;
 
