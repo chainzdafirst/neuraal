@@ -88,6 +88,8 @@ export default function Onboarding() {
         return !!program;
       case 4:
         return !!examType;
+      case 5:
+        return !!yearOfStudy;
       default:
         return false;
     }
