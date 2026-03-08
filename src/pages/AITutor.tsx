@@ -5,6 +5,7 @@ import { NeuraalLogo } from "@/components/ui/NeuraalLogo";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import MarkdownContent from "@/components/MarkdownContent";
+import TypingIndicator from "@/components/chat/TypingIndicator";
 import {
   ArrowLeft,
   Send,
