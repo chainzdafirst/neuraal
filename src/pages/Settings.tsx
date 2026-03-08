@@ -47,10 +47,15 @@ export default function Settings() {
   const handleSaveProfile = async () => {
     setSaving(true);
     try {
-      await updateProfile({ full_name: fullName });
-      toast.success("Profile updated successfully");
+      await updateProfile({
+        full_name: fullName,
+        notify_email: emailNotifications,
+        notify_study_reminders: studyReminders,
+        notify_weekly_report: weeklyReport,
+      });
+      toast.success("Settings saved successfully");
     } catch {
-      toast.error("Failed to update profile");
+      toast.error("Failed to save settings");
     } finally {
       setSaving(false);
     }
