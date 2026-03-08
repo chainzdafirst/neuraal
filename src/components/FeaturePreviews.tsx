@@ -10,7 +10,7 @@ export function PreviewAITutor() {
         <span className="text-xs font-semibold">Neuraal Tutor</span>
       </div>
       {/* Chat */}
-      <div className="p-3 space-y-3 text-[11px] leading-relaxed max-h-[260px] overflow-hidden px-0 mx-[100px]">
+      <div className="p-3 sm:p-4 md:px-8 space-y-3 text-[11px] leading-relaxed max-h-[260px] overflow-hidden">
         {/* User */}
         <div className="flex justify-end">
           <div className="bg-primary text-primary-foreground rounded-xl rounded-br-sm px-3 py-2 max-w-[75%]">
