@@ -80,6 +80,9 @@ export default function AdminContent() {
   const [resourceDialogOpen, setResourceDialogOpen] = useState(false);
   const [schoolDialogOpen, setSchoolDialogOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [classifying, setClassifying] = useState(false);
+  const [classifyFailed, setClassifyFailed] = useState(false);
+  const [uploadedFilePath, setUploadedFilePath] = useState<string | null>(null);
 
   // Resource upload form
   const [form, setForm] = useState({
