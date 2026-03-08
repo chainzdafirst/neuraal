@@ -9,7 +9,7 @@ const plans = [
   {
     id: "weekly",
     name: "Weekly",
-    price: 14.99,
+    price: 9.98,
     period: "week",
     icon: Zap,
     features: [
