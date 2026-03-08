@@ -27,11 +27,9 @@ export function PreviewAITutor() {
             <p className="font-semibold text-[11px] sm:text-xs">Law of Diminishing Marginal Returns</p>
             <p>This is a key microeconomic principle. As you add more of one <strong>variable input</strong> (e.g. labour) while keeping others fixed, the additional output gained from each new unit eventually decreases:</p>
             <ul className="list-disc pl-4 space-y-1">
-              <li><strong>Phase 1 (Increasing returns)</strong> — Each additional worker adds more output than the last, as specialisation improves efficiency.</li>
-              <li><strong>Phase 2 (Diminishing returns)</strong> — Output still rises, but each new worker contributes less than the previous one.</li>
-              <li><strong>Phase 3 (Negative returns)</strong> — Too many workers cause overcrowding or inefficiency, actually reducing total output.</li>
+              <li><strong>Phase 1 (Increasing returns)</strong> — Each additional worker adds more output than the last.</li>
+              <li><strong>Phase 2 (Diminishing returns)</strong> — Output still rises, but each new worker contributes less.</li>
             </ul>
-            <p>This is why firms cannot scale infinitely by adding just one factor — they must balance all inputs for optimal production.</p>
           </div>
         </div>
       </div>
@@ -107,14 +105,6 @@ export function PreviewSummary() {
             <li><strong>Scope</strong> — The work required to deliver the project's objectives. Expanding scope without adjusting time or cost leads to scope creep.</li>
             <li><strong>Time</strong> — The schedule and deadlines. Compressing timelines often demands more resources or reduced scope.</li>
             <li><strong>Cost</strong> — The budget and resources allocated. Budget cuts may force trade-offs in quality or deliverables.</li>
-          </ul>
-        </div>
-        <div>
-          <h4 className="font-semibold mb-1.5">⚖️ Balancing the Constraints</h4>
-          <p className="mb-1.5">A project manager's core challenge is maintaining equilibrium. For example, a client requesting additional features (scope ↑) must accept either a later deadline (time ↑) or higher budget (cost ↑).</p>
-          <ul className="list-disc pl-4 space-y-1">
-            <li><strong>Quality</strong> — Often placed at the centre of the triangle; it's the outcome of how well the three constraints are balanced.</li>
-            <li><strong>Risk Management</strong> — Identifying which constraint has the least flexibility helps prioritise mitigation strategies.</li>
           </ul>
         </div>
         <div className="bg-card rounded-lg border border-border/50 p-3 text-[10px] sm:text-[11px] space-y-1">
