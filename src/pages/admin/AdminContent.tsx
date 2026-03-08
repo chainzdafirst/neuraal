@@ -69,6 +69,7 @@ export default function AdminContent() {
   const [resources, setResources] = useState<CurriculumResource[]>([]);
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
+  const [yearFilter, setYearFilter] = useState("all");
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
 
