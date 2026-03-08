@@ -123,17 +123,15 @@ export default function Landing() {
       </div>
 
       {/* Navigation */}
-      <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border/50">
-        <div className="container mx-auto px-6 h-16 flex items-center justify-between">
-          <NeuraalLogo size="sm" />
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" size="default" onClick={() => navigate("/login")}>
-              Sign In
-            </Button>
-            <Button variant="hero" size="default" onClick={() => navigate("/signup")}>
-              Sign Up
-            </Button>
-          </div>
+      <nav className="max-w-[1360px] px-5 sm:px-[70px] mx-auto flex items-center justify-between py-4">
+        <NeuraalLogo size="sm" />
+        <div className="flex items-center gap-3">
+          <Button variant="ghost" size="default" className="text-sm font-semibold" onClick={() => navigate("/login")}>
+            Sign In
+          </Button>
+          <Button variant="hero" size="default" className="text-sm font-extrabold" onClick={() => navigate("/signup")}>
+            Sign Up
+          </Button>
         </div>
       </nav>
 
