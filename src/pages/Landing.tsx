@@ -136,8 +136,8 @@ export default function Landing() {
       </nav>
 
       {/* Hero Section — Left-aligned like Flook */}
-      <section className="pt-24 pb-32 px-6">
-        <div className="container mx-auto max-w-5xl">
+      <section className="pt-5 pb-5 sm:pt-9 sm:pb-[74px] max-w-[1360px] px-5 sm:px-[70px] mx-auto">
+        <div>
           <h1 className="text-[40px] sm:text-[84px] font-display font-bold tracking-[-0.02em] leading-[48px] sm:leading-[100px] mb-6">
             Your Syllabus-Aligned
             <br />
