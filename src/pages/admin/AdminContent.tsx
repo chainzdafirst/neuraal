@@ -287,7 +287,7 @@ export default function AdminContent() {
   };
 
   const resetUploadForm = () => {
-    setForm({ title: "", description: "", resource_type: "syllabus", institution: activeInstitution || "", program: activeProgram || "", education_level: "degree", exam_type: "semester" });
+    setForm({ title: "", description: "", resource_type: "syllabus", institution: activeInstitution || "", program: activeProgram || "", education_level: "degree", exam_type: "semester", year_of_study: "" });
     setFile(null);
     setUploadedFilePath(null);
     setClassifiedText(null);
