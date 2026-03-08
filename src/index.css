@@ -192,7 +192,25 @@
   }
 }
 
-@layer utilities {
+@layer components {
+  /* Feature frame: strips preview's own chrome and centers content in landscape */
+  @media (min-width: 768px) {
+    .feature-frame > div {
+      border-radius: 0;
+      border: none;
+      box-shadow: none;
+    }
+    .feature-frame > div > div:nth-child(2) {
+      aspect-ratio: 16 / 9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      max-height: none;
+      overflow: visible;
+      padding: 1.5rem;
+    }
+  }
+}
   .animation-delay-100 {
     animation-delay: 100ms;
   }

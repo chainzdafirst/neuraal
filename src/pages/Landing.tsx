@@ -91,21 +91,8 @@ function FeatureCard({ icon: Icon, title, description, preview, gradient }: Feat
         <p className="text-muted-foreground text-[15px] sm:text-base leading-relaxed max-w-2xl">
           {description}
         </p>
-        <div className="w-full md:rounded-[16px] md:border md:border-border md:bg-muted/30 md:overflow-hidden">
-          {/* App header bar - desktop only */}
-          <div className="hidden md:flex items-center gap-2 px-4 h-9 border-b border-border/50 bg-card/80">
-            <div className="flex gap-1.5">
-              <div className="w-2.5 h-2.5 rounded-full bg-destructive/40" />
-              <div className="w-2.5 h-2.5 rounded-full bg-neuraal-amber/40" />
-              <div className="w-2.5 h-2.5 rounded-full bg-neuraal-emerald/40" />
-            </div>
-            <span className="text-[10px] text-muted-foreground ml-1">{title}</span>
-          </div>
-          <div className="md:aspect-video md:flex md:items-center md:justify-center">
-            <div className="w-full md:w-auto md:max-w-[55%] md:py-6">
-              {preview}
-            </div>
-          </div>
+        <div className="w-full feature-frame md:rounded-[16px] md:border md:border-border md:bg-muted/30 md:overflow-hidden">
+          {preview}
         </div>
       </div>
     </ScrollReveal>);
