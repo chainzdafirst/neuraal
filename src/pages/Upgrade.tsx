@@ -9,7 +9,8 @@ const plans = [
   {
     id: "weekly",
     name: "Weekly",
-    price: 9.98    period: "week",
+    price: 9.98,
+    period: "week",
     icon: Zap,
     features: [
       "Unlimited AI Summaries",
