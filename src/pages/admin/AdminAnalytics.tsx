@@ -135,10 +135,10 @@ export default function AdminAnalytics() {
         </div>
 
         <Tabs defaultValue="engagement" className="space-y-4">
-          <TabsList>
-            <TabsTrigger value="engagement"><TrendingUp className="h-4 w-4 mr-2" />Engagement</TabsTrigger>
-            <TabsTrigger value="content"><FileText className="h-4 w-4 mr-2" />Content</TabsTrigger>
-            <TabsTrigger value="institutions"><Users className="h-4 w-4 mr-2" />Institutions</TabsTrigger>
+          <TabsList className="flex flex-wrap h-auto gap-1">
+            <TabsTrigger value="engagement"><TrendingUp className="h-4 w-4 mr-1 sm:mr-2" /><span className="hidden sm:inline">Engagement</span><span className="sm:hidden">Engage</span></TabsTrigger>
+            <TabsTrigger value="content"><FileText className="h-4 w-4 mr-1 sm:mr-2" />Content</TabsTrigger>
+            <TabsTrigger value="institutions"><Users className="h-4 w-4 mr-1 sm:mr-2" /><span className="hidden sm:inline">Institutions</span><span className="sm:hidden">Schools</span></TabsTrigger>
           </TabsList>
 
           {/* Engagement Tab */}
