@@ -198,7 +198,7 @@ export default function Landing() {
       </section>
 
       {/* Feature Sections — Alternating layout with screenshots */}
-      <section id="features" id="features" className="max-w-[1360px] px-5 sm:px-[70px] mx-auto py-16 sm:py-24 space-y-16 sm:space-y-28">
+      <section id="features" id="features" id="features" className="max-w-[1360px] px-5 sm:px-[70px] mx-auto py-16 sm:py-24 space-y-16 sm:space-y-28">
         {features.map((feature, i) => (
           <FeatureCard
             key={feature.title}
@@ -212,7 +212,7 @@ export default function Landing() {
         ))}
       </section>
 
-      {/* Social Proof / Stats */}
+      {/* Social Proofid="pricing"  / Stats */}
  id="pricing"      <section className="py-24 max-w-[1360px] px-5 sm:px-[70px] mx-auto">
         <div>
           <div className="rounded-[16px] border border-border bg-card p-10 md:p-14">
@@ -235,7 +235,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* How it works */}
+      {/* How iid="how-it-works" t works */}
       <section className="py-24 bg-secondary/30">
         <div className="max-w-[1360px] px-5 sm:px-[70px] mx-auto max-w-3xl">
           <h2 className="text-[28px] sm:text-[40px] font-display font-bold text-center mb-16 tracking-[-0.02em]">
