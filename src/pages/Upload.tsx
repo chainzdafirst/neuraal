@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { NeuraalLogo } from "@/components/ui/NeuraalLogo";
 import { useNavigate } from "react-router-dom";
@@ -89,8 +89,8 @@ export default function UploadDocument() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <header className="sticky top-0 z-50 neuraal-glass border-b border-border/50">
+    <div className="h-screen bg-background flex flex-col overflow-hidden">
+      <header className="shrink-0 z-50 neuraal-glass border-b border-border/50">
         <div className="container mx-auto px-3 sm:px-4 h-14 sm:h-16 flex items-center justify-between">
           <div className="flex items-center gap-2 sm:gap-4">
             <Button variant="ghost" size="icon" className="h-8 w-8 sm:h-10 sm:w-10" onClick={() => navigate("/dashboard")}>
@@ -102,52 +102,53 @@ export default function UploadDocument() {
         </div>
       </header>
 
-      <main className="flex-1 container mx-auto px-3 sm:px-4 py-4 sm:py-8 max-w-2xl flex flex-col">
-        <div className="text-center mb-4 sm:mb-8">
-          <div className="inline-flex p-3 sm:p-4 rounded-2xl bg-accent/10 mb-3 sm:mb-4">
-            <Sparkles className="w-6 h-6 sm:w-8 sm:h-8 text-accent" />
-          </div>
-          <h2 className="text-xl sm:text-2xl font-display font-bold mb-1 sm:mb-2">Generate Smart Summary</h2>
-          <p className="text-sm sm:text-base text-muted-foreground">
-            Upload your notes and get an exam-ready summary
-          </p>
-        </div>
-
-        {/* File Upload */}
-        <div className="mb-4 sm:mb-6 flex-1">
-          <h3 className="font-semibold mb-2 sm:mb-3 flex items-center gap-2 text-sm sm:text-base">
-            <Upload className="w-4 h-4" />
-            Upload Document
-          </h3>
-          <FileUploader onFileReady={handleFileReady} />
-          {uploadedDocumentId && (
-            <p className="text-xs sm:text-sm text-neuraal-emerald mt-2 flex items-center gap-1">
-              <Check className="w-3 h-3 sm:w-4 sm:h-4" />
-              {documentName} ready for summary generation
+      <main className="flex-1 overflow-y-auto">
+        <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-8 max-w-2xl flex flex-col min-h-full">
+          <div className="text-center mb-4 sm:mb-6">
+            <div className="inline-flex p-3 sm:p-4 rounded-2xl bg-accent/10 mb-3 sm:mb-4">
+              <Sparkles className="w-6 h-6 sm:w-8 sm:h-8 text-accent" />
+            </div>
+            <h2 className="text-xl sm:text-2xl font-display font-bold mb-1 sm:mb-2">Generate Smart Summary</h2>
+            <p className="text-sm sm:text-base text-muted-foreground">
+              Upload your notes and get an exam-ready summary
             </p>
-          )}
-        </div>
+          </div>
 
-        <div className="mt-auto pb-4 sm:pb-0 sm:mt-8">
-          <Button 
-            variant="gradient" 
-            size="lg" 
-            className="w-full text-sm sm:text-base" 
-            onClick={handleGenerateSummary}
-            disabled={generatingSummary}
-          >
-            {generatingSummary ? (
-              <>
-                <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 mr-2 animate-spin" />
-                Generating Summary...
-              </>
-            ) : (
-              <>
-                <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                Generate Smart Summary
-              </>
+          <div className="mb-4 sm:mb-6">
+            <h3 className="font-semibold mb-2 sm:mb-3 flex items-center gap-2 text-sm sm:text-base">
+              <Upload className="w-4 h-4" />
+              Upload Document
+            </h3>
+            <FileUploader onFileReady={handleFileReady} />
+            {uploadedDocumentId && (
+              <p className="text-xs sm:text-sm text-neuraal-emerald mt-2 flex items-center gap-1">
+                <Check className="w-3 h-3 sm:w-4 sm:h-4" />
+                {documentName} ready for summary generation
+              </p>
             )}
-          </Button>
+          </div>
+
+          <div className="mt-auto pb-4 sm:pb-6">
+            <Button
+              variant="gradient"
+              size="lg"
+              className="w-full text-sm sm:text-base"
+              onClick={handleGenerateSummary}
+              disabled={generatingSummary}
+            >
+              {generatingSummary ? (
+                <>
+                  <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 mr-2 animate-spin" />
+                  Generating Summary...
+                </>
+              ) : (
+                <>
+                  <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                  Generate Smart Summary
+                </>
+              )}
+            </Button>
+          </div>
         </div>
       </main>
     </div>
