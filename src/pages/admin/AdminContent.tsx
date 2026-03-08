@@ -489,6 +489,19 @@ export default function AdminContent() {
                     {t === "all" ? "All" : resourceTypeLabels[t] || t}
                   </Button>
                 ))}
+                <Select value={yearFilter} onValueChange={setYearFilter}>
+                  <SelectTrigger className="w-[120px] h-8 text-xs">
+                    <SelectValue placeholder="Year" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Years</SelectItem>
+                    <SelectItem value="1">Year 1</SelectItem>
+                    <SelectItem value="2">Year 2</SelectItem>
+                    <SelectItem value="3">Year 3</SelectItem>
+                    <SelectItem value="4">Year 4</SelectItem>
+                    <SelectItem value="5">Year 5+</SelectItem>
+                  </SelectContent>
+                </Select>
                 {selected.size > 0 && (
                   <Button size="sm" variant="destructive" onClick={bulkDelete} className="text-xs ml-auto">
                     <Trash2 className="h-4 w-4 mr-1" /> Delete {selected.size}
