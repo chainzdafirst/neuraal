@@ -510,15 +510,16 @@ export default function AdminContent() {
               </div>
             </div>
 
-            <Card>
+            {/* Desktop table */}
+            <Card className="hidden sm:block">
               <CardContent className="p-0 overflow-x-auto">
                 <Table>
                   <TableHeader>
                     <TableRow>
                       <TableHead className="w-10"><Checkbox checked={filtered.length > 0 && selected.size === filtered.length} onCheckedChange={toggleAll} /></TableHead>
                       <TableHead>Title</TableHead>
-                      <TableHead className="hidden sm:table-cell">Type</TableHead>
-                      <TableHead className="hidden sm:table-cell">Year</TableHead>
+                      <TableHead>Type</TableHead>
+                      <TableHead>Year</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead className="hidden md:table-cell">Date</TableHead>
                       <TableHead className="w-12" />
@@ -526,19 +527,18 @@ export default function AdminContent() {
                   </TableHeader>
                   <TableBody>
                     {filtered.length === 0 ? (
-                      <TableRow><TableCell colSpan={6} className="text-center py-8 text-muted-foreground">No resources found for this program</TableCell></TableRow>
+                      <TableRow><TableCell colSpan={7} className="text-center py-8 text-muted-foreground">No resources found for this program</TableCell></TableRow>
                     ) : filtered.map((res) => (
                       <TableRow key={res.id}>
                         <TableCell><Checkbox checked={selected.has(res.id)} onCheckedChange={() => toggleSelect(res.id)} /></TableCell>
                         <TableCell>
                           <div className="min-w-0">
-                            <span className="font-medium block truncate">{res.title}</span>
-                            {res.file_name && <p className="text-xs text-muted-foreground truncate">{res.file_name} · {formatBytes(res.file_size)}</p>}
-                            <span className="sm:hidden"><Badge variant="outline" className="text-xs mt-1">{resourceTypeLabels[res.resource_type] || res.resource_type}</Badge></span>
+                            <span className="font-medium block truncate max-w-[200px] lg:max-w-[300px]">{res.title}</span>
+                            {res.file_name && <p className="text-xs text-muted-foreground truncate max-w-[200px] lg:max-w-[300px]">{res.file_name} · {formatBytes(res.file_size)}</p>}
                           </div>
                         </TableCell>
-                        <TableCell className="hidden sm:table-cell"><Badge variant="outline" className="text-xs">{resourceTypeLabels[res.resource_type] || res.resource_type}</Badge></TableCell>
-                        <TableCell className="hidden sm:table-cell text-sm text-muted-foreground">{(res as any).year_of_study ? `Year ${(res as any).year_of_study}` : "—"}</TableCell>
+                        <TableCell><Badge variant="outline" className="text-xs">{resourceTypeLabels[res.resource_type] || res.resource_type}</Badge></TableCell>
+                        <TableCell className="text-sm text-muted-foreground">{(res as any).year_of_study ? `Year ${(res as any).year_of_study}` : "—"}</TableCell>
                         <TableCell><Badge variant={res.is_active ? "default" : "secondary"} className="text-xs">{res.is_active ? "Active" : "Inactive"}</Badge></TableCell>
                         <TableCell className="hidden md:table-cell text-sm text-muted-foreground">{format(new Date(res.created_at), "MMM d, yyyy")}</TableCell>
                         <TableCell>
@@ -560,6 +560,38 @@ export default function AdminContent() {
                 </Table>
               </CardContent>
             </Card>
+
+            {/* Mobile card list */}
+            <div className="sm:hidden space-y-2">
+              {filtered.length === 0 ? (
+                <Card><CardContent className="py-8 text-center text-muted-foreground">No resources found for this program</CardContent></Card>
+              ) : filtered.map((res) => (
+                <Card key={res.id} className="overflow-hidden">
+                  <CardContent className="p-3 flex items-start gap-3">
+                    <Checkbox checked={selected.has(res.id)} onCheckedChange={() => toggleSelect(res.id)} className="mt-1 shrink-0" />
+                    <div className="min-w-0 flex-1">
+                      <p className="font-medium text-sm leading-tight line-clamp-2">{res.title}</p>
+                      {res.file_name && <p className="text-xs text-muted-foreground mt-0.5 truncate">{res.file_name} · {formatBytes(res.file_size)}</p>}
+                      <div className="flex flex-wrap items-center gap-1.5 mt-2">
+                        <Badge variant="outline" className="text-[10px] px-1.5 py-0">{resourceTypeLabels[res.resource_type] || res.resource_type}</Badge>
+                        <Badge variant={res.is_active ? "default" : "secondary"} className="text-[10px] px-1.5 py-0">{res.is_active ? "Active" : "Inactive"}</Badge>
+                      </div>
+                    </div>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild><Button variant="ghost" size="icon" className="h-7 w-7 shrink-0"><MoreHorizontal className="h-4 w-4" /></Button></DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => toggleActive(res.id, res.is_active)}>
+                          {res.is_active ? <><EyeOff className="h-4 w-4 mr-2" /> Deactivate</> : <><Eye className="h-4 w-4 mr-2" /> Activate</>}
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => deleteResource(res.id)} className="text-destructive">
+                          <Trash2 className="h-4 w-4 mr-2" /> Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </>
         )}
 
