@@ -8,6 +8,7 @@ import {
   Settings,
   MessageSquare,
   CreditCard,
+  Megaphone,
   LogOut } from
 "lucide-react";
 import { NavLink } from "@/components/NavLink";
