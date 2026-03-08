@@ -196,11 +196,11 @@ export default function AITutor() {
                 )}
 
                 {message.role === "assistant" && message.content && (
-                  <div className="flex items-center gap-2 mt-3 pt-3 border-t border-border">
+                  <div className="flex items-center gap-2 mt-2 -mb-1">
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="h-8 text-xs"
+                      className="h-6 text-xs px-2 opacity-50 hover:opacity-100"
                       onClick={() => handleCopy(message.content, message.id)}
                     >
                       {copiedId === message.id ? (
