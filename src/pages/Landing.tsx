@@ -162,7 +162,7 @@ export default function Landing() {
             {features.map((feature) => (
               <div
                 key={feature.title}
-                className={`relative rounded-3xl bg-gradient-to-br ${feature.gradient} p-8 min-h-[260px] flex flex-col justify-end text-white overflow-hidden group hover:-translate-y-1 transition-transform duration-300`}
+                className={`relative rounded-[9px] sm:rounded-[16px] bg-gradient-to-r ${feature.gradient} p-8 min-h-[260px] sm:min-h-[574px] flex flex-col justify-end text-white overflow-hidden group hover:-translate-y-1 transition-transform duration-300`}
               >
                 {/* Subtle overlay for readability */}
                 <div className="absolute inset-0 bg-black/10 rounded-3xl" />
