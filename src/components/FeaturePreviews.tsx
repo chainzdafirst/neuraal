@@ -109,14 +109,6 @@ export function PreviewSummary() {
             <li><strong>Cost</strong> — The budget and resources allocated. Budget cuts may force trade-offs in quality or deliverables.</li>
           </ul>
         </div>
-        <div>
-          <h4 className="font-semibold mb-1.5">⚖️ Balancing the Constraints</h4>
-          <p className="mb-1.5">A project manager's core challenge is maintaining equilibrium. For example, a client requesting additional features (scope ↑) must accept either a later deadline (time ↑) or higher budget (cost ↑).</p>
-          <ul className="list-disc pl-4 space-y-1">
-            <li><strong>Quality</strong> — Often placed at the centre of the triangle; it's the outcome of how well the three constraints are balanced.</li>
-            <li><strong>Risk Management</strong> — Identifying which constraint has the least flexibility helps prioritise mitigation strategies.</li>
-          </ul>
-        </div>
         <div className="bg-card rounded-lg border border-border/50 p-3 text-[10px] sm:text-[11px] space-y-1">
           <p>✅ Explain how the triple constraint affects project decisions</p>
           <p>✅ Identify trade-offs when scope, time, or cost changes</p>
