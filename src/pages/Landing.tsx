@@ -140,40 +140,37 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-background overflow-hidden">
       {/* Navigation */}
-      <nav className="max-w-[1360px] px-5 sm:px-[70px] mx-auto flex items-center justify-between py-4">
+      <nav className="max-w-[1360px] px-5 sm:px-[70px] mx-auto flex items-center justify-between py-4 relative">
         <NeuraalLogo size="lg" />
 
-        {/* Desktop nav */}
-        <div className="hidden md:flex items-center gap-6">
-          <a href="#features" className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors">Features</a>
-          <a href="#how-it-works" className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors">How it Works</a>
-          <a href="#pricing" className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors">Pricing</a>
-          <Button variant="hero" size="default" className="text-sm font-extrabold" onClick={() => navigate("/signup")}>
-            Get Started for Free
-          </Button>
-        </div>
+        {/* Hamburger / X toggle — always visible */}
+        <div className="relative z-50">
+          <button
+            onClick={() => setMenuOpen((v) => !v)}
+            className="flex flex-col justify-center items-center w-10 h-10 gap-[5px] group"
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+          >
+            <span className={`block w-6 h-[2.5px] rounded-full bg-foreground transition-all duration-300 origin-center ${menuOpen ? "rotate-45 translate-y-[7.5px]" : ""}`} />
+            <span className={`block w-6 h-[2.5px] rounded-full bg-foreground transition-all duration-300 ${menuOpen ? "opacity-0 scale-x-0" : ""}`} />
+            <span className={`block w-6 h-[2.5px] rounded-full bg-foreground transition-all duration-300 origin-center ${menuOpen ? "-rotate-45 -translate-y-[7.5px]" : ""}`} />
+          </button>
 
-        {/* Mobile hamburger */}
-        <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-          <SheetTrigger asChild>
-            <button className="md:hidden flex flex-col justify-center items-center gap-[5px] w-10 h-10" aria-label="Open menu">
-              <span className="block w-6 h-[2.5px] rounded-full bg-foreground" />
-              <span className="block w-6 h-[2.5px] rounded-full bg-foreground" />
-              <span className="block w-6 h-[2.5px] rounded-full bg-foreground" />
-            </button>
-          </SheetTrigger>
-          <SheetContent side="right" className="w-[280px] pt-12">
-            <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
-            <div className="flex flex-col gap-6">
-              <a href="#features" onClick={() => setMobileMenuOpen(false)} className="text-lg font-semibold text-foreground">Features</a>
-              <a href="#how-it-works" onClick={() => setMobileMenuOpen(false)} className="text-lg font-semibold text-foreground">How it Works</a>
-              <a href="#pricing" onClick={() => setMobileMenuOpen(false)} className="text-lg font-semibold text-foreground">Pricing</a>
-              <Button variant="hero" size="default" className="text-sm font-extrabold mt-4" onClick={() => { setMobileMenuOpen(false); navigate("/signup"); }}>
+          {/* Dropdown menu */}
+          <div
+            ref={menuRef}
+            className={`absolute right-0 top-[52px] w-[220px] bg-card border border-border rounded-xl shadow-lg overflow-hidden transition-all duration-300 origin-top-right ${menuOpen ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 -translate-y-2 pointer-events-none"}`}
+          >
+            <div className="flex flex-col p-3 gap-1">
+              <a href="#features" onClick={() => setMenuOpen(false)} className="px-3 py-2.5 rounded-lg text-sm font-semibold text-foreground hover:bg-secondary transition-colors">Features</a>
+              <a href="#how-it-works" onClick={() => setMenuOpen(false)} className="px-3 py-2.5 rounded-lg text-sm font-semibold text-foreground hover:bg-secondary transition-colors">How it Works</a>
+              <a href="#pricing" onClick={() => setMenuOpen(false)} className="px-3 py-2.5 rounded-lg text-sm font-semibold text-foreground hover:bg-secondary transition-colors">Pricing</a>
+              <div className="border-t border-border my-1" />
+              <Button variant="hero" size="sm" className="text-xs font-extrabold w-full" onClick={() => { setMenuOpen(false); navigate("/signup"); }}>
                 Get Started for Free
               </Button>
             </div>
-          </SheetContent>
-        </Sheet>
+          </div>
+        </div>
       </nav>
 
       {/* Hero Section */}
