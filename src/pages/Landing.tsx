@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { NeuraalLogo } from "@/components/ui/NeuraalLogo";
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
@@ -79,6 +80,7 @@ function FeatureCard({ icon: Icon, title, description, preview, gradient, revers
 
 export default function Landing() {
   const navigate = useNavigate();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const features = [
     {
@@ -141,14 +143,38 @@ export default function Landing() {
       {/* Navigation */}
       <nav className="max-w-[1360px] px-5 sm:px-[70px] mx-auto flex items-center justify-between py-4">
         <NeuraalLogo size="lg" />
-        <div className="flex items-center gap-3">
-          <Button variant="ghost" size="default" className="text-sm font-semibold" onClick={() => navigate("/login")}>
-            Sign In
-          </Button>
+
+        {/* Desktop nav */}
+        <div className="hidden md:flex items-center gap-6">
+          <a href="#features" className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors">Features</a>
+          <a href="#how-it-works" className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors">How it Works</a>
+          <a href="#pricing" className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors">Pricing</a>
           <Button variant="hero" size="default" className="text-sm font-extrabold" onClick={() => navigate("/signup")}>
-            Sign Up
+            Get Started for Free
           </Button>
         </div>
+
+        {/* Mobile hamburger */}
+        <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+          <SheetTrigger asChild>
+            <button className="md:hidden flex flex-col justify-center items-center gap-[5px] w-10 h-10" aria-label="Open menu">
+              <span className="block w-6 h-[2.5px] rounded-full bg-foreground" />
+              <span className="block w-6 h-[2.5px] rounded-full bg-foreground" />
+              <span className="block w-6 h-[2.5px] rounded-full bg-foreground" />
+            </button>
+          </SheetTrigger>
+          <SheetContent side="right" className="w-[280px] pt-12">
+            <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+            <div className="flex flex-col gap-6">
+              <a href="#features" onClick={() => setMobileMenuOpen(false)} className="text-lg font-semibold text-foreground">Features</a>
+              <a href="#how-it-works" onClick={() => setMobileMenuOpen(false)} className="text-lg font-semibold text-foreground">How it Works</a>
+              <a href="#pricing" onClick={() => setMobileMenuOpen(false)} className="text-lg font-semibold text-foreground">Pricing</a>
+              <Button variant="hero" size="default" className="text-sm font-extrabold mt-4" onClick={() => { setMobileMenuOpen(false); navigate("/signup"); }}>
+                Get Started for Free
+              </Button>
+            </div>
+          </SheetContent>
+        </Sheet>
       </nav>
 
       {/* Hero Section */}
@@ -172,7 +198,7 @@ export default function Landing() {
       </section>
 
       {/* Feature Sections — Alternating layout with screenshots */}
-      <section className="max-w-[1360px] px-5 sm:px-[70px] mx-auto py-16 sm:py-24 space-y-16 sm:space-y-28">
+      <section id="features" className="max-w-[1360px] px-5 sm:px-[70px] mx-auto py-16 sm:py-24 space-y-16 sm:space-y-28">
         {features.map((feature, i) => (
           <FeatureCard
             key={feature.title}
@@ -186,8 +212,8 @@ export default function Landing() {
         ))}
       </section>
 
-      {/* Social Proof / Stats */}
-      <section className="py-24 max-w-[1360px] px-5 sm:px-[70px] mx-auto">
+      {/* Social Proofid="pricing"  / Stats */}
+ id="pricing"      <section className="py-24 max-w-[1360px] px-5 sm:px-[70px] mx-auto">
         <div>
           <div className="rounded-[16px] border border-border bg-card p-10 md:p-14">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
@@ -209,7 +235,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* How it works */}
+      {/* How iid="how-it-works" t works */}
       <section className="py-24 bg-secondary/30">
         <div className="max-w-[1360px] px-5 sm:px-[70px] mx-auto max-w-3xl">
           <h2 className="text-[28px] sm:text-[40px] font-display font-bold text-center mb-16 tracking-[-0.02em]">
