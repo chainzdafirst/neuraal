@@ -169,7 +169,7 @@ export default function Upgrade() {
                   variant={isPopular ? "gradient" : "outline"}
                   className="w-full"
                 >
-                  {isPopular ? "Get Started" : "Choose Plan"}
+                  Start 7-Day Free Trial
                 </Button>
               </button>
             );
