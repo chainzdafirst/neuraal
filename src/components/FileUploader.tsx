@@ -39,6 +39,45 @@ export default function FileUploader({ onFileReady }: FileUploaderProps) {
     return File;
   };
 
+  const runExtraction = async (filePath: string, fileType: string, fileName: string, docId: string, fileId: string) => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/extract-text`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        },
+        body: JSON.stringify({ filePath, fileType, fileName }),
+      });
+
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({}));
+        throw new Error(errData.error || "Extraction failed");
+      }
+
+      const { extractedText } = await response.json();
+
+      await supabase
+        .from("documents")
+        .update({ extracted_text: extractedText, status: "ready" })
+        .eq("id", docId);
+
+      setFiles((prev) =>
+        prev.map((f) => (f.id === fileId ? { ...f, progress: 100, status: "ready" } : f))
+      );
+    } catch (extractError) {
+      console.error("Text extraction error:", extractError);
+      toast.error("Text extraction failed. Summary features may be limited.");
+      await supabase
+        .from("documents")
+        .update({ status: "error" })
+        .eq("id", docId);
+      setFiles((prev) =>
+        prev.map((f) => (f.id === fileId ? { ...f, status: "error" } : f))
+      );
+    }
+  };
+
   const handleFileSelect = async (selectedFiles: FileList | null) => {
     if (!selectedFiles || !user) return;
 
@@ -90,55 +129,27 @@ export default function FileUploader({ onFileReady }: FileUploaderProps) {
 
         if (dbError) throw dbError;
 
-        // For non-txt files, call the extract-text edge function
-        if (!isTxt) {
-          try {
-            const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/extract-text`, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-              },
-              body: JSON.stringify({
-                filePath,
-                fileType: file.type,
-                fileName: file.name,
-              }),
-            });
-
-            if (!response.ok) {
-              const errData = await response.json().catch(() => ({}));
-              throw new Error(errData.error || "Extraction failed");
-            }
-
-            const { extractedText: extracted } = await response.json();
-
-            await supabase
-              .from("documents")
-              .update({ extracted_text: extracted, status: "ready" })
-              .eq("id", docData.id);
-
-            extractedText = extracted;
-          } catch (extractError) {
-            console.error("Text extraction error:", extractError);
-            toast.error("Text extraction failed. Summary features may be limited.");
-            await supabase
-              .from("documents")
-              .update({ status: "error" })
-              .eq("id", docData.id);
-          }
-        }
-
-        setFiles((prev) =>
-          prev.map((f) =>
-            f.id === fileId ? { ...f, progress: 100, status: extractedText ? "ready" : "error", documentId: docData.id } : f
-          )
-        );
-
-        if (extractedText) {
-          toast.success("Document uploaded and processed!");
-        }
+        // Notify parent immediately — file is saved and ready to reference
         onFileReady?.(docData.id, file.name);
+
+        if (isTxt) {
+          // TXT is already extracted — mark done
+          setFiles((prev) =>
+            prev.map((f) =>
+              f.id === fileId ? { ...f, progress: 100, status: "ready", documentId: docData.id } : f
+            )
+          );
+          toast.success("Document uploaded and processed!");
+        } else {
+          // Fire extraction in background — don't block the UI
+          setFiles((prev) =>
+            prev.map((f) =>
+              f.id === fileId ? { ...f, progress: 70, status: "processing", documentId: docData.id } : f
+            )
+          );
+          toast.success("Document uploaded! Processing text...");
+          runExtraction(filePath, file.type, file.name, docData.id, fileId);
+        }
       } catch (error) {
         console.error("Upload error:", error);
         setFiles((prev) =>
@@ -199,9 +210,9 @@ export default function FileUploader({ onFileReady }: FileUploaderProps) {
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="font-medium text-sm truncate">{uploadedFile.file.name}</div>
-                  {uploadedFile.status === "uploading" && (
+                  {(uploadedFile.status === "uploading" || uploadedFile.status === "processing") && (
                     <div className="mt-1 h-1 bg-secondary rounded-full overflow-hidden">
-                      <div className="h-full bg-primary transition-all" style={{ width: `${uploadedFile.progress}%` }} />
+                      <div className="h-full bg-primary transition-all duration-500" style={{ width: `${uploadedFile.progress}%` }} />
                     </div>
                   )}
                 </div>
