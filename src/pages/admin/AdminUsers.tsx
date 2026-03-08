@@ -47,11 +47,12 @@ const statusConfig: Record<string, { label: string; variant: "default" | "second
   deactivated: { label: "Deactivated", variant: "secondary" },
 };
 
-function UserActionsMenu({ user, userRoles, updateStatus, assignRole }: {
+function UserActionsMenu({ user, userRoles, updateStatus, assignRole, onDelete }: {
   user: UserRow;
   userRoles: string[];
   updateStatus: (userId: string, status: string) => void;
   assignRole: (userId: string, role: string) => void;
+  onDelete: (user: UserRow) => void;
 }) {
   return (
     <DropdownMenu>
@@ -78,6 +79,10 @@ function UserActionsMenu({ user, userRoles, updateStatus, assignRole }: {
         <DropdownMenuItem onClick={() => assignRole(user.id, "super_admin")}>Assign Super Admin</DropdownMenuItem>
         <DropdownMenuItem onClick={() => assignRole(user.id, "academic_admin")}>Assign Academic Admin</DropdownMenuItem>
         <DropdownMenuItem onClick={() => assignRole(user.id, "support_admin")}>Assign Support Admin</DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={() => onDelete(user)} className="text-destructive focus:text-destructive">
+          <Trash2 className="h-4 w-4 mr-2" /> Delete Account
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
