@@ -76,10 +76,7 @@ interface FeatureCardProps {
   description: string;
   preview: React.ReactNode;
   gradient: string;
-  
-}
-
-function FeatureCard({ icon: Icon, title, description, preview, gradient }: FeatureCardProps) {
+  reCard({ icon: Icon, title, description, preview, gradient }: FeatureCardProps) {
   return (
     <ScrollReveal>
       <div className="flex flex-col gap-4 sm:gap-5">
@@ -242,10 +239,7 @@ export default function Landing() {
           description={feature.description}
           preview={feature.preview}
           gradient={feature.gradient}
-          reverse={i % 2 !== 0} />
-
-        )}
-      </section>
+          reverse={i % 2 !==gradient={feature.gradient     </section>
 
       {/* Social Proof / Stats */}
       <ScrollReveal>
