@@ -11,7 +11,10 @@ import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  Search, MoreHorizontal, Shield, Users, UserCheck, UserX, UserMinus,
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter,
+} from "@/components/ui/dialog";
+import {
+  Search, MoreHorizontal, Shield, Users, UserCheck, UserX, UserMinus, Trash2,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -44,11 +47,12 @@ const statusConfig: Record<string, { label: string; variant: "default" | "second
   deactivated: { label: "Deactivated", variant: "secondary" },
 };
 
-function UserActionsMenu({ user, userRoles, updateStatus, assignRole }: {
+function UserActionsMenu({ user, userRoles, updateStatus, assignRole, onDelete }: {
   user: UserRow;
   userRoles: string[];
   updateStatus: (userId: string, status: string) => void;
   assignRole: (userId: string, role: string) => void;
+  onDelete: (user: UserRow) => void;
 }) {
   return (
     <DropdownMenu>
@@ -75,6 +79,10 @@ function UserActionsMenu({ user, userRoles, updateStatus, assignRole }: {
         <DropdownMenuItem onClick={() => assignRole(user.id, "super_admin")}>Assign Super Admin</DropdownMenuItem>
         <DropdownMenuItem onClick={() => assignRole(user.id, "academic_admin")}>Assign Academic Admin</DropdownMenuItem>
         <DropdownMenuItem onClick={() => assignRole(user.id, "support_admin")}>Assign Support Admin</DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={() => onDelete(user)} className="text-destructive focus:text-destructive">
+          <Trash2 className="h-4 w-4 mr-2" /> Delete Account
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
@@ -87,6 +95,8 @@ export default function AdminUsers() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [loading, setLoading] = useState(true);
+  const [deleteTarget, setDeleteTarget] = useState<UserRow | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const fetchData = async () => {
     const [profilesRes, rolesRes, docsRes, quizzesRes, flashRes] = await Promise.all([
@@ -151,6 +161,28 @@ export default function AdminUsers() {
     if (error) { toast.error(error.message); return; }
     toast.success(`Account ${status}`);
     fetchData();
+  };
+
+  const deleteUser = async () => {
+    if (!deleteTarget) return;
+    setDeleting(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await supabase.functions.invoke("delete-user", {
+        body: { user_id: deleteTarget.id },
+      });
+      if (res.error || res.data?.error) {
+        toast.error(res.data?.error || res.error?.message || "Failed to delete user");
+      } else {
+        toast.success(`Account for "${deleteTarget.full_name || deleteTarget.email}" deleted`);
+        setDeleteTarget(null);
+        fetchData();
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Failed to delete user");
+    } finally {
+      setDeleting(false);
+    }
   };
 
   const activeCount = users.filter((u) => u.account_status === "active").length;
@@ -272,7 +304,7 @@ export default function AdminUsers() {
                               {format(new Date(user.created_at), "MMM d, yyyy")}
                             </TableCell>
                             <TableCell>
-                              <UserActionsMenu user={user} userRoles={userRoles} updateStatus={updateStatus} assignRole={assignRole} />
+                              <UserActionsMenu user={user} userRoles={userRoles} updateStatus={updateStatus} assignRole={assignRole} onDelete={setDeleteTarget} />
                             </TableCell>
                           </TableRow>
                         );
@@ -330,7 +362,7 @@ export default function AdminUsers() {
                         <span>{format(new Date(user.created_at), "MMM d, yy")}</span>
                       </div>
                     </div>
-                    <UserActionsMenu user={user} userRoles={userRoles} updateStatus={updateStatus} assignRole={assignRole} />
+                    <UserActionsMenu user={user} userRoles={userRoles} updateStatus={updateStatus} assignRole={assignRole} onDelete={setDeleteTarget} />
                   </div>
                 </Card>
               );
@@ -338,6 +370,24 @@ export default function AdminUsers() {
           )}
         </div>
       </div>
+
+      {/* Delete confirmation dialog */}
+      <Dialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+        <DialogContent className="w-[calc(100%-2rem)] sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Delete User Account</DialogTitle>
+            <DialogDescription>
+              This will permanently delete <span className="font-semibold text-foreground">{deleteTarget?.full_name || deleteTarget?.email || "this user"}</span>'s account and all associated data. This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="outline" onClick={() => setDeleteTarget(null)} disabled={deleting}>Cancel</Button>
+            <Button variant="destructive" onClick={deleteUser} disabled={deleting}>
+              {deleting ? "Deleting..." : "Delete Account"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </AdminLayout>
   );
 }
