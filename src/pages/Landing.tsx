@@ -205,8 +205,11 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Feature Sections — Alternating layout with screenshots */}
+      {/* Feature Sections */}
       <section id="features" className="max-w-[1360px] px-5 sm:px-[70px] mx-auto py-16 sm:py-24 space-y-16 sm:space-y-28">
+        <h2 className="text-[32px] sm:text-[48px] font-display font-bold tracking-[-0.02em] text-center">
+          Features
+        </h2>
         {features.map((feature, i) => (
           <FeatureCard
             key={feature.title}
