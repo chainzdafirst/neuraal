@@ -352,7 +352,7 @@ export default function AdminContent() {
               <Button
                 variant="ghost"
                 size="sm"
-                className={cn("h-8 px-2 text-muted-foreground hover:text-foreground", !(activeInstitution || activeProgram) && "invisible")}
+                className={`h-8 px-2 text-muted-foreground hover:text-foreground ${!(activeInstitution || activeProgram) ? "invisible" : ""}`}
                 onClick={() => {
                   if (activeProgram) {
                     setActiveProgram(null);
