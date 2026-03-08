@@ -31,7 +31,7 @@ export default function FileUploader({ onFileReady }: FileUploaderProps) {
   const [files, setFiles] = useState<UploadedFile[]>([]);
   const [isDragging, setIsDragging] = useState(false);
 
-  const acceptedTypes = [".pdf", ".docx", ".doc", ".ppt", ".pptx", ".txt"];
+  const acceptedTypes = [".pdf", ".docx", ".doc", ".ppt", ".pptx", ".txt", ".epub"];
 
   const getFileIcon = (type: string) => {
     if (type.includes("image")) return Image;
@@ -54,9 +54,10 @@ export default function FileUploader({ onFileReady }: FileUploaderProps) {
       setFiles((prev) => [...prev, uploadedFile]);
 
       try {
-        // Extract text for .txt files client-side
+        const isTxt = file.type === "text/plain" || file.name.endsWith(".txt");
         let extractedText: string | null = null;
-        if (file.type === "text/plain" || file.name.endsWith(".txt")) {
+
+        if (isTxt) {
           extractedText = await file.text();
         }
 
@@ -72,7 +73,7 @@ export default function FileUploader({ onFileReady }: FileUploaderProps) {
           prev.map((f) => (f.id === fileId ? { ...f, progress: 50, status: "processing" } : f))
         );
 
-        // Save to database with extracted text
+        // Save to database
         const { data: docData, error: dbError } = await supabase
           .from("documents")
           .insert({
@@ -81,7 +82,7 @@ export default function FileUploader({ onFileReady }: FileUploaderProps) {
             file_path: filePath,
             file_type: file.type,
             file_size: file.size,
-            status: extractedText ? "ready" : "uploaded",
+            status: extractedText ? "ready" : "processing",
             extracted_text: extractedText,
           })
           .select()
@@ -89,13 +90,54 @@ export default function FileUploader({ onFileReady }: FileUploaderProps) {
 
         if (dbError) throw dbError;
 
+        // For non-txt files, call the extract-text edge function
+        if (!isTxt) {
+          try {
+            const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/extract-text`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+              },
+              body: JSON.stringify({
+                filePath,
+                fileType: file.type,
+                fileName: file.name,
+              }),
+            });
+
+            if (!response.ok) {
+              const errData = await response.json().catch(() => ({}));
+              throw new Error(errData.error || "Extraction failed");
+            }
+
+            const { extractedText: extracted } = await response.json();
+
+            await supabase
+              .from("documents")
+              .update({ extracted_text: extracted, status: "ready" })
+              .eq("id", docData.id);
+
+            extractedText = extracted;
+          } catch (extractError) {
+            console.error("Text extraction error:", extractError);
+            toast.error("Text extraction failed. Summary features may be limited.");
+            await supabase
+              .from("documents")
+              .update({ status: "error" })
+              .eq("id", docData.id);
+          }
+        }
+
         setFiles((prev) =>
           prev.map((f) =>
-            f.id === fileId ? { ...f, progress: 100, status: "ready", documentId: docData.id } : f
+            f.id === fileId ? { ...f, progress: 100, status: extractedText ? "ready" : "error", documentId: docData.id } : f
           )
         );
 
-        toast.success("Document uploaded successfully!");
+        if (extractedText) {
+          toast.success("Document uploaded and processed!");
+        }
         onFileReady?.(docData.id, file.name);
       } catch (error) {
         console.error("Upload error:", error);
@@ -143,7 +185,7 @@ export default function FileUploader({ onFileReady }: FileUploaderProps) {
         <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
           Select Files
         </Button>
-        <p className="text-xs text-muted-foreground mt-3">Supports PDF, DOCX, PPT, TXT (Max 30MB)</p>
+        <p className="text-xs text-muted-foreground mt-3">Supports PDF, DOCX, PPT, EPUB, TXT (Max 20MB)</p>
       </div>
 
       {files.length > 0 && (
