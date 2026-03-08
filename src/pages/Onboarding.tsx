@@ -40,7 +40,7 @@ export default function Onboarding() {
   const progress = (step / totalSteps) * 100;
 
   const handleNext = () => {
-    if (step < 4) {
+    if (step < 5) {
       setStep((prev) => (prev + 1) as Step);
     } else {
       handleComplete();
