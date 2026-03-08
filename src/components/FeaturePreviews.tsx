@@ -10,8 +10,7 @@ export function PreviewAITutor() {
         <span className="text-xs font-semibold">Neuraal Tutor</span>
       </div>
       {/* Chat */}
-      <div className="p-3 sm:p-4 md:px-8 space-y-3 text-[11px] leading-relaxed max-h-[260px] overflow-hidden
-        {/* User */}
+      <div className="p-3 sm:p-4 md:px-8 space-y-3 text-[11px] leading-relaxed max-h-[260px] overflow-hidden        {/* User */}
         <div className="flex justify-end">
           <div className="bg-primary text-primary-foreground rounded-xl rounded-br-sm px-3 py-2 max-w-[75%]">
             Explain the law of diminishing marginal returns
@@ -52,7 +51,7 @@ export function PreviewQuiz() {
         <div className="p-1 rounded-md bg-neuraal-amber/10"><Target className="w-3 h-3 text-neuraal-amber" /></div>
         <span className="text-xs font-semibold">Quizzes & Tests</span>
       </div>
-      <div className="p-433 sm:p-4 md:px-8 space-y-3        <div className="flex items-center justify-between text-[10px] text-muted-foreground">
+      <div className="p-4333 sm:p-4 md:px-8 space-y-3      <div className="flex items-center justify-between text-[10px] text-muted-foreground">
           <span>Question 5 of 10</span><span className="font-medium text-foreground">Communication Skills</span>
         </div>
         <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
@@ -94,9 +93,7 @@ export function PreviewSummary() {
           <span className="text-[9px] text-muted-foreground ml-2">Project_Management.pdf</span>
         </div>
       </div>
-      <div className="p-4 3 sm:p-4 md:px-8 text-[11px] leading-relaxed max-h-[320px] overflow-hidden space-y-3
-        <div>
-          <h3 className="text-sm font-bold font-display">Project Management — The Triple Constraint</h3>
+      <div className="p-4 3 3 sm:p-4 md:px-8 text-[11px] leading-relaxed max-h-[320px] overflow-hidden space-y-3ame="text-sm font-bold font-display">Project Management — The Triple Constraint</h3>
           <p className="text-[10px] text-muted-foreground">7 key concepts identified</p>
         </div>
         <div>
@@ -135,7 +132,7 @@ export function PreviewFlashcards() {
         <span className="text-xs font-semibold">Flashcards</span>
       </div>
       <div className="p-4 px-0 mx-[100px]">
-        <div className="flex items-center justify-between text-[10px] mb-2">
+        <div cl3 sm:p-4 md:px-8ms-center justify-between text-[10px] mb-2">
           <span className="text-muted-foreground">Card 7 of 20</span>
           <div className="flex gap-1.5"><span className="text-neuraal-emerald font-medium">6 mastered</span><span className="text-muted-foreground">· 14 remaining</span></div>
         </div>
