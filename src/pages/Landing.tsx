@@ -198,7 +198,7 @@ export default function Landing() {
       </section>
 
       {/* Feature Sections — Alternating layout with screenshots */}
-      <section className="max-w-[1360px] px-5 sm:px-[70px] mx-auto py-16 sm:py-24 space-y-16 sm:space-y-28">
+      <section id="features" className="max-w-[1360px] px-5 sm:px-[70px] mx-auto py-16 sm:py-24 space-y-16 sm:space-y-28">
         {features.map((feature, i) => (
           <FeatureCard
             key={feature.title}
