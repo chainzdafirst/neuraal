@@ -61,17 +61,17 @@ export default function AdminAI() {
         </div>
 
         <Tabs defaultValue="models" className="space-y-4">
-          <TabsList>
+          <TabsList className="flex flex-wrap h-auto gap-1">
             <TabsTrigger value="models">
-              <Cpu className="h-4 w-4 mr-2" />
+              <Cpu className="h-4 w-4 mr-1 sm:mr-2" />
               Models
             </TabsTrigger>
             <TabsTrigger value="prompts">
-              <MessageSquare className="h-4 w-4 mr-2" />
+              <MessageSquare className="h-4 w-4 mr-1 sm:mr-2" />
               Prompts
             </TabsTrigger>
             <TabsTrigger value="guardrails">
-              <Shield className="h-4 w-4 mr-2" />
+              <Shield className="h-4 w-4 mr-1 sm:mr-2" />
               Guardrails
             </TabsTrigger>
           </TabsList>
