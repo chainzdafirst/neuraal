@@ -19,11 +19,7 @@ export default function Settings() {
   const { user, profile, logout, updateProfile, isAuthenticated, isLoading } = useAuth();
 
   const [fullName, setFullName] = useState(profile?.full_name || "");
-  const [institution, setInstitution] = useState(profile?.institution || "");
-  const [program, setProgram] = useState(profile?.program || "");
-  const [educationLevel, setEducationLevel] = useState(profile?.education_level || "");
-  const [examType, setExamType] = useState(profile?.exam_type || "");
-  const [yearOfStudy, setYearOfStudy] = useState(profile?.year_of_study?.toString() || "");
+  const [deleting, setDeleting] = useState(false);
 
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [studyReminders, setStudyReminders] = useState(true);
