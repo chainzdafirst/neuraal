@@ -11,11 +11,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 
-import featureAiTutor from "@/assets/feature-ai-tutor.jpg";
-import featureSummaries from "@/assets/feature-summaries.jpg";
-import featureQuizzes from "@/assets/feature-quizzes.jpg";
-import featureFlashcards from "@/assets/feature-flashcards.jpg";
-import featureProgress from "@/assets/feature-progress.jpg";
+import { PreviewAITutor, PreviewQuiz, PreviewSummary, PreviewFlashcards, PreviewProgress } from "@/components/FeaturePreviews";
 
 const rotatingWords = [
   "AI Tutor",
