@@ -183,6 +183,7 @@ export default function AdminContent() {
     setClassifying(true);
     setClassifyFailed(false);
     setUploadedFilePath(null);
+    setClassifiedText(null);
 
     try {
       // Upload to storage first
@@ -204,7 +205,11 @@ export default function AdminContent() {
 
       if (!res.ok) throw new Error("Classification failed");
 
-      const { metadata } = await res.json();
+      const { metadata, extractedText } = await res.json();
+      
+      // Store extracted text from classification to avoid redundant AI call
+      if (extractedText) setClassifiedText(extractedText);
+      
       setForm((prev) => ({
         ...prev,
         title: metadata.title || prev.title,
