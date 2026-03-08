@@ -245,7 +245,7 @@ export default function Landing() {
           <p className="text-muted-foreground text-[15px] sm:text-lg font-semibold max-w-xl mx-auto mb-10">
             Join thousands of students transforming their academic performance with Neuraal.
           </p>
-          <Button variant="hero" size="xl" onClick={() => navigate("/signup")}>
+          <Button variant="hero" size="xl" onClick={() => navigate("/signup")} className="h-[57px] leading-[57px] px-10 text-sm font-extrabold">
             Get Started — It's Free
             <ChevronRight className="w-5 h-5 ml-1" />
           </Button>
