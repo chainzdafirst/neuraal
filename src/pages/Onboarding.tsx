@@ -292,6 +292,53 @@ export default function Onboarding() {
             </div>
           </div>
         );
+
+      case 5:
+        return (
+          <div className="space-y-6 animate-fade-up">
+            <div className="text-center mb-8">
+              <div className="inline-flex p-4 rounded-2xl bg-primary/10 mb-4">
+                <BookOpen className="w-8 h-8 text-primary" />
+              </div>
+              <h2 className="text-2xl font-display font-bold mb-2">
+                What year are you in?
+              </h2>
+              <p className="text-muted-foreground">
+                This helps us match content to your level
+              </p>
+            </div>
+
+            <div className="grid grid-cols-3 gap-4">
+              {[
+                { value: 1, label: "Year 1", desc: "First year" },
+                { value: 2, label: "Year 2", desc: "Second year" },
+                { value: 3, label: "Year 3", desc: "Third year" },
+                { value: 4, label: "Year 4", desc: "Fourth year" },
+                { value: 5, label: "Year 5+", desc: "Fifth year or above" },
+              ].map((option) => (
+                <button
+                  key={option.value}
+                  onClick={() => setYearOfStudy(option.value)}
+                  className={`p-5 rounded-xl border-2 text-left transition-all ${
+                    yearOfStudy === option.value
+                      ? "border-primary bg-primary/5 shadow-md"
+                      : "border-border hover:border-primary/50"
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="font-semibold">{option.label}</span>
+                    {yearOfStudy === option.value && (
+                      <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+                        <Check className="w-3 h-3 text-primary-foreground" />
+                      </div>
+                    )}
+                  </div>
+                  <span className="text-xs text-muted-foreground">{option.desc}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        );
     }
   };
 
