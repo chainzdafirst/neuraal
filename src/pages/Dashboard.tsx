@@ -10,7 +10,6 @@ import {
   FileText,
   LayoutGrid,
   Settings,
-  LogOut,
   ChevronRight,
   Sparkles,
   Target,
@@ -34,7 +33,7 @@ interface Activity {
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const { user, profile, logout, isAuthenticated, isLoading } = useAuth();
+  const { user, profile, isAuthenticated, isLoading } = useAuth();
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
   const [activities, setActivities] = useState<Activity[]>([]);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
@@ -216,11 +215,6 @@ export default function Dashboard() {
     { id: "summary", title: "Smart Summaries", description: "Transform notes into exam-ready content", icon: FileText, bgColor: "bg-accent/10", iconColor: "text-accent", route: "/upload" },
   ];
 
-  const handleLogout = async () => {
-    await logout();
-    toast.success("Logged out successfully");
-    navigate("/");
-  };
 
   if (isLoading) {
     return (
@@ -256,9 +250,6 @@ export default function Dashboard() {
             </div>
             <Button variant="ghost" size="icon" onClick={() => navigate("/settings")}>
               <Settings className="w-5 h-5" />
-            </Button>
-            <Button variant="ghost" size="icon" onClick={handleLogout}>
-              <LogOut className="w-5 h-5" />
             </Button>
           </div>
         </div>

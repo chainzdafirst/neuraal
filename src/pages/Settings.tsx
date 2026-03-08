@@ -3,14 +3,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { NeuraalLogo } from "@/components/ui/NeuraalLogo";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { ArrowLeft, User, GraduationCap, Bell, Shield, Palette, Save, LogOut, Crown } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { ArrowLeft, User, GraduationCap, Bell, Shield, Save, LogOut, Crown, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 export default function Settings() {
@@ -18,11 +19,7 @@ export default function Settings() {
   const { user, profile, logout, updateProfile, isAuthenticated, isLoading } = useAuth();
 
   const [fullName, setFullName] = useState(profile?.full_name || "");
-  const [institution, setInstitution] = useState(profile?.institution || "");
-  const [program, setProgram] = useState(profile?.program || "");
-  const [educationLevel, setEducationLevel] = useState(profile?.education_level || "");
-  const [examType, setExamType] = useState(profile?.exam_type || "");
-  const [yearOfStudy, setYearOfStudy] = useState(profile?.year_of_study?.toString() || "");
+  const [deleting, setDeleting] = useState(false);
 
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [studyReminders, setStudyReminders] = useState(true);
@@ -50,19 +47,27 @@ export default function Settings() {
   const handleSaveProfile = async () => {
     setSaving(true);
     try {
-      await updateProfile({
-        full_name: fullName,
-        institution,
-        program,
-        education_level: educationLevel,
-        exam_type: examType,
-        year_of_study: yearOfStudy ? parseInt(yearOfStudy) : null,
-      });
+      await updateProfile({ full_name: fullName });
       toast.success("Profile updated successfully");
     } catch {
       toast.error("Failed to update profile");
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    setDeleting(true);
+    try {
+      const { error } = await supabase.functions.invoke("delete-own-account");
+      if (error) throw error;
+      await logout();
+      toast.success("Account deleted successfully");
+      navigate("/");
+    } catch {
+      toast.error("Failed to delete account. Please try again.");
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -125,7 +130,7 @@ export default function Settings() {
           </CardContent>
         </Card>
 
-        {/* Academic Section */}
+        {/* Academic Section (read-only) */}
         <Card className="neuraal-glass border-border/60">
           <CardHeader>
             <div className="flex items-center gap-3">
@@ -134,7 +139,7 @@ export default function Settings() {
               </div>
               <div>
                 <CardTitle className="text-base">Academic Details</CardTitle>
-                <CardDescription>Help us personalise your learning</CardDescription>
+                <CardDescription>Set during onboarding</CardDescription>
               </div>
             </div>
           </CardHeader>
@@ -142,65 +147,24 @@ export default function Settings() {
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-1.5">
                 <Label className="text-muted-foreground text-xs">Education Level</Label>
-                <Select value={educationLevel} onValueChange={setEducationLevel}>
-                  <SelectTrigger className="bg-background/50">
-                    <SelectValue placeholder="Select level" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="diploma">Diploma</SelectItem>
-                    <SelectItem value="degree">Degree</SelectItem>
-                    <SelectItem value="masters">Masters</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Input value={profile?.education_level || "—"} disabled className="bg-muted/50 text-muted-foreground" />
               </div>
               <div className="space-y-1.5">
                 <Label className="text-muted-foreground text-xs">Year of Study</Label>
-                <Select value={yearOfStudy} onValueChange={setYearOfStudy}>
-                  <SelectTrigger className="bg-background/50">
-                    <SelectValue placeholder="Select year" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">Year 1</SelectItem>
-                    <SelectItem value="2">Year 2</SelectItem>
-                    <SelectItem value="3">Year 3</SelectItem>
-                    <SelectItem value="4">Year 4</SelectItem>
-                    <SelectItem value="5">Year 5</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Input value={profile?.year_of_study ? `Year ${profile.year_of_study}` : "—"} disabled className="bg-muted/50 text-muted-foreground" />
               </div>
             </div>
-
             <div className="space-y-1.5">
               <Label className="text-muted-foreground text-xs">Institution</Label>
-              <Input
-                value={institution}
-                onChange={(e) => setInstitution(e.target.value)}
-                placeholder="e.g. University of Zambia"
-                className="bg-background/50"
-              />
+              <Input value={profile?.institution || "—"} disabled className="bg-muted/50 text-muted-foreground" />
             </div>
-
             <div className="space-y-1.5">
               <Label className="text-muted-foreground text-xs">Program</Label>
-              <Input
-                value={program}
-                onChange={(e) => setProgram(e.target.value)}
-                placeholder="e.g. Computer Science"
-                className="bg-background/50"
-              />
+              <Input value={profile?.program || "—"} disabled className="bg-muted/50 text-muted-foreground" />
             </div>
-
             <div className="space-y-1.5">
               <Label className="text-muted-foreground text-xs">Exam Type</Label>
-              <Select value={examType} onValueChange={setExamType}>
-                <SelectTrigger className="bg-background/50">
-                  <SelectValue placeholder="Select exam type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="semester">Semester Exams</SelectItem>
-                  <SelectItem value="board">Board Exams</SelectItem>
-                </SelectContent>
-              </Select>
+              <Input value={profile?.exam_type || "—"} disabled className="bg-muted/50 text-muted-foreground" />
             </div>
           </CardContent>
         </Card>
@@ -285,10 +249,36 @@ export default function Settings() {
             </div>
           </CardHeader>
           <CardContent className="space-y-3">
-            <Button variant="outline" className="w-full justify-start gap-2 text-destructive hover:text-destructive" onClick={handleLogout}>
+            <Button variant="outline" className="w-full justify-start gap-2" onClick={handleLogout}>
               <LogOut className="h-4 w-4" />
               Log Out
             </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="outline" className="w-full justify-start gap-2 text-destructive hover:text-destructive border-destructive/30 hover:bg-destructive/10">
+                  <Trash2 className="h-4 w-4" />
+                  Delete Account
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent className="w-[calc(100%-2rem)] max-h-[85vh]">
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Delete your account?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action is permanent and cannot be undone. All your data including quizzes, flashcards, summaries, and study progress will be permanently deleted.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={handleDeleteAccount}
+                    disabled={deleting}
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  >
+                    {deleting ? "Deleting…" : "Yes, delete my account"}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </CardContent>
         </Card>
 
