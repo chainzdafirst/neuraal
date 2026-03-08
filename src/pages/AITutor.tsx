@@ -326,7 +326,10 @@ export default function AITutor() {
         className="hidden"
         multiple
         accept="image/*,.pdf,.doc,.docx,.txt"
-        onChange={(e) => handleFileSelect(e.target.files)}
+        onChange={(e) => {
+          handleFileSelect(e.target.files);
+          e.target.value = "";
+        }}
       />
       <input
         ref={cameraInputRef}
@@ -334,7 +337,10 @@ export default function AITutor() {
         className="hidden"
         accept="image/*"
         capture="environment"
-        onChange={(e) => handleFileSelect(e.target.files)}
+        onChange={(e) => {
+          handleFileSelect(e.target.files);
+          e.target.value = "";
+        }}
       />
 
       {/* Chat Sidebar */}
@@ -460,7 +466,7 @@ export default function AITutor() {
       </main>
 
       {/* Input Bar - ChatGPT style */}
-      <footer className="sticky bottom-0 bg-background border-t border-border/50 px-4 py-3">
+      <footer className="sticky bottom-0 bg-background/95 backdrop-blur-md border-t border-border px-4 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
         <div className="container mx-auto max-w-3xl">
           {/* Attachment previews */}
           {attachments.length > 0 && (
@@ -507,17 +513,25 @@ export default function AITutor() {
               </Button>
 
               {showAttachMenu && (
-                <div className="absolute bottom-12 left-0 bg-popover border border-border rounded-xl shadow-lg p-2 flex flex-col gap-1 min-w-[160px] animate-scale-in z-10">
+                <div className="absolute bottom-12 left-0 bg-popover border border-border rounded-xl shadow-lg p-2 flex flex-col gap-1 min-w-[160px] animate-scale-in z-50">
                   <button
                     className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-muted transition-colors text-sm"
-                    onClick={() => fileInputRef.current?.click()}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowAttachMenu(false);
+                      setTimeout(() => fileInputRef.current?.click(), 100);
+                    }}
                   >
                     <Paperclip className="w-4 h-4" />
                     Attach File
                   </button>
                   <button
                     className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-muted transition-colors text-sm"
-                    onClick={() => cameraInputRef.current?.click()}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowAttachMenu(false);
+                      setTimeout(() => cameraInputRef.current?.click(), 100);
+                    }}
                   >
                     <Camera className="w-4 h-4" />
                     Take Photo
@@ -561,9 +575,8 @@ export default function AITutor() {
         </div>
       </footer>
 
-      {/* Close attach menu on click outside */}
       {showAttachMenu && (
-        <div className="fixed inset-0 z-0" onClick={() => setShowAttachMenu(false)} />
+        <div className="fixed inset-0 z-40" onClick={() => setShowAttachMenu(false)} />
       )}
     </div>
   );
