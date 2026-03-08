@@ -15,7 +15,7 @@ import {
   Send,
   Loader2,
   Sparkles,
-  Brain,
+  ChevronDown,
   MessageSquare,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -30,12 +30,17 @@ export default function SummaryView() {
   const { documentId } = useParams<{ documentId: string }>();
   const navigate = useNavigate();
   const { profile, isAuthenticated } = useAuth();
-  const [summary, setSummary] = useState("");
+  const [summaryParts, setSummaryParts] = useState<string[]>([]);
+  const [currentPart, setCurrentPart] = useState(1);
+  const totalParts = 4;
   const [documentName, setDocumentName] = useState("");
   const [extractedText, setExtractedText] = useState("");
+  const [filePath, setFilePath] = useState("");
+  const [fileName, setFileName] = useState("");
   const [copied, setCopied] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [generatingMore, setGeneratingMore] = useState(false);
 
   // Chat state
   const [showChat, setShowChat] = useState(false);
@@ -69,14 +74,85 @@ export default function SummaryView() {
       return;
     }
 
-    setSummary(data.summary || "");
+    // Load existing summary as part 1
+    if (data.summary) {
+      setSummaryParts([data.summary]);
+    }
     setDocumentName(data.file_name);
     setExtractedText(data.extracted_text || "");
+    setFilePath(data.file_path || "");
+    setFileName(data.file_name || "");
     setLoading(false);
   };
 
+  const fullSummary = summaryParts.join("\n\n");
+
+  const handleContinueGenerating = async () => {
+    const nextPart = currentPart + 1;
+    if (nextPart > totalParts) return;
+
+    setGeneratingMore(true);
+
+    try {
+      // Build the "topics covered so far" from existing parts
+      const previousParts = summaryParts.join("\n\n---\n\n");
+
+      const isPdf = (fileName || "").toLowerCase().endsWith(".pdf");
+
+      const bodyPayload: any = {
+        summaryType: "detailed",
+        part: nextPart,
+        previousParts,
+        userProfile: profile ? {
+          program: profile.program,
+          institution: profile.institution,
+          educationLevel: profile.education_level,
+          yearOfStudy: profile.year_of_study,
+        } : null,
+      };
+
+      if (isPdf && filePath && !extractedText) {
+        bodyPayload.filePath = filePath;
+        bodyPayload.fileName = fileName;
+      } else {
+        bodyPayload.documentText = extractedText;
+      }
+
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-summary`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        },
+        body: JSON.stringify(bodyPayload),
+      });
+
+      if (!response.ok) throw new Error("Failed to generate next part");
+
+      const data = await response.json();
+
+      if (data.summary) {
+        const newParts = [...summaryParts, data.summary];
+        setSummaryParts(newParts);
+        setCurrentPart(nextPart);
+
+        // Save full accumulated summary to DB
+        await supabase
+          .from("documents")
+          .update({ summary: newParts.join("\n\n") })
+          .eq("id", documentId);
+
+        toast.success(`Part ${nextPart} of ${totalParts} generated!`);
+      }
+    } catch {
+      toast.error("Failed to generate next part. Please try again.");
+    } finally {
+      setGeneratingMore(false);
+    }
+  };
+
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(summary);
+    await navigator.clipboard.writeText(fullSummary);
     setCopied(true);
     toast.success("Summary copied to clipboard!");
     setTimeout(() => setCopied(false), 2000);
@@ -85,12 +161,12 @@ export default function SummaryView() {
   const handleShare = async () => {
     if (navigator.share) {
       try {
-        await navigator.share({ title: `Summary: ${documentName}`, text: summary });
+        await navigator.share({ title: `Summary: ${documentName}`, text: fullSummary });
       } catch {
         // User cancelled
       }
     } else {
-      await navigator.clipboard.writeText(summary);
+      await navigator.clipboard.writeText(fullSummary);
       toast.success("Summary copied for sharing!");
     }
     setMenuOpen(false);
@@ -173,6 +249,8 @@ export default function SummaryView() {
     );
   }
 
+  const hasMoreParts = currentPart < totalParts;
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
@@ -188,14 +266,15 @@ export default function SummaryView() {
               </div>
               <div className="min-w-0">
                 <h1 className="font-display font-semibold truncate">Summary</h1>
-                <p className="text-xs text-muted-foreground truncate">{documentName}</p>
+                <p className="text-xs text-muted-foreground truncate">
+                  {documentName} · Part {currentPart}/{totalParts}
+                </p>
               </div>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
             <NeuraalLogo size="sm" showText={false} />
-            {/* 3-dot menu */}
             <div className="relative">
               <Button variant="ghost" size="icon" onClick={() => setMenuOpen(!menuOpen)}>
                 <MoreVertical className="w-5 h-5" />
@@ -221,7 +300,34 @@ export default function SummaryView() {
 
       {/* Summary Content */}
       <main className="flex-1 container mx-auto px-4 py-8 max-w-3xl">
-        <MarkdownContent content={summary} />
+        <MarkdownContent content={fullSummary} />
+
+        {/* Continue generating prompt */}
+        {hasMoreParts && (
+          <div className="mt-8 p-5 rounded-xl border border-primary/20 bg-primary/5 text-center">
+            <p className="text-sm text-muted-foreground mb-3">
+              Showing Part {currentPart} of {totalParts}. Would you like to continue?
+            </p>
+            <Button
+              variant="gradient"
+              onClick={handleContinueGenerating}
+              disabled={generatingMore}
+              className="min-w-[200px]"
+            >
+              {generatingMore ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Generating Part {currentPart + 1}...
+                </>
+              ) : (
+                <>
+                  <ChevronDown className="w-4 h-4 mr-2" />
+                  Continue Summary (Part {currentPart + 1}/{totalParts})
+                </>
+              )}
+            </Button>
+          </div>
+        )}
 
         {/* Copy button at end */}
         <div className="mt-8 pt-6 border-t border-border">
@@ -257,7 +363,6 @@ export default function SummaryView() {
 
           {showChat && (
             <div className="mt-4 neuraal-card p-4">
-              {/* Chat messages */}
               <div className="max-h-80 overflow-y-auto space-y-3 mb-4">
                 {chatMessages.length === 0 && (
                   <p className="text-sm text-muted-foreground text-center py-4">
@@ -287,7 +392,6 @@ export default function SummaryView() {
                 <div ref={chatEndRef} />
               </div>
 
-              {/* Chat input */}
               <div className="flex items-center gap-2">
                 <Input
                   placeholder="Ask about this document..."
