@@ -33,7 +33,7 @@ interface Activity {
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const { user, profile, logout, isAuthenticated, isLoading } = useAuth();
+  const { user, profile, isAuthenticated, isLoading } = useAuth();
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
   const [activities, setActivities] = useState<Activity[]>([]);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
