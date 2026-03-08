@@ -19,7 +19,7 @@ export function useAdminAuth() {
       setIsAdmin(false);
       setRoles([]);
       setIsLoading(false);
-      navigate("/login");
+      navigate("/admin/login");
       return;
     }
 
@@ -33,7 +33,7 @@ export function useAdminAuth() {
         setIsAdmin(false);
         setRoles([]);
         setIsLoading(false);
-        navigate("/dashboard");
+        navigate("/admin/login");
         return;
       }
 
