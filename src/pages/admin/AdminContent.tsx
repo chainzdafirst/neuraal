@@ -136,9 +136,10 @@ export default function AdminContent() {
         r.title.toLowerCase().includes(search.toLowerCase()) ||
         r.program.toLowerCase().includes(search.toLowerCase());
       const matchesType = typeFilter === "all" || r.resource_type === typeFilter;
-      return matchesSearch && matchesType;
+      const matchesYear = yearFilter === "all" || String((r as any).year_of_study) === yearFilter;
+      return matchesSearch && matchesType && matchesYear;
     });
-  }, [resources, activeInstitution, activeProgram, search, typeFilter]);
+  }, [resources, activeInstitution, activeProgram, search, typeFilter, yearFilter]);
 
   // Programs for current institution
   const currentPrograms = useMemo(() => {
