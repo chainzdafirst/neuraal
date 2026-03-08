@@ -46,7 +46,9 @@ export default function Signup() {
       navigate("/onboarding");
     } catch (error: any) {
       const message = error?.message || "Signup failed. Please try again.";
-      if (message.includes("already registered")) {
+      if (message.includes("Load failed") || message.includes("fetch")) {
+        toast.error("Unable to connect to the server. Please check your internet connection and try again.");
+      } else if (message.includes("already registered")) {
         toast.error("This email is already registered. Please log in instead.");
       } else {
         toast.error(message);
