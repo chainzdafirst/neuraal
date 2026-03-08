@@ -227,7 +227,7 @@ export function PreviewProgress() {
         <div className="grid grid-cols-2 gap-2">
           <div className="bg-card rounded-lg border border-border/50 p-2.5">
             <div className="text-[10px] font-semibold mb-2 flex items-center gap-1"><AlertTriangle className="w-3 h-3 text-neuraal-amber" /> Improve</div>
-            {[{ t: "Data Structures", s: 35 }, { t: "Microeconomics", s: 42 }].map((a) => (
+            {[{ t: "Communication", s: 35 }, { t: "Microeconomics", s: 42 }].map((a) => (
               <div key={a.t} className="mb-1.5">
                 <div className="flex justify-between text-[9px] mb-0.5"><span>{a.t}</span><span className="text-neuraal-amber">{a.s}%</span></div>
                 <div className="h-1 bg-secondary rounded-full"><div className="h-full bg-neuraal-amber rounded-full" style={{ width: `${a.s}%` }} /></div>
