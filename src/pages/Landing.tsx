@@ -117,14 +117,9 @@ export default function Landing() {
 
   return (
     <div className="min-h-screen bg-background overflow-hidden">
-      {/* Top Banner */}
-      <div className="bg-muted h-[38px] flex items-center justify-center">
-        <p className="text-foreground text-sm font-semibold">🎓 Free for Zambian students — Start studying smarter today</p>
-      </div>
-
       {/* Navigation */}
       <nav className="max-w-[1360px] px-5 sm:px-[70px] mx-auto flex items-center justify-between py-4">
-        <NeuraalLogo size="sm" />
+        <NeuraalLogo size="lg" />
         <div className="flex items-center gap-3">
           <Button variant="ghost" size="default" className="text-sm font-semibold" onClick={() => navigate("/login")}>
             Sign In
