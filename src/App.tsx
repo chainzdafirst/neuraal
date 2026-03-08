@@ -17,6 +17,8 @@ import Flashcards from "./pages/Flashcards";
 import Progress from "./pages/Progress";
 import Upgrade from "./pages/Upgrade";
 import Settings from "./pages/Settings";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 import AdminOverview from "./pages/admin/AdminOverview";
 import AdminUsers from "./pages/admin/AdminUsers";
@@ -49,6 +51,8 @@ const App = () => (
             <Route path="/progress" element={<Progress />} />
             <Route path="/upgrade" element={<Upgrade />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             {/* Admin routes — secret entry via /portal/n3ur44l-8f42 then standard /admin/* after auth */}
             <Route path="/portal/n3ur44l-8f42" element={<AdminLogin />} />
             <Route path="/admin/login" element={<AdminLogin />} />
