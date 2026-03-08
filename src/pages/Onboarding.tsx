@@ -36,7 +36,7 @@ export default function Onboarding() {
     }
   }, [isAuthenticated, navigate]);
 
-  const totalSteps = 4;
+  const totalSteps = 5;
   const progress = (step / totalSteps) * 100;
 
   const handleNext = () => {
