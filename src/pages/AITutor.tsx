@@ -396,43 +396,46 @@ export default function AITutor() {
                 </div>
               )}
               <div className="flex flex-col max-w-[80%]">
-                <div
-                  className={`${
-                    message.role === "user"
-                      ? "bg-primary text-primary-foreground rounded-2xl rounded-br-sm px-4 py-2.5"
-                      : "bg-card border border-border shadow-sm rounded-2xl rounded-bl-sm px-4 py-2.5"
-                  }`}
-                >
-                  {/* Image attachments */}
-                  {message.attachments && message.attachments.length > 0 && (
-                    <div className="flex flex-wrap gap-2 mb-2">
-                      {message.attachments.map((att, i) => (
-                        <div key={i}>
-                          {att.type === "image" && att.preview ? (
-                            <img
-                              src={att.preview}
-                              alt={att.name}
-                              className="rounded-lg max-w-[200px] max-h-[150px] object-cover"
-                            />
-                          ) : (
-                            <div className="flex items-center gap-2 bg-primary-foreground/10 rounded-lg px-3 py-2">
-                              <FileText className="w-4 h-4" />
-                              <span className="text-xs truncate max-w-[120px]">{att.name}</span>
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                {/* Attachments rendered outside the bubble */}
+                {message.attachments && message.attachments.length > 0 && (
+                  <div className={`flex flex-wrap gap-2 mb-1.5 ${message.role === "user" ? "justify-end" : ""}`}>
+                    {message.attachments.map((att, i) => (
+                      <div key={i}>
+                        {att.type === "image" && att.preview ? (
+                          <img
+                            src={att.preview}
+                            alt={att.name}
+                            className="rounded-xl max-w-[200px] max-h-[150px] object-cover shadow-sm"
+                          />
+                        ) : (
+                          <div className="flex items-center gap-2 bg-card border border-border rounded-xl px-3 py-2 shadow-sm">
+                            <FileText className="w-4 h-4 text-muted-foreground" />
+                            <span className="text-xs text-foreground truncate max-w-[120px]">{att.name}</span>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
 
-                  {message.role === "assistant" ? (
-                    <MarkdownContent content={message.content || ""} />
-                  ) : (
-                    message.content && (
-                      <div className="whitespace-pre-wrap text-sm">{message.content}</div>
-                    )
-                  )}
-                </div>
+                {/* Text bubble — only render if there's content */}
+                {(message.content || message.role === "assistant") && (
+                  <div
+                    className={`${
+                      message.role === "user"
+                        ? "bg-primary text-primary-foreground rounded-2xl rounded-br-sm px-4 py-2.5"
+                        : "bg-card border border-border shadow-sm rounded-2xl rounded-bl-sm px-4 py-2.5"
+                    }`}
+                  >
+                    {message.role === "assistant" ? (
+                      <MarkdownContent content={message.content || ""} />
+                    ) : (
+                      message.content && (
+                        <div className="whitespace-pre-wrap text-sm">{message.content}</div>
+                      )
+                    )}
+                  </div>
+                )}
 
                 {/* Copy button */}
                 {message.role === "assistant" && message.content && message.id !== "welcome" && (
