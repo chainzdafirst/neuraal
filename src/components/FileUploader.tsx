@@ -133,25 +133,23 @@ export default function FileUploader({ onFileReady }: FileUploaderProps) {
 
         if (dbError) throw dbError;
 
-        // Notify parent immediately — file is saved and ready to reference
-        onFileReady?.(docData.id, file.name, filePath);
-
         if (isTxt) {
-          // TXT is already extracted — mark done
+          // TXT is already extracted — mark done and notify parent
           setFiles((prev) =>
             prev.map((f) =>
               f.id === fileId ? { ...f, progress: 100, status: "ready", documentId: docData.id } : f
             )
           );
-          toast.success("Document uploaded and processed!");
+          onFileReady?.(docData.id, file.name, filePath);
+          toast.success("Document uploaded and ready!");
         } else {
-          // Fire extraction in background — don't block the UI
+          // Fire extraction in background — onFileReady will be called when extraction completes
           setFiles((prev) =>
             prev.map((f) =>
               f.id === fileId ? { ...f, progress: 70, status: "processing", documentId: docData.id } : f
             )
           );
-          toast.success("Document uploaded! Processing text...");
+          toast.info("Document uploaded! Processing text...");
           runExtraction(filePath, file.type, file.name, docData.id, fileId);
         }
       } catch (error) {
