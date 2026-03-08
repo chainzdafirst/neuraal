@@ -96,7 +96,7 @@ export default function Landing() {
   const features = [
     {
       icon: Brain,
-      title: "AI Tutor",
+      title: "AI Tutoring",
       description: "Get step-by-step explanations tailored to your syllabus. Ask questions and get instant, curriculum-aware answers.",
       gradient: "from-[hsl(234,89%,54%)] to-[hsl(270,80%,60%)]",
       preview: <PreviewAITutor />,
@@ -189,7 +189,7 @@ export default function Landing() {
       <section className="pt-5 pb-5 sm:pt-9 sm:pb-[74px] max-w-[1360px] px-5 sm:px-[70px] mx-auto">
         <div>
           <h1 className="text-[40px] sm:text-[84px] font-display font-bold tracking-[-0.02em] leading-[48px] sm:leading-[100px] mb-6">
-            Syllabus-Aligned
+            bus-Aligned
             <br />
             <RotatingText />
           </h1>
