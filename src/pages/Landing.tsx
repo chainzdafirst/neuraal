@@ -223,8 +223,8 @@ export default function Landing() {
         ))}
       </section>
 
-      {/* Social Proofid="pricing"  / Stats */}
- id="pricing"      <section className="py-24 max-w-[1360px] px-5 sm:px-[70px] mx-auto">
+      {/* Social Proof / Stats */}
+      <section id="pricing" className="py-24 max-w-[1360px] px-5 sm:px-[70px] mx-auto">
         <div>
           <div className="rounded-[16px] border border-border bg-card p-10 md:p-14">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
