@@ -40,7 +40,7 @@ const plans = [
   {
     id: "yearly",
     name: "Yearly",
-    price: 349.99,
+    price: 249.99,
     period: "year",
     icon: Crown,
     discount: 55,
