@@ -1,9 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { NeuraalLogo } from "@/components/ui/NeuraalLogo";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState, useRef } from "react";
-import {
-  Brain,
+import { useEffect, useState, useRef  Brain,
   FileText,
   Target,
   Sparkles,
