@@ -26,12 +26,8 @@ export default function Settings() {
   const [weeklyReport, setWeeklyReport] = useState(profile?.notify_weekly_report ?? false);
 
   const [saving, setSaving] = useState(false);
-
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmNewPassword, setConfirmNewPassword] = useState("");
-  const [showNewPassword, setShowNewPassword] = useState(false);
-  const [changingPassword, setChangingPassword] = useState(false);
+  const [sendingReset, setSendingReset] = useState(false);
+  const [resetSent, setResetSent] = useState(false);
 
   if (isLoading) {
     return (
