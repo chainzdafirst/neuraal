@@ -52,26 +52,26 @@ export default function AdminAI() {
 
   return (
     <AdminLayout>
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         <div>
-          <h1 className="text-3xl font-display font-bold">AI Management</h1>
-          <p className="text-muted-foreground mt-1">
+          <h1 className="text-2xl sm:text-3xl font-display font-bold">AI Management</h1>
+          <p className="text-muted-foreground text-sm mt-1">
             Configure AI models, prompts, and safety guardrails
           </p>
         </div>
 
         <Tabs defaultValue="models" className="space-y-4">
-          <TabsList>
+          <TabsList className="flex flex-wrap h-auto gap-1">
             <TabsTrigger value="models">
-              <Cpu className="h-4 w-4 mr-2" />
+              <Cpu className="h-4 w-4 mr-1 sm:mr-2" />
               Models
             </TabsTrigger>
             <TabsTrigger value="prompts">
-              <MessageSquare className="h-4 w-4 mr-2" />
+              <MessageSquare className="h-4 w-4 mr-1 sm:mr-2" />
               Prompts
             </TabsTrigger>
             <TabsTrigger value="guardrails">
-              <Shield className="h-4 w-4 mr-2" />
+              <Shield className="h-4 w-4 mr-1 sm:mr-2" />
               Guardrails
             </TabsTrigger>
           </TabsList>
@@ -86,7 +86,7 @@ export default function AdminAI() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {availableModels.map((model) => (
                     <button
                       key={model.id}
@@ -183,7 +183,7 @@ export default function AdminAI() {
               </CardContent>
             </Card>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {promptModules.map((mod) => (
                 <Card key={mod.id}>
                   <CardHeader>

@@ -121,14 +121,14 @@ export default function AdminUsers() {
 
   return (
     <AdminLayout>
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         <div>
-          <h1 className="text-3xl font-display font-bold">User Management</h1>
-          <p className="text-muted-foreground mt-1">Manage learners, roles, and account status</p>
+          <h1 className="text-2xl sm:text-3xl font-display font-bold">User Management</h1>
+          <p className="text-muted-foreground text-sm mt-1">Manage learners, roles, and account status</p>
         </div>
 
         {/* Stats row */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
           <Card>
             <CardContent className="pt-4 pb-3 flex items-center gap-3">
               <Users className="h-5 w-5 text-primary" />
@@ -160,11 +160,11 @@ export default function AdminUsers() {
 
         {/* Filters */}
         <div className="flex flex-col sm:flex-row gap-3">
-          <div className="relative flex-1 max-w-md">
+          <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input placeholder="Search by name, email, or institution..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             {["all", "active", "suspended", "deactivated"].map((s) => (
               <Button key={s} size="sm" variant={statusFilter === s ? "default" : "outline"} onClick={() => setStatusFilter(s)}>
                 {s === "all" ? "All" : s.charAt(0).toUpperCase() + s.slice(1)}
@@ -175,8 +175,8 @@ export default function AdminUsers() {
 
         {/* Table */}
         <Card>
-          <CardContent className="p-0">
-            <Table>
+          <CardContent className="p-0 overflow-x-auto">
+            <Table className="min-w-[800px]">
               <TableHeader>
                 <TableRow>
                   <TableHead>Name</TableHead>

@@ -344,26 +344,26 @@ export default function AdminContent() {
 
   return (
     <AdminLayout>
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         {/* Header */}
-        <div className="flex items-start justify-between">
-          <div>
+        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+          <div className="min-w-0">
             {breadcrumb}
-            <h1 className="text-3xl font-display font-bold">Curriculum Content</h1>
-            <p className="text-muted-foreground mt-1">Manage training data by institution and program</p>
+            <h1 className="text-2xl sm:text-3xl font-display font-bold truncate">Curriculum Content</h1>
+            <p className="text-muted-foreground text-sm mt-1">Manage training data by institution and program</p>
           </div>
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={() => setSchoolDialogOpen(true)}>
-              <Building2 className="h-4 w-4 mr-2" /> Add School
+          <div className="flex gap-2 shrink-0">
+            <Button variant="outline" size="sm" className="sm:size-default" onClick={() => setSchoolDialogOpen(true)}>
+              <Building2 className="h-4 w-4 sm:mr-2" /> <span className="hidden sm:inline">Add School</span>
             </Button>
-            <Button onClick={openUploadDialog}>
-              <Plus className="h-4 w-4 mr-2" /> Add Resource
+            <Button size="sm" className="sm:size-default" onClick={openUploadDialog}>
+              <Plus className="h-4 w-4 sm:mr-2" /> <span className="hidden sm:inline">Add Resource</span>
             </Button>
           </div>
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
           {[
             { label: "Institutions", value: statCounts.institutions, icon: Building2, color: "text-primary" },
             { label: "Total Resources", value: statCounts.total, icon: FileText, color: "text-accent" },
@@ -458,13 +458,13 @@ export default function AdminContent() {
         {activeInstitution && activeProgram && (
           <>
             {/* Filters */}
-            <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
+            <div className="flex flex-col gap-3">
               <div className="flex flex-col sm:flex-row gap-3 flex-1">
-                <div className="relative max-w-md flex-1">
+                <div className="relative flex-1">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input placeholder="Search resources..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 flex-wrap">
                   {["all", "syllabus", "past_paper", "reference_material"].map((t) => (
                     <Button key={t} size="sm" variant={typeFilter === t ? "default" : "outline"} onClick={() => setTypeFilter(t)}>
                       {t === "all" ? "All" : resourceTypeLabels[t] || t}
@@ -473,15 +473,15 @@ export default function AdminContent() {
                 </div>
               </div>
               {selected.size > 0 && (
-                <Button size="sm" variant="destructive" onClick={bulkDelete}>
+                <Button size="sm" variant="destructive" onClick={bulkDelete} className="self-start">
                   <Trash2 className="h-4 w-4 mr-2" /> Delete {selected.size}
                 </Button>
               )}
             </div>
 
             <Card>
-              <CardContent className="p-0">
-                <Table>
+              <CardContent className="p-0 overflow-x-auto">
+                <Table className="min-w-[600px]">
                   <TableHeader>
                     <TableRow>
                       <TableHead className="w-10"><Checkbox checked={filtered.length > 0 && selected.size === filtered.length} onCheckedChange={toggleAll} /></TableHead>

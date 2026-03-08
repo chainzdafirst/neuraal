@@ -42,14 +42,14 @@ export default function AdminOverview() {
 
   return (
     <AdminLayout>
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         <div>
-          <h1 className="text-3xl font-display font-bold">Dashboard Overview</h1>
-          <p className="text-muted-foreground mt-1">Platform-wide metrics at a glance</p>
+          <h1 className="text-2xl sm:text-3xl font-display font-bold">Dashboard Overview</h1>
+          <p className="text-muted-foreground text-sm mt-1">Platform-wide metrics at a glance</p>
         </div>
 
         {/* KPI Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {kpis.map((kpi) => (
             <Card key={kpi.label} className="relative overflow-hidden">
               <CardHeader className="flex flex-row items-center justify-between pb-2">

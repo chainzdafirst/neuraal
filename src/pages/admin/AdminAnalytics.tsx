@@ -107,14 +107,14 @@ export default function AdminAnalytics() {
 
   return (
     <AdminLayout>
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6">
         <div>
-          <h1 className="text-3xl font-display font-bold">Analytics & Reporting</h1>
-          <p className="text-muted-foreground mt-1">Platform-wide engagement, content, and performance insights</p>
+          <h1 className="text-2xl sm:text-3xl font-display font-bold">Analytics & Reporting</h1>
+          <p className="text-muted-foreground text-sm mt-1">Platform-wide engagement, content, and performance insights</p>
         </div>
 
         {/* KPI row */}
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
           {[
             { label: "Users", value: totals.users, icon: Users, color: "text-primary" },
             { label: "Documents", value: totals.documents, icon: FileText, color: "text-accent" },
@@ -135,10 +135,10 @@ export default function AdminAnalytics() {
         </div>
 
         <Tabs defaultValue="engagement" className="space-y-4">
-          <TabsList>
-            <TabsTrigger value="engagement"><TrendingUp className="h-4 w-4 mr-2" />Engagement</TabsTrigger>
-            <TabsTrigger value="content"><FileText className="h-4 w-4 mr-2" />Content</TabsTrigger>
-            <TabsTrigger value="institutions"><Users className="h-4 w-4 mr-2" />Institutions</TabsTrigger>
+          <TabsList className="flex flex-wrap h-auto gap-1">
+            <TabsTrigger value="engagement"><TrendingUp className="h-4 w-4 mr-1 sm:mr-2" /><span className="hidden sm:inline">Engagement</span><span className="sm:hidden">Engage</span></TabsTrigger>
+            <TabsTrigger value="content"><FileText className="h-4 w-4 mr-1 sm:mr-2" />Content</TabsTrigger>
+            <TabsTrigger value="institutions"><Users className="h-4 w-4 mr-1 sm:mr-2" /><span className="hidden sm:inline">Institutions</span><span className="sm:hidden">Schools</span></TabsTrigger>
           </TabsList>
 
           {/* Engagement Tab */}
@@ -150,7 +150,7 @@ export default function AdminAnalytics() {
                   <CardDescription>New registrations per day</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="h-[300px]">
+                  <div className="h-[250px] sm:h-[300px]">
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart data={userGrowth}>
                         <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
@@ -170,7 +170,7 @@ export default function AdminAnalytics() {
                   <CardDescription>Documents, quizzes, and flashcards created</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="h-[300px]">
+                  <div className="h-[250px] sm:h-[300px]">
                     <ResponsiveContainer width="100%" height="100%">
                       <LineChart data={dailyActivity}>
                         <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
@@ -198,7 +198,7 @@ export default function AdminAnalytics() {
                   <CardDescription>Distribution of generated content types</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="h-[300px]">
+                  <div className="h-[250px] sm:h-[300px]">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
                         <Pie data={contentBreakdown} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100} label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}>
@@ -240,9 +240,9 @@ export default function AdminAnalytics() {
                 <CardDescription>Institutions with the most registered learners</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="h-[400px]">
+                <div className="h-[300px] sm:h-[400px]">
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={topInstitutions} layout="vertical" margin={{ left: 100 }}>
+                    <BarChart data={topInstitutions} layout="vertical" margin={{ left: 20, right: 10 }}>
                       <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
                       <XAxis type="number" tick={{ fontSize: 11 }} allowDecimals={false} />
                       <YAxis type="category" dataKey="name" tick={{ fontSize: 11 }} width={90} />
