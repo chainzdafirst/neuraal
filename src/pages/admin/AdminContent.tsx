@@ -547,7 +547,7 @@ export default function AdminContent() {
 
         {/* ── Add Resource Dialog ── */}
         <Dialog open={resourceDialogOpen} onOpenChange={(open) => { if (!open) resetUploadForm(); setResourceDialogOpen(open); }}>
-          <DialogContent className="max-w-lg w-[calc(100%-2rem)] max-h-[85vh] overflow-y-auto mx-4">
+          <DialogContent className="max-w-lg w-[calc(100%-2rem)] max-h-[85vh] overflow-y-auto mx-4 w-[calc(100%-2rem)] max-h-[85vh] overflow-y-auto mx-4">
             <DialogHeader><DialogTitle>Upload Curriculum Resource</DialogTitle></DialogHeader>
             <div className="space-y-4 py-2">
               {/* Step 1: File selection with auto-classify */}
@@ -631,7 +631,7 @@ export default function AdminContent() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-        <Dialog open={schoolDialogOpen} onOpenChange={setSchoolDialogOpen}>
+        <Dialog open={schoolDialogOpen} onOpenChange={setSchoolDia w-[calc(100%-2rem)] max-h-[85vh] overflow-y-auto mx-4logOpen}>
           <DialogContent className="max-w-md">
             <DialogHeader><DialogTitle>Add New School</DialogTitle></DialogHeader>
             <div className="space-y-4 py-2">
