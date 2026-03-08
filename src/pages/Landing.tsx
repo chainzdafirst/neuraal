@@ -171,7 +171,7 @@ export default function Landing() {
 
 
   return (
-    <div className="min-h-screen bg-background overflow-hidden">
+    <div className="min-h-screen bg-background overflow-x-hidden">
       {/* Navigation */}
       <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-md border-b border-border/50">
       <nav className="max-w-[1360px] px-5 sm:px-[70px] mx-auto flex items-center justify-between py-4 relative">
