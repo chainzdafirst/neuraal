@@ -52,7 +52,14 @@ async function extractPdfViaAI(data: Uint8Array, firstPageOnly: boolean): Promis
   const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
   if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
-  const base64 = btoa(String.fromCharCode(...data));
+  // Chunked base64 encoding to avoid "Maximum call stack size exceeded"
+  let binary = "";
+  const chunkSize = 8192;
+  for (let i = 0; i < data.length; i += chunkSize) {
+    const chunk = data.subarray(i, Math.min(i + chunkSize, data.length));
+    binary += String.fromCharCode(...chunk);
+  }
+  const base64 = btoa(binary);
   const fileSizeMB = data.length / (1024 * 1024);
 
   let extractionPrompt = firstPageOnly
