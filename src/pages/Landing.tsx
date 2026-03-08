@@ -179,7 +179,7 @@ export default function Landing() {
             icon={feature.icon}
             title={feature.title}
             description={feature.description}
-            image={feature.image}
+            preview={feature.preview}
             gradient={feature.gradient}
             reverse={i % 2 !== 0}
           />
