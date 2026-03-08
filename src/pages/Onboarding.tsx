@@ -28,6 +28,7 @@ export default function Onboarding() {
   const [institution, setInstitution] = useState("");
   const [program, setProgram] = useState("");
   const [examType, setExamType] = useState<"semester" | "board" | "">("");
+  const [yearOfStudy, setYearOfStudy] = useState<number | null>(null);
 
   useEffect(() => {
     if (!isAuthenticated) {
