@@ -268,59 +268,45 @@ export default function Settings() {
               </div>
               <div>
                 <CardTitle className="text-base">Change Password</CardTitle>
-                <CardDescription>Update your account password</CardDescription>
+                <CardDescription>Verify via email to update your password</CardDescription>
               </div>
             </div>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-1.5">
-              <Label className="text-muted-foreground text-xs">Current Password</Label>
-              <Input
-                type="password"
-                value={currentPassword}
-                onChange={(e) => setCurrentPassword(e.target.value)}
-                placeholder="Enter current password"
-                className="bg-background/50"
-              />
-            </div>
-            <div className="space-y-1.5">
-              <Label className="text-muted-foreground text-xs">New Password</Label>
-              <div className="relative">
-                <Input
-                  type={showNewPassword ? "text" : "password"}
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  placeholder="At least 6 characters"
-                  className="bg-background/50 pr-10"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowNewPassword(!showNewPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+          <CardContent>
+            {resetSent ? (
+              <div className="flex flex-col items-center gap-3 py-2 text-center">
+                <CheckCircle className="h-8 w-8 text-primary" />
+                <div>
+                  <p className="text-sm font-medium text-foreground">Check your email</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    We sent a password reset link to <span className="font-medium text-foreground">{user?.email}</span>. Click the link to set a new password.
+                  </p>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-xs text-muted-foreground"
+                  onClick={() => setResetSent(false)}
                 >
-                  {showNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
+                  Didn't receive it? Send again
+                </Button>
               </div>
-            </div>
-            <div className="space-y-1.5">
-              <Label className="text-muted-foreground text-xs">Confirm New Password</Label>
-              <Input
-                type={showNewPassword ? "text" : "password"}
-                value={confirmNewPassword}
-                onChange={(e) => setConfirmNewPassword(e.target.value)}
-                placeholder="Repeat new password"
-                className="bg-background/50"
-              />
-            </div>
-            <Button
-              variant="outline"
-              className="w-full"
-              onClick={handleChangePassword}
-              disabled={changingPassword || !currentPassword || !newPassword}
-            >
-              {changingPassword ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
-              {changingPassword ? "Changing…" : "Change Password"}
-            </Button>
+            ) : (
+              <div className="space-y-3">
+                <p className="text-sm text-muted-foreground">
+                  For security, we'll send a verification link to <span className="font-medium text-foreground">{user?.email}</span>. Click the link to set your new password.
+                </p>
+                <Button
+                  variant="outline"
+                  className="w-full gap-2"
+                  onClick={handleSendPasswordReset}
+                  disabled={sendingReset}
+                >
+                  {sendingReset ? <Loader2 className="w-4 h-4 animate-spin" /> : <Mail className="w-4 h-4" />}
+                  {sendingReset ? "Sending…" : "Send password reset link"}
+                </Button>
+              </div>
+            )}
           </CardContent>
         </Card>
 
