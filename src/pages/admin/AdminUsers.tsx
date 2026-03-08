@@ -163,6 +163,28 @@ export default function AdminUsers() {
     fetchData();
   };
 
+  const deleteUser = async () => {
+    if (!deleteTarget) return;
+    setDeleting(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await supabase.functions.invoke("delete-user", {
+        body: { user_id: deleteTarget.id },
+      });
+      if (res.error || res.data?.error) {
+        toast.error(res.data?.error || res.error?.message || "Failed to delete user");
+      } else {
+        toast.success(`Account for "${deleteTarget.full_name || deleteTarget.email}" deleted`);
+        setDeleteTarget(null);
+        fetchData();
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Failed to delete user");
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   const activeCount = users.filter((u) => u.account_status === "active").length;
   const suspendedCount = users.filter((u) => u.account_status === "suspended").length;
 
