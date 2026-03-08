@@ -437,18 +437,21 @@ function DemoProgress() {
 }
 
 /* ─── PAGE ─── */
+import { useSearchParams } from "react-router-dom";
+
 export default function DemoPreview() {
+  const [searchParams] = useSearchParams();
+  const feature = searchParams.get("feature");
+
+  if (feature === "ai-tutor") return <DemoAITutor />;
+  if (feature === "quizzes") return <DemoQuiz />;
+  if (feature === "summaries") return <DemoSummary />;
+  if (feature === "flashcards") return <DemoFlashcards />;
+  if (feature === "progress") return <DemoProgress />;
+
   return (
-    <div className="space-y-0">
-      <DemoAITutor />
-      <div className="border-t-8 border-neuraal-amber" />
-      <DemoQuiz />
-      <div className="border-t-8 border-accent" />
-      <DemoSummary />
-      <div className="border-t-8 border-neuraal-emerald" />
-      <DemoFlashcards />
-      <div className="border-t-8 border-primary" />
-      <DemoProgress />
+    <div className="p-8 text-center">
+      <p>Add ?feature=ai-tutor|quizzes|summaries|flashcards|progress to URL</p>
     </div>
   );
 }
