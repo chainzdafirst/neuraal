@@ -10,6 +10,7 @@ interface Profile {
   institution: string | null;
   program: string | null;
   exam_type: string | null;
+  year_of_study: number | null;
 }
 
 interface AuthContextType {

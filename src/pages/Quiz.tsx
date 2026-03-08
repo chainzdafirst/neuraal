@@ -91,6 +91,7 @@ export default function Quiz() {
           userProfile: profile ? {
             program: profile.program,
             institution: profile.institution,
+            yearOfStudy: profile.year_of_study,
           } : null,
         }),
       });

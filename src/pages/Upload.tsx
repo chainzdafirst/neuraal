@@ -61,7 +61,12 @@ export default function UploadDocument() {
         body: JSON.stringify({
           documentText: doc.extracted_text,
           summaryType: "detailed",
-          userProfile: profile,
+          userProfile: profile ? {
+            program: profile.program,
+            institution: profile.institution,
+            educationLevel: profile.education_level,
+            yearOfStudy: profile.year_of_study,
+          } : null,
         }),
       });
 

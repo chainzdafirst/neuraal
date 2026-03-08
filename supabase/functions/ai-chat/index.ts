@@ -29,6 +29,7 @@ serve(async (req) => {
         .eq("institution", userProfile.institution)
         .eq("program", userProfile.program)
         .eq("is_active", true)
+        .match(userProfile.yearOfStudy ? { year_of_study: userProfile.yearOfStudy } : {})
         .limit(5);
 
       if (resources && resources.length > 0) {
@@ -42,7 +43,8 @@ serve(async (req) => {
       }
     }
 
-    const systemPrompt = `You are Neuraal, a friendly and encouraging AI study companion for ${userProfile?.program || 'university'} students${userProfile?.institution ? ` at ${userProfile.institution}` : ''}.
+    const yearContext = userProfile?.yearOfStudy ? ` in Year ${userProfile.yearOfStudy}` : '';
+    const systemPrompt = `You are Neuraal, a friendly and encouraging AI study companion for ${userProfile?.program || 'university'} students${userProfile?.institution ? ` at ${userProfile.institution}` : ''}${yearContext}.
 
 Your personality:
 - You are warm, supportive, and genuinely excited to help students learn

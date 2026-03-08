@@ -69,6 +69,7 @@ export default function AdminContent() {
   const [resources, setResources] = useState<CurriculumResource[]>([]);
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
+  const [yearFilter, setYearFilter] = useState("all");
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
 
@@ -88,7 +89,7 @@ export default function AdminContent() {
   // Resource upload form
   const [form, setForm] = useState({
     title: "", description: "", resource_type: "syllabus",
-    institution: "", program: "", education_level: "degree", exam_type: "semester",
+    institution: "", program: "", education_level: "degree", exam_type: "semester", year_of_study: "" as string,
   });
   const [file, setFile] = useState<File | null>(null);
 
@@ -135,9 +136,10 @@ export default function AdminContent() {
         r.title.toLowerCase().includes(search.toLowerCase()) ||
         r.program.toLowerCase().includes(search.toLowerCase());
       const matchesType = typeFilter === "all" || r.resource_type === typeFilter;
-      return matchesSearch && matchesType;
+      const matchesYear = yearFilter === "all" || String((r as any).year_of_study) === yearFilter;
+      return matchesSearch && matchesType && matchesYear;
     });
-  }, [resources, activeInstitution, activeProgram, search, typeFilter]);
+  }, [resources, activeInstitution, activeProgram, search, typeFilter, yearFilter]);
 
   // Programs for current institution
   const currentPrograms = useMemo(() => {
@@ -219,6 +221,7 @@ export default function AdminContent() {
         program: metadata.program || prev.program,
         education_level: metadata.education_level || prev.education_level,
         exam_type: metadata.exam_type || prev.exam_type,
+        year_of_study: metadata.year_of_study ? String(metadata.year_of_study) : prev.year_of_study,
       }));
       toast.success("Document classified! Review the details below.");
     } catch (err) {
@@ -272,7 +275,8 @@ export default function AdminContent() {
         exam_type: form.exam_type, content_text: contentText,
         file_name: fileName || null, file_path: filePath || null, file_size: fileSize, file_type: fileType,
         uploaded_by: currentUser?.id || null,
-      });
+        year_of_study: form.year_of_study ? parseInt(form.year_of_study) : null,
+      } as any);
       if (error) throw error;
       toast.success("Resource uploaded");
       setResourceDialogOpen(false);
@@ -283,7 +287,7 @@ export default function AdminContent() {
   };
 
   const resetUploadForm = () => {
-    setForm({ title: "", description: "", resource_type: "syllabus", institution: activeInstitution || "", program: activeProgram || "", education_level: "degree", exam_type: "semester" });
+    setForm({ title: "", description: "", resource_type: "syllabus", institution: activeInstitution || "", program: activeProgram || "", education_level: "degree", exam_type: "semester", year_of_study: "" });
     setFile(null);
     setUploadedFilePath(null);
     setClassifiedText(null);
@@ -485,6 +489,19 @@ export default function AdminContent() {
                     {t === "all" ? "All" : resourceTypeLabels[t] || t}
                   </Button>
                 ))}
+                <Select value={yearFilter} onValueChange={setYearFilter}>
+                  <SelectTrigger className="w-[120px] h-8 text-xs">
+                    <SelectValue placeholder="Year" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Years</SelectItem>
+                    <SelectItem value="1">Year 1</SelectItem>
+                    <SelectItem value="2">Year 2</SelectItem>
+                    <SelectItem value="3">Year 3</SelectItem>
+                    <SelectItem value="4">Year 4</SelectItem>
+                    <SelectItem value="5">Year 5+</SelectItem>
+                  </SelectContent>
+                </Select>
                 {selected.size > 0 && (
                   <Button size="sm" variant="destructive" onClick={bulkDelete} className="text-xs ml-auto">
                     <Trash2 className="h-4 w-4 mr-1" /> Delete {selected.size}
@@ -501,6 +518,7 @@ export default function AdminContent() {
                       <TableHead className="w-10"><Checkbox checked={filtered.length > 0 && selected.size === filtered.length} onCheckedChange={toggleAll} /></TableHead>
                       <TableHead>Title</TableHead>
                       <TableHead className="hidden sm:table-cell">Type</TableHead>
+                      <TableHead className="hidden sm:table-cell">Year</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead className="hidden md:table-cell">Date</TableHead>
                       <TableHead className="w-12" />
@@ -520,6 +538,7 @@ export default function AdminContent() {
                           </div>
                         </TableCell>
                         <TableCell className="hidden sm:table-cell"><Badge variant="outline" className="text-xs">{resourceTypeLabels[res.resource_type] || res.resource_type}</Badge></TableCell>
+                        <TableCell className="hidden sm:table-cell text-sm text-muted-foreground">{(res as any).year_of_study ? `Year ${(res as any).year_of_study}` : "—"}</TableCell>
                         <TableCell><Badge variant={res.is_active ? "default" : "secondary"} className="text-xs">{res.is_active ? "Active" : "Inactive"}</Badge></TableCell>
                         <TableCell className="hidden md:table-cell text-sm text-muted-foreground">{format(new Date(res.created_at), "MMM d, yyyy")}</TableCell>
                         <TableCell>
@@ -611,15 +630,30 @@ export default function AdminContent() {
                   <Input value={form.program} onChange={(e) => setForm({ ...form, program: e.target.value })} placeholder="e.g. Diploma in Business Administration" disabled={classifying} />
                 </div>
               </div>
-              <div>
-                <Label>Exam Type</Label>
-                <Select value={form.exam_type} onValueChange={(v) => setForm({ ...form, exam_type: v })} disabled={classifying}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="semester">Semester</SelectItem>
-                    <SelectItem value="board">Board</SelectItem>
-                  </SelectContent>
-                </Select>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <Label>Exam Type</Label>
+                  <Select value={form.exam_type} onValueChange={(v) => setForm({ ...form, exam_type: v })} disabled={classifying}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="semester">Semester</SelectItem>
+                      <SelectItem value="board">Board</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>Year of Study</Label>
+                  <Select value={form.year_of_study} onValueChange={(v) => setForm({ ...form, year_of_study: v })} disabled={classifying}>
+                    <SelectTrigger><SelectValue placeholder="Select year" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="1">Year 1</SelectItem>
+                      <SelectItem value="2">Year 2</SelectItem>
+                      <SelectItem value="3">Year 3</SelectItem>
+                      <SelectItem value="4">Year 4</SelectItem>
+                      <SelectItem value="5">Year 5+</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
             </div>
             <DialogFooter>

@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
-type Step = 1 | 2 | 3 | 4;
+type Step = 1 | 2 | 3 | 4 | 5;
 
 export default function Onboarding() {
   const navigate = useNavigate();
@@ -28,6 +28,7 @@ export default function Onboarding() {
   const [institution, setInstitution] = useState("");
   const [program, setProgram] = useState("");
   const [examType, setExamType] = useState<"semester" | "board" | "">("");
+  const [yearOfStudy, setYearOfStudy] = useState<number | null>(null);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -35,11 +36,11 @@ export default function Onboarding() {
     }
   }, [isAuthenticated, navigate]);
 
-  const totalSteps = 4;
+  const totalSteps = 5;
   const progress = (step / totalSteps) * 100;
 
   const handleNext = () => {
-    if (step < 4) {
+    if (step < 5) {
       setStep((prev) => (prev + 1) as Step);
     } else {
       handleComplete();
@@ -53,7 +54,7 @@ export default function Onboarding() {
   };
 
   const handleComplete = async () => {
-    if (!educationLevel || !institution || !program || !examType) {
+    if (!educationLevel || !institution || !program || !examType || !yearOfStudy) {
       toast.error("Please complete all steps");
       return;
     }
@@ -65,6 +66,7 @@ export default function Onboarding() {
         institution,
         program,
         exam_type: examType,
+        year_of_study: yearOfStudy,
       });
 
       toast.success("Your study space is ready!");
@@ -86,6 +88,8 @@ export default function Onboarding() {
         return !!program;
       case 4:
         return !!examType;
+      case 5:
+        return !!yearOfStudy;
       default:
         return false;
     }
@@ -288,6 +292,53 @@ export default function Onboarding() {
             </div>
           </div>
         );
+
+      case 5:
+        return (
+          <div className="space-y-6 animate-fade-up">
+            <div className="text-center mb-8">
+              <div className="inline-flex p-4 rounded-2xl bg-primary/10 mb-4">
+                <BookOpen className="w-8 h-8 text-primary" />
+              </div>
+              <h2 className="text-2xl font-display font-bold mb-2">
+                What year are you in?
+              </h2>
+              <p className="text-muted-foreground">
+                This helps us match content to your level
+              </p>
+            </div>
+
+            <div className="grid grid-cols-3 gap-4">
+              {[
+                { value: 1, label: "Year 1", desc: "First year" },
+                { value: 2, label: "Year 2", desc: "Second year" },
+                { value: 3, label: "Year 3", desc: "Third year" },
+                { value: 4, label: "Year 4", desc: "Fourth year" },
+                { value: 5, label: "Year 5+", desc: "Fifth year or above" },
+              ].map((option) => (
+                <button
+                  key={option.value}
+                  onClick={() => setYearOfStudy(option.value)}
+                  className={`p-5 rounded-xl border-2 text-left transition-all ${
+                    yearOfStudy === option.value
+                      ? "border-primary bg-primary/5 shadow-md"
+                      : "border-border hover:border-primary/50"
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="font-semibold">{option.label}</span>
+                    {yearOfStudy === option.value && (
+                      <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+                        <Check className="w-3 h-3 text-primary-foreground" />
+                      </div>
+                    )}
+                  </div>
+                  <span className="text-xs text-muted-foreground">{option.desc}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        );
     }
   };
 
@@ -339,7 +390,7 @@ export default function Onboarding() {
           >
             {isLoading ? (
               <Loader2 className="w-5 h-5 animate-spin" />
-            ) : step === 4 ? (
+            ) : step === 5 ? (
               <>
                 Complete Setup
                 <Check className="w-4 h-4 ml-2" />

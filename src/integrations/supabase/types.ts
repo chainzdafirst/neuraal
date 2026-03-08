@@ -65,6 +65,7 @@ export type Database = {
           title: string
           updated_at: string
           uploaded_by: string | null
+          year_of_study: number | null
         }
         Insert: {
           content_text?: string | null
@@ -84,6 +85,7 @@ export type Database = {
           title: string
           updated_at?: string
           uploaded_by?: string | null
+          year_of_study?: number | null
         }
         Update: {
           content_text?: string | null
@@ -103,6 +105,7 @@ export type Database = {
           title?: string
           updated_at?: string
           uploaded_by?: string | null
+          year_of_study?: number | null
         }
         Relationships: []
       }
@@ -216,6 +219,7 @@ export type Database = {
           institution: string | null
           program: string | null
           updated_at: string
+          year_of_study: number | null
         }
         Insert: {
           account_status?: string
@@ -228,6 +232,7 @@ export type Database = {
           institution?: string | null
           program?: string | null
           updated_at?: string
+          year_of_study?: number | null
         }
         Update: {
           account_status?: string
@@ -240,6 +245,7 @@ export type Database = {
           institution?: string | null
           program?: string | null
           updated_at?: string
+          year_of_study?: number | null
         }
         Relationships: []
       }
