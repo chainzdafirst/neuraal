@@ -240,8 +240,9 @@ export default function Landing() {
           title={feature.title}
           description={feature.description}
           preview={feature.preview}
-          gradient={feature.gradient}
-          reverse={i % 2 !==gradient={feature.gradient     </section>
+          gradient={feature.gradient} />
+        )}
+      </section>
 
       {/* Social Proof / Stats */}
       <ScrollReveal>
