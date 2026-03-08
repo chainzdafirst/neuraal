@@ -530,16 +530,43 @@ export default function AdminContent() {
         )}
 
         {/* ── Add Resource Dialog ── */}
-        <Dialog open={resourceDialogOpen} onOpenChange={setResourceDialogOpen}>
+        <Dialog open={resourceDialogOpen} onOpenChange={(open) => { if (!open) resetUploadForm(); setResourceDialogOpen(open); }}>
           <DialogContent className="max-w-lg">
             <DialogHeader><DialogTitle>Upload Curriculum Resource</DialogTitle></DialogHeader>
             <div className="space-y-4 py-2">
-              <div><Label>Title *</Label><Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="e.g. BPharm Year 2 Pharmacology Syllabus" /></div>
-              <div><Label>Description</Label><Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} placeholder="Brief description" rows={2} /></div>
+              {/* Step 1: File selection with auto-classify */}
+              <div>
+                <Label>File (PDF, DOCX, PPTX) *</Label>
+                <Input
+                  type="file"
+                  accept=".pdf,.docx,.pptx,.ppt,.txt,.epub"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) handleFileSelected(f);
+                  }}
+                />
+                {classifying && (
+                  <div className="flex items-center gap-2 mt-2 text-sm text-primary">
+                    <Sparkles className="h-4 w-4 animate-pulse" />
+                    <span>AI is reading the document and classifying...</span>
+                    <Loader2 className="h-3 w-3 animate-spin" />
+                  </div>
+                )}
+                {classifyFailed && (
+                  <div className="flex items-center gap-2 mt-2 text-sm text-destructive">
+                    <AlertCircle className="h-4 w-4" />
+                    <span>Auto-classification failed. Please fill in details manually.</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Step 2: Review / edit fields (shown after file selected) */}
+              <div><Label>Title *</Label><Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="e.g. BPharm Year 2 Pharmacology Syllabus" disabled={classifying} /></div>
+              <div><Label>Description</Label><Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} placeholder="Brief description" rows={2} disabled={classifying} /></div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <Label>Resource Type *</Label>
-                  <Select value={form.resource_type} onValueChange={(v) => setForm({ ...form, resource_type: v })}>
+                  <Select value={form.resource_type} onValueChange={(v) => setForm({ ...form, resource_type: v })} disabled={classifying}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="syllabus">Syllabus</SelectItem>
@@ -550,7 +577,7 @@ export default function AdminContent() {
                 </div>
                 <div>
                   <Label>Education Level</Label>
-                  <Select value={form.education_level} onValueChange={(v) => setForm({ ...form, education_level: v })}>
+                  <Select value={form.education_level} onValueChange={(v) => setForm({ ...form, education_level: v })} disabled={classifying}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="diploma">Diploma</SelectItem>
@@ -562,25 +589,16 @@ export default function AdminContent() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <Label>Institution *</Label>
-                  {institutions.length > 0 ? (
-                    <Select value={form.institution} onValueChange={(v) => setForm({ ...form, institution: v })}>
-                      <SelectTrigger><SelectValue placeholder="Select institution" /></SelectTrigger>
-                      <SelectContent>
-                        {institutions.map((i) => <SelectItem key={i.institution} value={i.institution}>{i.institution}</SelectItem>)}
-                      </SelectContent>
-                    </Select>
-                  ) : (
-                    <Input value={form.institution} onChange={(e) => setForm({ ...form, institution: e.target.value })} placeholder="Institution name" />
-                  )}
+                  <Input value={form.institution} onChange={(e) => setForm({ ...form, institution: e.target.value })} placeholder="e.g. TEVETA" disabled={classifying} />
                 </div>
                 <div>
                   <Label>Program *</Label>
-                  <Input value={form.program} onChange={(e) => setForm({ ...form, program: e.target.value })} placeholder="e.g. Bachelor of Pharmacy" />
+                  <Input value={form.program} onChange={(e) => setForm({ ...form, program: e.target.value })} placeholder="e.g. Diploma in Business Administration" disabled={classifying} />
                 </div>
               </div>
               <div>
                 <Label>Exam Type</Label>
-                <Select value={form.exam_type} onValueChange={(v) => setForm({ ...form, exam_type: v })}>
+                <Select value={form.exam_type} onValueChange={(v) => setForm({ ...form, exam_type: v })} disabled={classifying}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="semester">Semester</SelectItem>
@@ -588,18 +606,15 @@ export default function AdminContent() {
                   </SelectContent>
                 </Select>
               </div>
-              <div><Label>File (PDF, DOCX, PPTX)</Label><Input type="file" accept=".pdf,.docx,.pptx,.ppt,.txt,.epub" onChange={(e) => setFile(e.target.files?.[0] || null)} /></div>
             </div>
             <DialogFooter>
-              <Button variant="outline" onClick={() => setResourceDialogOpen(false)}>Cancel</Button>
-              <Button onClick={handleUpload} disabled={uploading}>
-                {uploading ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Uploading...</> : <><Upload className="h-4 w-4 mr-2" /> Upload</>}
+              <Button variant="outline" onClick={() => { resetUploadForm(); setResourceDialogOpen(false); }}>Cancel</Button>
+              <Button onClick={handleUpload} disabled={uploading || classifying}>
+                {uploading ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Saving...</> : <><Upload className="h-4 w-4 mr-2" /> Confirm & Save</>}
               </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
-
-        {/* ── Add School Dialog ── */}
         <Dialog open={schoolDialogOpen} onOpenChange={setSchoolDialogOpen}>
           <DialogContent className="max-w-md">
             <DialogHeader><DialogTitle>Add New School</DialogTitle></DialogHeader>
