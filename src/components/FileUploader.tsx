@@ -185,7 +185,7 @@ export default function FileUploader({ onFileReady }: FileUploaderProps) {
         <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
           Select Files
         </Button>
-        <p className="text-xs text-muted-foreground mt-3">Supports PDF, DOCX, PPT, TXT (Max 30MB)</p>
+        <p className="text-xs text-muted-foreground mt-3">Supports PDF, DOCX, PPT, EPUB, TXT (Max 20MB)</p>
       </div>
 
       {files.length > 0 && (
