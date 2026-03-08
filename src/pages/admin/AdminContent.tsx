@@ -286,6 +286,7 @@ export default function AdminContent() {
     setForm({ title: "", description: "", resource_type: "syllabus", institution: activeInstitution || "", program: activeProgram || "", education_level: "degree", exam_type: "semester" });
     setFile(null);
     setUploadedFilePath(null);
+    setClassifiedText(null);
     setClassifying(false);
     setClassifyFailed(false);
   };
