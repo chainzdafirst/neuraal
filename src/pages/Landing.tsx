@@ -173,7 +173,8 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-background overflow-hidden">
       {/* Navigation */}
-      <nav className="sticky top-0 z-40 bg-background/80 backdrop-blur-md max-w-[1360px] px-5 sm:px-[70px] mx-auto flex items-center justify-between py-4 relative">
+      <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-md border-b border-border/50">
+      <nav className="max-w-[1360px] px-5 sm:px-[70px] mx-auto flex items-center justify-between py-4 relative">
         <NeuraalLogo size="lg" />
 
         {/* Hamburger / X toggle */}
@@ -205,6 +206,7 @@ export default function Landing() {
           </div>
         </div>
       </nav>
+      </header>
 
       {/* Hero Section */}
       <ScrollReveal threshold={0.1}>
