@@ -547,7 +547,7 @@ export default function AdminContent() {
 
         {/* ── Add Resource Dialog ── */}
         <Dialog open={resourceDialogOpen} onOpenChange={(open) => { if (!open) resetUploadForm(); setResourceDialogOpen(open); }}>
-          <DialogContent className="max-w-lg">
+          <DialogContent className="max-w-lg w-[calc(100%-2rem)] max-h-[85vh] overflow-y-auto mx-4">
             <DialogHeader><DialogTitle>Upload Curriculum Resource</DialogTitle></DialogHeader>
             <div className="space-y-4 py-2">
               {/* Step 1: File selection with auto-classify */}
