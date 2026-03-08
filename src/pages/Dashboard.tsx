@@ -264,11 +264,8 @@ export default function Dashboard() {
 
       <main className="container mx-auto px-4 py-8 max-w-5xl">
         <section className="mb-8">
-          <h1 className="text-2xl sm:text-3xl font-display font-bold mb-2">Welcome, {firstName}!</h1>
-          <p className="text-muted-foreground">
-            {profile?.program || "Your personalized study dashboard"}
-            {profile?.institution && ` at ${profile.institution}`}
-          </p>
+          <h1 className="text-2xl sm:text-3xl font-display font-bold mb-2">{getGreeting()}, {firstName}!</h1>
+          <p className="text-muted-foreground">Your personalized study dashboard</p>
         </section>
 
         <section className="grid grid-cols-3 gap-2 sm:gap-4 mb-8">
