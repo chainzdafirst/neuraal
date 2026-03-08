@@ -221,6 +221,7 @@ export default function AdminContent() {
         program: metadata.program || prev.program,
         education_level: metadata.education_level || prev.education_level,
         exam_type: metadata.exam_type || prev.exam_type,
+        year_of_study: metadata.year_of_study ? String(metadata.year_of_study) : prev.year_of_study,
       }));
       toast.success("Document classified! Review the details below.");
     } catch (err) {
