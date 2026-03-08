@@ -31,7 +31,7 @@ export default function FileUploader({ onFileReady }: FileUploaderProps) {
   const [files, setFiles] = useState<UploadedFile[]>([]);
   const [isDragging, setIsDragging] = useState(false);
 
-  const acceptedTypes = [".pdf", ".docx", ".doc", ".ppt", ".pptx", ".txt"];
+  const acceptedTypes = [".pdf", ".docx", ".doc", ".ppt", ".pptx", ".txt", ".epub"];
 
   const getFileIcon = (type: string) => {
     if (type.includes("image")) return Image;
