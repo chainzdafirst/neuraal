@@ -47,19 +47,27 @@ export default function Settings() {
   const handleSaveProfile = async () => {
     setSaving(true);
     try {
-      await updateProfile({
-        full_name: fullName,
-        institution,
-        program,
-        education_level: educationLevel,
-        exam_type: examType,
-        year_of_study: yearOfStudy ? parseInt(yearOfStudy) : null,
-      });
+      await updateProfile({ full_name: fullName });
       toast.success("Profile updated successfully");
     } catch {
       toast.error("Failed to update profile");
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    setDeleting(true);
+    try {
+      const { error } = await supabase.functions.invoke("delete-own-account");
+      if (error) throw error;
+      await logout();
+      toast.success("Account deleted successfully");
+      navigate("/");
+    } catch {
+      toast.error("Failed to delete account. Please try again.");
+    } finally {
+      setDeleting(false);
     }
   };
 
