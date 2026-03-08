@@ -38,19 +38,47 @@ export default function UploadDocument() {
       return;
     }
 
-    // Fetch extracted text from document
-    const { data: doc, error: docError } = await supabase
-      .from("documents")
-      .select("extracted_text")
-      .eq("id", uploadedDocumentId)
-      .single();
+    setGeneratingSummary(true);
 
-    if (docError || !doc?.extracted_text) {
-      toast.error("Could not extract text from the document. Please upload a .txt file for best results.");
-      return;
+    // Poll for extracted text (extraction may still be running in background)
+    let extractedText: string | null = null;
+    const maxAttempts = 30; // 30 × 2s = 60s max wait
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+      const { data: doc, error: docError } = await supabase
+        .from("documents")
+        .select("extracted_text, status")
+        .eq("id", uploadedDocumentId)
+        .single();
+
+      if (docError) {
+        toast.error("Could not retrieve document.");
+        setGeneratingSummary(false);
+        return;
+      }
+
+      if (doc?.extracted_text) {
+        extractedText = doc.extracted_text;
+        break;
+      }
+
+      if (doc?.status === "error") {
+        toast.error("Text extraction failed. Please try uploading a different file.");
+        setGeneratingSummary(false);
+        return;
+      }
+
+      // Still processing — wait and retry
+      if (attempt === 0) {
+        toast.info("Still extracting text from your document...");
+      }
+      await new Promise((r) => setTimeout(r, 2000));
     }
 
-    setGeneratingSummary(true);
+    if (!extractedText) {
+      toast.error("Text extraction timed out. Please try again.");
+      setGeneratingSummary(false);
+      return;
+    }
     try {
       const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/generate-summary`, {
         method: "POST",
@@ -59,7 +87,7 @@ export default function UploadDocument() {
           Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
         },
         body: JSON.stringify({
-          documentText: doc.extracted_text,
+          documentText: extractedText,
           summaryType: "detailed",
           userProfile: profile ? {
             program: profile.program,
