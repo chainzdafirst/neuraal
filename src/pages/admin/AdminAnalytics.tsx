@@ -150,7 +150,7 @@ export default function AdminAnalytics() {
                   <CardDescription>New registrations per day</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="h-[300px]">
+                  <div className="h-[250px] sm:h-[300px]">
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart data={userGrowth}>
                         <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
