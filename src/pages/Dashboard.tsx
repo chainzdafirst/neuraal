@@ -273,15 +273,15 @@ export default function Dashboard() {
           </p>
         </section>
 
-        <section className="grid grid-cols-3 gap-4 mb-8">
+        <section className="grid grid-cols-3 gap-2 sm:gap-4 mb-8">
           {quickStats.map((stat) => (
-            <div key={stat.label} className="neuraal-card p-4 flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-primary/10">
-                <stat.icon className="w-5 h-5 text-primary" />
+            <div key={stat.label} className="neuraal-card p-3 sm:p-4 flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-3 text-center sm:text-left">
+              <div className="p-2 sm:p-2.5 rounded-xl bg-primary/10 shrink-0">
+                <stat.icon className="w-5 h-5 sm:w-5 sm:h-5 text-primary" />
               </div>
-              <div>
-                <div className="font-semibold">{stat.value}</div>
-                <div className="text-xs text-muted-foreground">{stat.label}</div>
+              <div className="min-w-0">
+                <div className="text-base sm:text-lg font-bold leading-tight">{stat.value}</div>
+                <div className="text-[10px] sm:text-xs text-muted-foreground leading-tight">{stat.label}</div>
               </div>
             </div>
           ))}
