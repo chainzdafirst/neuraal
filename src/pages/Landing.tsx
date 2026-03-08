@@ -140,18 +140,18 @@ export default function Landing() {
       {/* Hero Section — Left-aligned like Flook */}
       <section className="pt-24 pb-32 px-6">
         <div className="container mx-auto max-w-5xl">
-          <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-display font-bold tracking-tight leading-[1.05] mb-6">
+          <h1 className="text-[40px] sm:text-[84px] font-display font-bold tracking-[-0.02em] leading-[48px] sm:leading-[100px] mb-6">
             Your Syllabus-Aligned
             <br />
             <RotatingText />
           </h1>
 
-          <p className="text-lg sm:text-xl text-muted-foreground max-w-xl mb-10 leading-relaxed">
+          <p className="text-[15px] sm:text-lg font-semibold text-foreground mb-6">
             Turn complex lecture notes into structured, exam-ready learning.
             Built for students. No developers required.
           </p>
 
-          <Button variant="hero" size="xl" onClick={() => navigate("/signup")}>
+          <Button variant="hero" size="xl" onClick={() => navigate("/signup")} className="h-[57px] leading-[57px] px-10 text-sm font-extrabold">
             Get Started
           </Button>
         </div>
