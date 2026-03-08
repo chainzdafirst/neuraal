@@ -4,6 +4,7 @@ import { NeuraalLogo } from "@/components/ui/NeuraalLogo";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { DailyBanner } from "@/components/DailyBanner";
 import {
   BookOpen,
   Brain,
@@ -263,6 +264,8 @@ export default function Dashboard() {
       </header>
 
       <main className="container mx-auto px-4 py-8 max-w-5xl">
+        <DailyBanner />
+
         <section className="mb-8">
           <h1 className="text-2xl sm:text-3xl font-display font-bold mb-2">{getGreeting()}, {firstName}!</h1>
           <p className="text-muted-foreground">Your personalized study dashboard</p>
