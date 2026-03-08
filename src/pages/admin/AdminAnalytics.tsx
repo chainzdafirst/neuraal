@@ -240,9 +240,9 @@ export default function AdminAnalytics() {
                 <CardDescription>Institutions with the most registered learners</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="h-[400px]">
+                <div className="h-[300px] sm:h-[400px]">
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={topInstitutions} layout="vertical" margin={{ left: 100 }}>
+                    <BarChart data={topInstitutions} layout="vertical" margin={{ left: 20, right: 10 }}>
                       <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
                       <XAxis type="number" tick={{ fontSize: 11 }} allowDecimals={false} />
                       <YAxis type="category" dataKey="name" tick={{ fontSize: 11 }} width={90} />
