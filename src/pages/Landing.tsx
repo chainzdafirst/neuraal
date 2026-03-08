@@ -155,17 +155,17 @@ export default function Landing() {
   const steps = [
   {
     step: "Step 1",
+    title: "Choose your study tool",
+    description: "AI tutoring Summaries, quizzes, or flashcards."
+  },
+  {
+    step: "Step 2",
     title: "Upload your notes",
     description: "PDF, DOCX, PPTX or EPUB — any format works."
   },
   {
-    step: "Step 2",
-    title: "Choose your study tool",
-    description: "Summaries, quizzes, flashcards, or AI tutor."
-  },
-  {
     step: "Step 3",
-    title: "Study smarter, ace your exams",
+    title: "Generate Study content",
     description: "Revision material aligned to your syllabus."
   }];
 
