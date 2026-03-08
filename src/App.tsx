@@ -17,6 +17,8 @@ import Flashcards from "./pages/Flashcards";
 import Progress from "./pages/Progress";
 import Upgrade from "./pages/Upgrade";
 import Settings from "./pages/Settings";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 import AdminOverview from "./pages/admin/AdminOverview";
 import AdminUsers from "./pages/admin/AdminUsers";
