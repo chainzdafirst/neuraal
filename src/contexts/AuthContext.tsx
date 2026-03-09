@@ -15,6 +15,7 @@ interface Profile {
   notify_email: boolean;
   notify_study_reminders: boolean;
   notify_weekly_report: boolean;
+  account_status?: string;
 }
 
 interface AuthContextType {
