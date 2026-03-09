@@ -107,11 +107,11 @@ export default function AdminBlog() {
                   <TableCell>
                     {getStatusBadge(post.status, post.published_at)}
                   </TableCell>
-                  <TableCell className="text-muted-foreground">
+                  <TableCell className="hidden md:table-cell text-muted-foreground">
                     {post.published_at ? format(new Date(post.published_at), 'PP p') : '-'}
                   </TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {format(new Date(post.created_at), 'PP')}
+                  <TableCell className="hidden lg:table-cell text-muted-foreground">
+                    {post.created_at ? format(new Date(post.created_at), 'PP') : '-'}
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
