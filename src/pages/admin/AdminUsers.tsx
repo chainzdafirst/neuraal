@@ -37,9 +37,6 @@ interface RoleRow {
   role: string;
 }
 
-interface UserStats {
-  [userId: string]: { documents: number; quizzes: number; flashcards: number };
-}
 
 const statusConfig: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
   active: { label: "Active", variant: "default" },
