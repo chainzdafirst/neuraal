@@ -7,7 +7,6 @@ import { supabase } from "@/integrations/supabase/client";
 export default function AdminOverview() {
   const [stats, setStats] = useState({
     totalUsers: 0,
-    totalDocuments: 0,
     totalQuizzes: 0,
     totalFlashcards: 0,
   });
