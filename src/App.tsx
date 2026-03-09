@@ -59,6 +59,8 @@ const App = () => (
             <Route path="/settings" element={<Settings />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/blog/:slug" element={<BlogPost />} />
             {/* Admin routes — secret entry via /portal/n3ur44l-8f42 then standard /admin/* after auth */}
             <Route path="/portal/n3ur44l-8f42" element={<AdminLogin />} />
             <Route path="/admin/login" element={<AdminLogin />} />
