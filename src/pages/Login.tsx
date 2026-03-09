@@ -37,11 +37,11 @@ export default function Login() {
     } catch (error: any) {
       const message = error?.message || "Login failed. Please try again.";
       if (message.includes("Load failed") || message.includes("fetch")) {
-        toast.error("Unable to connect to the server. Please check your internet connection and try again.");
+        toast.error("Unable to connect to the server. Please check your internet connection and try again.", { position: "top-center" });
       } else if (message.includes("Invalid login")) {
-        toast.error("Invalid email or password");
+        toast.error("Invalid email or password", { position: "top-center" });
       } else {
-        toast.error(message);
+        toast.error(message, { position: "top-center" });
       }
     }
   };

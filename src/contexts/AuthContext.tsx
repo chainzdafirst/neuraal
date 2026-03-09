@@ -96,7 +96,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(null);
       setSession(null);
       setProfile(null);
-      toast.error(`Your account is ${data.account_status}. Please contact support.`);
+      toast.error(`Your account is ${data.account_status}. Please contact support.`, { position: 'top-center' });
       return;
     }
     
@@ -111,7 +111,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(null);
       setSession(null);
       setProfile(null);
-      toast.error('Account not found. Please contact support.');
+      toast.error('Account not found. Please contact support.', { position: 'top-center' });
       return;
     }
     

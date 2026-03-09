@@ -53,9 +53,9 @@ export default function AdminLogin() {
     } catch (error: any) {
       const message = error?.message || "Login failed.";
       if (message.includes("Invalid login")) {
-        toast.error("Invalid credentials");
+        toast.error("Invalid credentials", { position: "top-center" });
       } else {
-        toast.error(message);
+        toast.error(message, { position: "top-center" });
       }
     }
   };
