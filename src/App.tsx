@@ -28,6 +28,7 @@ import AdminContent from "./pages/admin/AdminContent";
 import AdminAnalytics from "./pages/admin/AdminAnalytics";
 import AdminBanners from "./pages/admin/AdminBanners";
 import AdminLogin from "./pages/admin/AdminLogin";
+import { ProtectedAdminRoute } from "./components/admin/ProtectedAdminRoute";
 
 const queryClient = new QueryClient();
 
@@ -57,16 +58,16 @@ const App = () => (
             {/* Admin routes — secret entry via /portal/n3ur44l-8f42 then standard /admin/* after auth */}
             <Route path="/portal/n3ur44l-8f42" element={<AdminLogin />} />
             <Route path="/admin/login" element={<AdminLogin />} />
-            <Route path="/admin" element={<AdminOverview />} />
-            <Route path="/admin/users" element={<AdminUsers />} />
-            <Route path="/admin/ai" element={<AdminAI />} />
-            <Route path="/admin/content" element={<AdminContent />} />
-            <Route path="/admin/analytics" element={<AdminAnalytics />} />
-            <Route path="/admin/banners" element={<AdminBanners />} />
-            <Route path="/admin/feedback" element={<AdminPlaceholder title="Feedback & Support" />} />
-            <Route path="/admin/billing" element={<AdminPlaceholder title="Billing & Monetization" />} />
-            <Route path="/admin/security" element={<AdminPlaceholder title="Security & Compliance" />} />
-            <Route path="/admin/settings" element={<AdminPlaceholder title="Admin Settings" />} />
+            <Route path="/admin" element={<ProtectedAdminRoute><AdminOverview /></ProtectedAdminRoute>} />
+            <Route path="/admin/users" element={<ProtectedAdminRoute><AdminUsers /></ProtectedAdminRoute>} />
+            <Route path="/admin/ai" element={<ProtectedAdminRoute><AdminAI /></ProtectedAdminRoute>} />
+            <Route path="/admin/content" element={<ProtectedAdminRoute><AdminContent /></ProtectedAdminRoute>} />
+            <Route path="/admin/analytics" element={<ProtectedAdminRoute><AdminAnalytics /></ProtectedAdminRoute>} />
+            <Route path="/admin/banners" element={<ProtectedAdminRoute><AdminBanners /></ProtectedAdminRoute>} />
+            <Route path="/admin/feedback" element={<ProtectedAdminRoute><AdminPlaceholder title="Feedback & Support" /></ProtectedAdminRoute>} />
+            <Route path="/admin/billing" element={<ProtectedAdminRoute><AdminPlaceholder title="Billing & Monetization" /></ProtectedAdminRoute>} />
+            <Route path="/admin/security" element={<ProtectedAdminRoute><AdminPlaceholder title="Security & Compliance" /></ProtectedAdminRoute>} />
+            <Route path="/admin/settings" element={<ProtectedAdminRoute><AdminPlaceholder title="Admin Settings" /></ProtectedAdminRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
