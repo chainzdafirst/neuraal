@@ -30,17 +30,13 @@ export default function Blog() {
     setIsLoading(true);
     const { data, error } = await supabase
       .from('blog_posts')
-      .select(`
-        id, title, slug, excerpt, cover_image, published_at,
-        profiles:author_id (full_name)
-      `)
+      .select('id, title, slug, excerpt, cover_image, published_at, author_id')
       .eq('status', 'published')
       .lte('published_at', new Date().toISOString())
       .order('published_at', { ascending: false });
 
     if (!error && data) {
-      // @ts-ignore - Supabase join typing
-      setPosts(data as BlogPost[]);
+      setPosts(data.map(post => ({ ...post, profiles: null })) as BlogPost[]);
     }
     setIsLoading(false);
   };
