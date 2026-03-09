@@ -35,6 +35,7 @@ const mainItems = [
 { title: "Users", url: "/admin/users", icon: Users },
 { title: "AI Management", url: "/admin/ai", icon: Brain },
 { title: "Content", url: "/admin/content", icon: FileText },
+{ title: "Blog", url: "/admin/blog", icon: FileText },
 { title: "Analytics", url: "/admin/analytics", icon: BarChart3 },
 { title: "Banners", url: "/admin/banners", icon: Megaphone }];
 
