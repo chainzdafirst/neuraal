@@ -51,8 +51,8 @@ export default function AdminBlog() {
     if (status === 'draft') return <Badge variant="secondary">Draft</Badge>;
     if (status === 'published') {
       const isScheduled = published_at && new Date(published_at) > new Date();
-      if (isScheduled) return <Badge variant="outline" className="bg-blue-500/10 text-blue-500 hover:bg-blue-500/20 border-blue-200">Scheduled</Badge>;
-      return <Badge variant="default" className="bg-green-500 hover:bg-green-600">Published</Badge>;
+      if (isScheduled) return <Badge variant="outline">Scheduled</Badge>;
+      return <Badge>Published</Badge>;
     }
     return <Badge>{status}</Badge>;
   };
