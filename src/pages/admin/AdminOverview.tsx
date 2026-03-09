@@ -14,16 +14,14 @@ export default function AdminOverview() {
 
   useEffect(() => {
     const fetchStats = async () => {
-      const [profiles, documents, quizzes, flashcards] = await Promise.all([
+      const [profiles, quizzes, flashcards] = await Promise.all([
         supabase.from("profiles").select("id", { count: "exact", head: true }),
-        supabase.from("documents").select("id", { count: "exact", head: true }),
         supabase.from("quizzes").select("id", { count: "exact", head: true }),
         supabase.from("flashcards").select("id", { count: "exact", head: true }),
       ]);
 
       setStats({
         totalUsers: profiles.count || 0,
-        totalDocuments: documents.count || 0,
         totalQuizzes: quizzes.count || 0,
         totalFlashcards: flashcards.count || 0,
       });

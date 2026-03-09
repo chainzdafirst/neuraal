@@ -296,7 +296,6 @@ export default function AdminUsers() {
           ) : (
             filtered.map((user) => {
               const userRoles = getUserRoles(user.id);
-              const stats = userStats[user.id] || { documents: 0, quizzes: 0, flashcards: 0 };
               const sc = statusConfig[user.account_status] || statusConfig.active;
               return (
                 <Card key={user.id} className="p-3">
@@ -321,14 +320,8 @@ export default function AdminUsers() {
                           ))
                         )}
                       </div>
-                      <div className="flex gap-2 text-[10px] text-muted-foreground mt-1">
-                        <span>{stats.documents} docs</span>
-                        <span>·</span>
-                        <span>{stats.quizzes} quiz</span>
-                        <span>·</span>
-                        <span>{stats.flashcards} cards</span>
-                        <span>·</span>
-                        <span>{format(new Date(user.created_at), "MMM d, yy")}</span>
+                      <div className="text-[10px] text-muted-foreground mt-1">
+                        <span>Joined {format(new Date(user.created_at), "MMM d, yy")}</span>
                       </div>
                     </div>
                     <UserActionsMenu user={user} userRoles={userRoles} updateStatus={updateStatus} assignRole={assignRole} onDelete={setDeleteTarget} />
