@@ -88,7 +88,6 @@ function UserActionsMenu({ user, userRoles, updateStatus, assignRole, onDelete }
 export default function AdminUsers() {
   const [users, setUsers] = useState<UserRow[]>([]);
   const [roles, setRoles] = useState<RoleRow[]>([]);
-  const [userStats, setUserStats] = useState<UserStats>({});
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [loading, setLoading] = useState(true);
