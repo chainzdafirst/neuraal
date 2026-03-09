@@ -59,26 +59,26 @@ export default function AdminBlog() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h2 className="text-3xl font-display font-bold">Blog Management</h2>
           <p className="text-muted-foreground mt-1">Manage, write and schedule your blog posts</p>
         </div>
-        <Link to="/admin/blog/new">
-          <Button className="gap-2">
+        <Link to="/admin/blog/new" className="w-full sm:w-auto">
+          <Button className="w-full sm:w-auto gap-2">
             <Plus className="w-4 h-4" /> New Post
           </Button>
         </Link>
       </div>
 
-      <div className="border rounded-xl bg-card overflow-hidden">
-        <Table>
+      <div className="border rounded-xl bg-card overflow-x-auto">
+        <Table className="min-w-[600px] w-full">
           <TableHeader>
             <TableRow>
               <TableHead>Title</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead>Published/Scheduled At</TableHead>
-              <TableHead>Created</TableHead>
+              <TableHead className="hidden md:table-cell">Published/Scheduled At</TableHead>
+              <TableHead className="hidden lg:table-cell">Created</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -107,11 +107,11 @@ export default function AdminBlog() {
                   <TableCell>
                     {getStatusBadge(post.status, post.published_at)}
                   </TableCell>
-                  <TableCell className="text-muted-foreground">
+                  <TableCell className="hidden md:table-cell text-muted-foreground">
                     {post.published_at ? format(new Date(post.published_at), 'PP p') : '-'}
                   </TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {format(new Date(post.created_at), 'PP')}
+                  <TableCell className="hidden lg:table-cell text-muted-foreground">
+                    {post.created_at ? format(new Date(post.created_at), 'PP') : '-'}
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">

@@ -152,16 +152,16 @@ export default function AdminBlogEditor() {
 
   return (
     <div className="max-w-5xl mx-auto space-y-8 pb-20">
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" onClick={() => navigate("/admin/blog")}>
-          <ArrowLeft className="w-4 h-4" />
-        </Button>
-        <div>
-          <h2 className="text-3xl font-display font-bold">{isNew ? "Create New Post" : "Edit Post"}</h2>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+        <div className="flex items-center gap-4 w-full sm:w-auto">
+          <Button variant="ghost" size="icon" onClick={() => navigate("/admin/blog")}>
+            <ArrowLeft className="w-4 h-4" />
+          </Button>
+          <h2 className="text-2xl sm:text-3xl font-display font-bold flex-1">{isNew ? "Create New Post" : "Edit Post"}</h2>
         </div>
-        <div className="ml-auto flex gap-3">
-          <Button variant="outline" onClick={() => navigate("/admin/blog")}>Cancel</Button>
-          <Button onClick={handleSave} disabled={isSaving}>
+        <div className="flex gap-3 w-full sm:w-auto sm:ml-auto">
+          <Button variant="outline" className="flex-1 sm:flex-none" onClick={() => navigate("/admin/blog")}>Cancel</Button>
+          <Button className="flex-1 sm:flex-none" onClick={handleSave} disabled={isSaving}>
             {isSaving && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
             {isNew ? "Publish" : "Save Changes"}
           </Button>
