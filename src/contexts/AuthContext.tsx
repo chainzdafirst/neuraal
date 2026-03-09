@@ -79,7 +79,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => subscription.unsubscribe();
   }, []);
 
-  const fetchProfile = async (userId: string) => {
+  const fetchProfile = async (userId: string, retryCount = 0) => {
     const { data, error } = await supabase
       .from('profiles')
       .select('*')
@@ -100,7 +100,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return;
     }
     
+    // For new OAuth signups, the profile might not exist immediately due to trigger timing
+    // Retry once after a short delay before giving up
     if (!data) {
+      if (retryCount < 2) {
+        setTimeout(() => fetchProfile(userId, retryCount + 1), 500);
+        return;
+      }
       await supabase.auth.signOut();
       setUser(null);
       setSession(null);
