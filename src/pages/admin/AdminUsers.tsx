@@ -95,29 +95,13 @@ export default function AdminUsers() {
   const [deleting, setDeleting] = useState(false);
 
   const fetchData = async () => {
-    const [profilesRes, rolesRes, docsRes, quizzesRes, flashRes] = await Promise.all([
+    const [profilesRes, rolesRes] = await Promise.all([
       supabase.from("profiles").select("*").order("created_at", { ascending: false }),
       supabase.from("user_roles").select("user_id, role"),
-      supabase.from("documents").select("user_id"),
-      supabase.from("quizzes").select("user_id"),
-      supabase.from("flashcards").select("user_id"),
     ]);
 
     if (profilesRes.data) setUsers(profilesRes.data as UserRow[]);
     if (rolesRes.data) setRoles(rolesRes.data as RoleRow[]);
-
-    // Aggregate stats per user
-    const stats: UserStats = {};
-    const addStat = (data: any[] | null, key: keyof UserStats[string]) => {
-      (data || []).forEach((row: any) => {
-        if (!stats[row.user_id]) stats[row.user_id] = { documents: 0, quizzes: 0, flashcards: 0 };
-        stats[row.user_id][key]++;
-      });
-    };
-    addStat(docsRes.data, "documents");
-    addStat(quizzesRes.data, "quizzes");
-    addStat(flashRes.data, "flashcards");
-    setUserStats(stats);
     setLoading(false);
   };
 
