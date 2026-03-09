@@ -57,6 +57,17 @@ export default function Signup() {
     }
   };
 
+  const handleGoogleSignup = async () => {
+    try {
+      const { error } = await lovable.auth.signInWithOAuth("google", {
+        redirect_uri: window.location.origin,
+      });
+      if (error) throw error;
+    } catch (error: any) {
+      toast.error(error?.message || "Failed to sign up with Google");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background flex">
       {/* Left side - Decorative */}
