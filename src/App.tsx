@@ -28,6 +28,10 @@ import AdminContent from "./pages/admin/AdminContent";
 import AdminAnalytics from "./pages/admin/AdminAnalytics";
 import AdminBanners from "./pages/admin/AdminBanners";
 import AdminLogin from "./pages/admin/AdminLogin";
+import AdminBlog from "./pages/admin/AdminBlog";
+import AdminBlogEditor from "./pages/admin/AdminBlogEditor";
+import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
 import { ProtectedAdminRoute } from "./components/admin/ProtectedAdminRoute";
 
 const queryClient = new QueryClient();
@@ -55,6 +59,8 @@ const App = () => (
             <Route path="/settings" element={<Settings />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/blog/:slug" element={<BlogPost />} />
             {/* Admin routes — secret entry via /portal/n3ur44l-8f42 then standard /admin/* after auth */}
             <Route path="/portal/n3ur44l-8f42" element={<AdminLogin />} />
             <Route path="/admin/login" element={<AdminLogin />} />
@@ -62,6 +68,8 @@ const App = () => (
             <Route path="/admin/users" element={<ProtectedAdminRoute><AdminUsers /></ProtectedAdminRoute>} />
             <Route path="/admin/ai" element={<ProtectedAdminRoute><AdminAI /></ProtectedAdminRoute>} />
             <Route path="/admin/content" element={<ProtectedAdminRoute><AdminContent /></ProtectedAdminRoute>} />
+            <Route path="/admin/blog" element={<ProtectedAdminRoute><AdminBlog /></ProtectedAdminRoute>} />
+            <Route path="/admin/blog/:id" element={<ProtectedAdminRoute><AdminBlogEditor /></ProtectedAdminRoute>} />
             <Route path="/admin/analytics" element={<ProtectedAdminRoute><AdminAnalytics /></ProtectedAdminRoute>} />
             <Route path="/admin/banners" element={<ProtectedAdminRoute><AdminBanners /></ProtectedAdminRoute>} />
             <Route path="/admin/feedback" element={<ProtectedAdminRoute><AdminPlaceholder title="Feedback & Support" /></ProtectedAdminRoute>} />

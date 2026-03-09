@@ -14,6 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
+      blog_posts: {
+        Row: {
+          author_id: string
+          content: string
+          cover_image: string | null
+          created_at: string
+          excerpt: string | null
+          id: string
+          published_at: string | null
+          slug: string
+          status: Database["public"]["Enums"]["blog_post_status"]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author_id: string
+          content: string
+          cover_image?: string | null
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          published_at?: string | null
+          slug: string
+          status?: Database["public"]["Enums"]["blog_post_status"]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string
+          content?: string
+          cover_image?: string | null
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          published_at?: string | null
+          slug?: string
+          status?: Database["public"]["Enums"]["blog_post_status"]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       chat_messages: {
         Row: {
           content: string
@@ -462,6 +504,7 @@ export type Database = {
     }
     Enums: {
       app_role: "super_admin" | "academic_admin" | "support_admin"
+      blog_post_status: "draft" | "scheduled" | "published"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -590,6 +633,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["super_admin", "academic_admin", "support_admin"],
+      blog_post_status: ["draft", "scheduled", "published"],
     },
   },
 } as const
