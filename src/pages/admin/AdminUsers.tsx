@@ -341,7 +341,7 @@ export default function AdminUsers() {
                         <span>Joined {format(new Date(user.created_at), "MMM d, yy")}</span>
                       </div>
                     </div>
-                    <UserActionsMenu user={user} userRoles={userRoles} updateStatus={updateStatus} assignRole={assignRole} onDelete={setDeleteTarget} />
+                    <UserActionsMenu user={user} userRoles={userRoles} updateStatus={updateStatus} assignRole={assignRole} removeRole={removeRole} onDelete={setDeleteTarget} />
                   </div>
                 </Card>
               );
