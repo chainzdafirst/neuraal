@@ -91,12 +91,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return;
     }
     
+    if (data && data.account_status && data.account_status !== 'active') {
+      await supabase.auth.signOut();
+      setUser(null);
+      setSession(null);
+      setProfile(null);
+      toast.error(`Your account is ${data.account_status}. Please contact support.`);
+      return;
+    }
+    
+    if (!data) {
+      await supabase.auth.signOut();
+      setUser(null);
+      setSession(null);
+      setProfile(null);
+      toast.error('Account not found. Please contact support.');
+      return;
+    }
+    
     setProfile(data);
   };
 
   const login = async (email: string, password: string) => {
     setIsLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
@@ -105,6 +123,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setIsLoading(false);
       throw error;
     }
+
+    if (data.user) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('account_status')
+        .eq('id', data.user.id)
+        .maybeSingle();
+        
+      if (profile && profile.account_status && profile.account_status !== 'active') {
+        await supabase.auth.signOut();
+        setIsLoading(false);
+        throw new Error(`Your account is ${profile.account_status}. Please contact support.`);
+      }
+      
+      if (!profile) {
+        await supabase.auth.signOut();
+        setIsLoading(false);
+        throw new Error('Account not found. Please contact support.');
+      }
+    }
+    
     setIsLoading(false);
   };
 
