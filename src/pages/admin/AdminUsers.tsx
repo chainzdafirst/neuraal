@@ -37,9 +37,6 @@ interface RoleRow {
   role: string;
 }
 
-interface UserStats {
-  [userId: string]: { documents: number; quizzes: number; flashcards: number };
-}
 
 const statusConfig: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
   active: { label: "Active", variant: "default" },
@@ -91,7 +88,6 @@ function UserActionsMenu({ user, userRoles, updateStatus, assignRole, onDelete }
 export default function AdminUsers() {
   const [users, setUsers] = useState<UserRow[]>([]);
   const [roles, setRoles] = useState<RoleRow[]>([]);
-  const [userStats, setUserStats] = useState<UserStats>({});
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [loading, setLoading] = useState(true);
@@ -99,29 +95,13 @@ export default function AdminUsers() {
   const [deleting, setDeleting] = useState(false);
 
   const fetchData = async () => {
-    const [profilesRes, rolesRes, docsRes, quizzesRes, flashRes] = await Promise.all([
+    const [profilesRes, rolesRes] = await Promise.all([
       supabase.from("profiles").select("*").order("created_at", { ascending: false }),
       supabase.from("user_roles").select("user_id, role"),
-      supabase.from("documents").select("user_id"),
-      supabase.from("quizzes").select("user_id"),
-      supabase.from("flashcards").select("user_id"),
     ]);
 
     if (profilesRes.data) setUsers(profilesRes.data as UserRow[]);
     if (rolesRes.data) setRoles(rolesRes.data as RoleRow[]);
-
-    // Aggregate stats per user
-    const stats: UserStats = {};
-    const addStat = (data: any[] | null, key: keyof UserStats[string]) => {
-      (data || []).forEach((row: any) => {
-        if (!stats[row.user_id]) stats[row.user_id] = { documents: 0, quizzes: 0, flashcards: 0 };
-        stats[row.user_id][key]++;
-      });
-    };
-    addStat(docsRes.data, "documents");
-    addStat(quizzesRes.data, "quizzes");
-    addStat(flashRes.data, "flashcards");
-    setUserStats(stats);
     setLoading(false);
   };
 
@@ -247,7 +227,7 @@ export default function AdminUsers() {
           <CardContent className="p-0">
             <ScrollArea className="w-full">
               <div className="overflow-x-auto">
-                <Table className="min-w-[900px]">
+                <Table className="min-w-[800px]">
                   <TableHeader>
                     <TableRow>
                       <TableHead>Name</TableHead>
@@ -255,20 +235,18 @@ export default function AdminUsers() {
                       <TableHead>Institution</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead>Roles</TableHead>
-                      <TableHead>Usage</TableHead>
                       <TableHead>Joined</TableHead>
                       <TableHead className="w-12" />
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {loading ? (
-                      <TableRow><TableCell colSpan={8} className="text-center py-8 text-muted-foreground">Loading users...</TableCell></TableRow>
+                      <TableRow><TableCell colSpan={7} className="text-center py-8 text-muted-foreground">Loading users...</TableCell></TableRow>
                     ) : filtered.length === 0 ? (
-                      <TableRow><TableCell colSpan={8} className="text-center py-8 text-muted-foreground">No users found</TableCell></TableRow>
+                      <TableRow><TableCell colSpan={7} className="text-center py-8 text-muted-foreground">No users found</TableCell></TableRow>
                     ) : (
                       filtered.map((user) => {
                         const userRoles = getUserRoles(user.id);
-                        const stats = userStats[user.id] || { documents: 0, quizzes: 0, flashcards: 0 };
                         const sc = statusConfig[user.account_status] || statusConfig.active;
                         return (
                           <TableRow key={user.id}>
@@ -289,15 +267,6 @@ export default function AdminUsers() {
                                     </Badge>
                                   ))
                                 )}
-                              </div>
-                            </TableCell>
-                            <TableCell>
-                              <div className="flex gap-2 text-xs text-muted-foreground">
-                                <span title="Documents">{stats.documents} docs</span>
-                                <span>·</span>
-                                <span title="Quizzes">{stats.quizzes} quiz</span>
-                                <span>·</span>
-                                <span title="Flashcards">{stats.flashcards} cards</span>
                               </div>
                             </TableCell>
                             <TableCell className="text-muted-foreground text-sm">
@@ -327,7 +296,6 @@ export default function AdminUsers() {
           ) : (
             filtered.map((user) => {
               const userRoles = getUserRoles(user.id);
-              const stats = userStats[user.id] || { documents: 0, quizzes: 0, flashcards: 0 };
               const sc = statusConfig[user.account_status] || statusConfig.active;
               return (
                 <Card key={user.id} className="p-3">
@@ -352,14 +320,8 @@ export default function AdminUsers() {
                           ))
                         )}
                       </div>
-                      <div className="flex gap-2 text-[10px] text-muted-foreground mt-1">
-                        <span>{stats.documents} docs</span>
-                        <span>·</span>
-                        <span>{stats.quizzes} quiz</span>
-                        <span>·</span>
-                        <span>{stats.flashcards} cards</span>
-                        <span>·</span>
-                        <span>{format(new Date(user.created_at), "MMM d, yy")}</span>
+                      <div className="text-[10px] text-muted-foreground mt-1">
+                        <span>Joined {format(new Date(user.created_at), "MMM d, yy")}</span>
                       </div>
                     </div>
                     <UserActionsMenu user={user} userRoles={userRoles} updateStatus={updateStatus} assignRole={assignRole} onDelete={setDeleteTarget} />

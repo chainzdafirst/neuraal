@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, LineChart, Line, Legend,
+  LineChart, Line, Legend,
 } from "recharts";
 import { format, subDays, startOfDay } from "date-fns";
 
@@ -191,45 +191,23 @@ export default function AdminAnalytics() {
 
           {/* Content Tab */}
           <TabsContent value="content" className="space-y-4">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Content Breakdown</CardTitle>
-                  <CardDescription>Distribution of generated content types</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="h-[250px] sm:h-[300px]">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <PieChart>
-                        <Pie data={contentBreakdown} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100} label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}>
-                          {contentBreakdown.map((_, i) => (
-                            <Cell key={i} fill={COLORS[i % COLORS.length]} />
-                          ))}
-                        </Pie>
-                        <Tooltip />
-                      </PieChart>
-                    </ResponsiveContainer>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Content Summary</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {contentBreakdown.map((item, i) => (
-                    <div key={item.name} className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[i] }} />
-                        <span className="text-sm font-medium">{item.name}</span>
-                      </div>
-                      <Badge variant="secondary">{item.value.toLocaleString()}</Badge>
+            <Card>
+              <CardHeader>
+                <CardTitle>Content Summary</CardTitle>
+                <CardDescription>Distribution of generated content types</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {contentBreakdown.map((item, i) => (
+                  <div key={item.name} className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[i] }} />
+                      <span className="text-sm font-medium">{item.name}</span>
                     </div>
-                  ))}
-                </CardContent>
-              </Card>
-            </div>
+                    <Badge variant="secondary">{item.value.toLocaleString()}</Badge>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
           </TabsContent>
 
           {/* Institutions Tab */}

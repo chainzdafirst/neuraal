@@ -1,13 +1,12 @@
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, FileText, Brain, BarChart3, TrendingUp, Activity } from "lucide-react";
+import { Users, Brain, BarChart3, TrendingUp, Activity } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 export default function AdminOverview() {
   const [stats, setStats] = useState({
     totalUsers: 0,
-    totalDocuments: 0,
     totalQuizzes: 0,
     totalFlashcards: 0,
   });
@@ -15,16 +14,14 @@ export default function AdminOverview() {
 
   useEffect(() => {
     const fetchStats = async () => {
-      const [profiles, documents, quizzes, flashcards] = await Promise.all([
+      const [profiles, quizzes, flashcards] = await Promise.all([
         supabase.from("profiles").select("id", { count: "exact", head: true }),
-        supabase.from("documents").select("id", { count: "exact", head: true }),
         supabase.from("quizzes").select("id", { count: "exact", head: true }),
         supabase.from("flashcards").select("id", { count: "exact", head: true }),
       ]);
 
       setStats({
         totalUsers: profiles.count || 0,
-        totalDocuments: documents.count || 0,
         totalQuizzes: quizzes.count || 0,
         totalFlashcards: flashcards.count || 0,
       });
@@ -35,7 +32,6 @@ export default function AdminOverview() {
 
   const kpis = [
     { label: "Total Users", value: stats.totalUsers, icon: Users, color: "text-primary" },
-    { label: "Documents", value: stats.totalDocuments, icon: FileText, color: "text-accent" },
     { label: "Quizzes Created", value: stats.totalQuizzes, icon: Brain, color: "hsl(var(--neuraal-amber))" },
     { label: "Flashcards", value: stats.totalFlashcards, icon: BarChart3, color: "hsl(var(--neuraal-emerald))" },
   ];
