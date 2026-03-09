@@ -7,6 +7,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Eye, EyeOff, Mail, Lock, ArrowRight, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { lovable } from "@/integrations/lovable";
 
 export default function Login() {
   const navigate = useNavigate();
