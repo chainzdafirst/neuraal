@@ -30,7 +30,7 @@ export default function AdminLogin() {
       if (data && data.length > 0) {
         navigate("/admin");
       } else {
-        toast.error("Access denied. You are not an admin.");
+        toast.error("Access denied. You are not an admin.", { position: "top-center" });
         await supabase.auth.signOut();
       }
       setChecking(false);
