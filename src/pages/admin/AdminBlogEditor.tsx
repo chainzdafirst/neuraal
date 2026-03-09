@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { AdminLayout } from "@/components/admin/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -147,154 +148,162 @@ export default function AdminBlogEditor() {
   };
 
   if (isLoading) {
-    return <div className="flex items-center justify-center py-20"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>;
+    return (
+      <AdminLayout>
+        <div className="flex items-center justify-center py-20">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        </div>
+      </AdminLayout>
+    );
   }
 
   return (
-    <div className="max-w-5xl mx-auto space-y-8 pb-20">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-        <div className="flex items-center gap-4 w-full sm:w-auto">
-          <Button variant="ghost" size="icon" onClick={() => navigate("/admin/blog")}>
-            <ArrowLeft className="w-4 h-4" />
-          </Button>
-          <h2 className="text-2xl sm:text-3xl font-display font-bold flex-1">{isNew ? "Create New Post" : "Edit Post"}</h2>
-        </div>
-        <div className="flex gap-3 w-full sm:w-auto sm:ml-auto">
-          <Button variant="outline" className="flex-1 sm:flex-none" onClick={() => navigate("/admin/blog")}>Cancel</Button>
-          <Button className="flex-1 sm:flex-none" onClick={handleSave} disabled={isSaving}>
-            {isSaving && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-            {isNew ? "Publish" : "Save Changes"}
-          </Button>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="col-span-1 lg:col-span-2 space-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="title">Title</Label>
-            <Input 
-              id="title" 
-              value={title} 
-              onChange={(e) => setTitle(e.target.value)} 
-              className="text-lg font-semibold h-12"
-              placeholder="e.g. How AI is changing education"
-            />
+    <AdminLayout>
+      <div className="space-y-4 sm:space-y-6 pb-10">
+        <div className="flex flex-col gap-3 sm:gap-4">
+          <div className="flex items-center gap-3 w-full">
+            <Button variant="ghost" size="icon" className="shrink-0" onClick={() => navigate("/admin/blog")}>
+              <ArrowLeft className="w-4 h-4" />
+            </Button>
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-display font-bold truncate">{isNew ? "Create New Post" : "Edit Post"}</h1>
           </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="content">Content (Markdown)</Label>
-            <Textarea 
-              id="content" 
-              value={content} 
-              onChange={(e) => setContent(e.target.value)} 
-              className="min-h-[500px] font-mono text-sm"
-              placeholder="Write your post content here..."
-            />
+          <div className="flex gap-3 w-full sm:w-auto sm:ml-auto">
+            <Button variant="outline" className="flex-1 sm:flex-none" onClick={() => navigate("/admin/blog")}>Cancel</Button>
+            <Button className="flex-1 sm:flex-none" onClick={handleSave} disabled={isSaving}>
+              {isSaving && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+              {isNew ? "Publish" : "Save Changes"}
+            </Button>
           </div>
         </div>
 
-        <div className="space-y-6">
-          <div className="p-5 bg-card border rounded-xl space-y-4">
-            <h3 className="font-semibold text-lg border-b pb-2">Publishing</h3>
-            
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+          <div className="col-span-1 lg:col-span-2 space-y-4 sm:space-y-6">
             <div className="space-y-2">
-              <Label>Status</Label>
-              <Select value={status} onValueChange={(v: any) => setStatus(v)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="draft">Draft</SelectItem>
-                  <SelectItem value="published">Published</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2 flex flex-col">
-              <Label>Publish Date (Scheduling)</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant={"outline"}
-                    className={cn(
-                      "w-full justify-start text-left font-normal",
-                      !publishedAt && "text-muted-foreground"
-                    )}
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {publishedAt ? format(publishedAt, "PPP") : <span>Pick a date</span>}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
-                  <Calendar
-                    mode="single"
-                    selected={publishedAt}
-                    onSelect={setPublishedAt}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
-              <p className="text-xs text-muted-foreground">
-                Set a future date to schedule the post.
-              </p>
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="slug">URL Slug</Label>
+              <Label htmlFor="title">Title</Label>
               <Input 
-                id="slug" 
-                value={slug} 
-                onChange={(e) => setSlug(e.target.value)} 
-                placeholder="how-ai-is-changing-education"
+                id="title" 
+                value={title} 
+                onChange={(e) => setTitle(e.target.value)} 
+                className="text-base sm:text-lg font-semibold h-11 sm:h-12"
+                placeholder="e.g. How AI is changing education"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="content">Content (Markdown)</Label>
+              <Textarea 
+                id="content" 
+                value={content} 
+                onChange={(e) => setContent(e.target.value)} 
+                className="min-h-[300px] sm:min-h-[500px] font-mono text-sm"
+                placeholder="Write your post content here..."
               />
             </div>
           </div>
 
-          <div className="p-5 bg-card border rounded-xl space-y-4">
-            <h3 className="font-semibold text-lg border-b pb-2">Metadata</h3>
-            
-            <div className="space-y-2">
-              <Label htmlFor="excerpt">Excerpt</Label>
-              <Textarea 
-                id="excerpt" 
-                value={excerpt} 
-                onChange={(e) => setExcerpt(e.target.value)} 
-                className="h-24 resize-none"
-                placeholder="A short summary for the blog grid..."
-              />
+          <div className="space-y-4 sm:space-y-6">
+            <div className="p-4 sm:p-5 bg-card border rounded-xl space-y-4">
+              <h3 className="font-semibold text-base sm:text-lg border-b pb-2">Publishing</h3>
+              
+              <div className="space-y-2">
+                <Label>Status</Label>
+                <Select value={status} onValueChange={(v: any) => setStatus(v)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="draft">Draft</SelectItem>
+                    <SelectItem value="published">Published</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2 flex flex-col">
+                <Label>Publish Date (Scheduling)</Label>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={"outline"}
+                      className={cn(
+                        "w-full justify-start text-left font-normal",
+                        !publishedAt && "text-muted-foreground"
+                      )}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {publishedAt ? format(publishedAt, "PPP") : <span>Pick a date</span>}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={publishedAt}
+                      onSelect={setPublishedAt}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+                <p className="text-xs text-muted-foreground">
+                  Set a future date to schedule the post.
+                </p>
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="slug">URL Slug</Label>
+                <Input 
+                  id="slug" 
+                  value={slug} 
+                  onChange={(e) => setSlug(e.target.value)} 
+                  placeholder="how-ai-is-changing-education"
+                />
+              </div>
             </div>
 
-            <div className="space-y-2">
-              <Label>Cover Image</Label>
-              {coverImage && (
-                <div className="relative aspect-video rounded-lg overflow-hidden border bg-muted mb-2 group">
-                  <img src={coverImage} alt="Cover" className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                    <Button variant="secondary" size="sm" onClick={() => setCoverImage("")}>Remove</Button>
+            <div className="p-4 sm:p-5 bg-card border rounded-xl space-y-4">
+              <h3 className="font-semibold text-base sm:text-lg border-b pb-2">Metadata</h3>
+              
+              <div className="space-y-2">
+                <Label htmlFor="excerpt">Excerpt</Label>
+                <Textarea 
+                  id="excerpt" 
+                  value={excerpt} 
+                  onChange={(e) => setExcerpt(e.target.value)} 
+                  className="h-24 resize-none"
+                  placeholder="A short summary for the blog grid..."
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Cover Image</Label>
+                {coverImage && (
+                  <div className="relative aspect-video rounded-lg overflow-hidden border bg-muted mb-2 group">
+                    <img src={coverImage} alt="Cover" className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <Button variant="secondary" size="sm" onClick={() => setCoverImage("")}>Remove</Button>
+                    </div>
                   </div>
-                </div>
-              )}
-              {!coverImage && (
-                <Button 
-                  variant="outline" 
-                  className="w-full h-24 border-dashed gap-2"
-                  onClick={() => fileInputRef.current?.click()}
-                >
-                  <ImageIcon className="w-5 h-5 text-muted-foreground" />
-                  <span className="text-muted-foreground">Upload Image</span>
-                </Button>
-              )}
-              <input 
-                type="file" 
-                ref={fileInputRef} 
-                onChange={handleImageUpload} 
-                accept="image/*" 
-                className="hidden" 
-              />
+                )}
+                {!coverImage && (
+                  <Button 
+                    variant="outline" 
+                    className="w-full h-24 border-dashed gap-2"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    <ImageIcon className="w-5 h-5 text-muted-foreground" />
+                    <span className="text-muted-foreground">Upload Image</span>
+                  </Button>
+                )}
+                <input 
+                  type="file" 
+                  ref={fileInputRef} 
+                  onChange={handleImageUpload} 
+                  accept="image/*" 
+                  className="hidden" 
+                />
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </AdminLayout>
   );
 }
