@@ -35,7 +35,6 @@ export default function AdminOverview() {
 
   const kpis = [
     { label: "Total Users", value: stats.totalUsers, icon: Users, color: "text-primary" },
-    { label: "Documents", value: stats.totalDocuments, icon: FileText, color: "text-accent" },
     { label: "Quizzes Created", value: stats.totalQuizzes, icon: Brain, color: "hsl(var(--neuraal-amber))" },
     { label: "Flashcards", value: stats.totalFlashcards, icon: BarChart3, color: "hsl(var(--neuraal-emerald))" },
   ];
