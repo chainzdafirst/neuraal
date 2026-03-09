@@ -227,7 +227,7 @@ export default function AdminUsers() {
           <CardContent className="p-0">
             <ScrollArea className="w-full">
               <div className="overflow-x-auto">
-                <Table className="min-w-[900px]">
+                <Table className="min-w-[800px]">
                   <TableHeader>
                     <TableRow>
                       <TableHead>Name</TableHead>
@@ -235,7 +235,6 @@ export default function AdminUsers() {
                       <TableHead>Institution</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead>Roles</TableHead>
-                      <TableHead>Usage</TableHead>
                       <TableHead>Joined</TableHead>
                       <TableHead className="w-12" />
                     </TableRow>
