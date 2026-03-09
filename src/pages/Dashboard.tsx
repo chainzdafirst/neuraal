@@ -45,10 +45,21 @@ export default function Dashboard() {
   ]);
 
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      navigate("/login");
+    if (!isLoading) {
+      if (!isAuthenticated) {
+        navigate("/login");
+      } else if (
+        profile && 
+        (!profile.education_level || 
+         !profile.institution || 
+         !profile.program || 
+         !profile.exam_type || 
+         !profile.year_of_study)
+      ) {
+        navigate("/onboarding");
+      }
     }
-  }, [isAuthenticated, isLoading, navigate]);
+  }, [isAuthenticated, isLoading, profile, navigate]);
 
   useEffect(() => {
     if (user) {

@@ -20,7 +20,7 @@ type Step = 1 | 2 | 3 | 4 | 5;
 
 export default function Onboarding() {
   const navigate = useNavigate();
-  const { updateProfile, isAuthenticated } = useAuth();
+  const { updateProfile, isAuthenticated, profile, isLoading: authLoading } = useAuth();
   const [step, setStep] = useState<Step>(1);
   const [isLoading, setIsLoading] = useState(false);
   
@@ -31,10 +31,20 @@ export default function Onboarding() {
   const [yearOfStudy, setYearOfStudy] = useState<number | null>(null);
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      navigate("/login");
+    if (!authLoading) {
+      if (!isAuthenticated) {
+        navigate("/login");
+      } else if (
+        profile?.education_level &&
+        profile?.institution &&
+        profile?.program &&
+        profile?.exam_type &&
+        profile?.year_of_study
+      ) {
+        navigate("/dashboard");
+      }
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, authLoading, profile, navigate]);
 
   const totalSteps = 5;
   const progress = (step / totalSteps) * 100;
