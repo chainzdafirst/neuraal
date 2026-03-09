@@ -241,13 +241,12 @@ export default function AdminUsers() {
                   </TableHeader>
                   <TableBody>
                     {loading ? (
-                      <TableRow><TableCell colSpan={8} className="text-center py-8 text-muted-foreground">Loading users...</TableCell></TableRow>
+                      <TableRow><TableCell colSpan={7} className="text-center py-8 text-muted-foreground">Loading users...</TableCell></TableRow>
                     ) : filtered.length === 0 ? (
-                      <TableRow><TableCell colSpan={8} className="text-center py-8 text-muted-foreground">No users found</TableCell></TableRow>
+                      <TableRow><TableCell colSpan={7} className="text-center py-8 text-muted-foreground">No users found</TableCell></TableRow>
                     ) : (
                       filtered.map((user) => {
                         const userRoles = getUserRoles(user.id);
-                        const stats = userStats[user.id] || { documents: 0, quizzes: 0, flashcards: 0 };
                         const sc = statusConfig[user.account_status] || statusConfig.active;
                         return (
                           <TableRow key={user.id}>
@@ -268,15 +267,6 @@ export default function AdminUsers() {
                                     </Badge>
                                   ))
                                 )}
-                              </div>
-                            </TableCell>
-                            <TableCell>
-                              <div className="flex gap-2 text-xs text-muted-foreground">
-                                <span title="Documents">{stats.documents} docs</span>
-                                <span>·</span>
-                                <span title="Quizzes">{stats.quizzes} quiz</span>
-                                <span>·</span>
-                                <span title="Flashcards">{stats.flashcards} cards</span>
                               </div>
                             </TableCell>
                             <TableCell className="text-muted-foreground text-sm">
