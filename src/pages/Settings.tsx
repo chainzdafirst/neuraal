@@ -57,6 +57,11 @@ export default function Settings() {
     try {
       await updateProfile({
         full_name: fullName,
+        education_level: educationLevel,
+        institution: institution,
+        program: program,
+        exam_type: examType,
+        year_of_study: yearOfStudy ? parseInt(yearOfStudy, 10) : null,
         notify_email: emailNotifications,
         notify_study_reminders: studyReminders,
         notify_weekly_report: weeklyReport,
