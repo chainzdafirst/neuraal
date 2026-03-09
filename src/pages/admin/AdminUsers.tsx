@@ -290,7 +290,7 @@ export default function AdminUsers() {
                               {format(new Date(user.created_at), "MMM d, yyyy")}
                             </TableCell>
                             <TableCell>
-                              <UserActionsMenu user={user} userRoles={userRoles} updateStatus={updateStatus} assignRole={assignRole} onDelete={setDeleteTarget} />
+                              <UserActionsMenu user={user} userRoles={userRoles} updateStatus={updateStatus} assignRole={assignRole} removeRole={removeRole} onDelete={setDeleteTarget} />
                             </TableCell>
                           </TableRow>
                         );
