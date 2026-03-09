@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { NeuraalLogo } from "@/components/ui/NeuraalLogo";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -19,6 +20,11 @@ export default function Settings() {
   const { user, profile, logout, updateProfile, isAuthenticated, isLoading } = useAuth();
 
   const [fullName, setFullName] = useState(profile?.full_name || "");
+  const [educationLevel, setEducationLevel] = useState(profile?.education_level || "");
+  const [institution, setInstitution] = useState(profile?.institution || "");
+  const [program, setProgram] = useState(profile?.program || "");
+  const [examType, setExamType] = useState(profile?.exam_type || "");
+  const [yearOfStudy, setYearOfStudy] = useState(profile?.year_of_study?.toString() || "");
   const [deleting, setDeleting] = useState(false);
 
   const [emailNotifications, setEmailNotifications] = useState(profile?.notify_email ?? true);
@@ -51,6 +57,11 @@ export default function Settings() {
     try {
       await updateProfile({
         full_name: fullName,
+        education_level: educationLevel,
+        institution: institution,
+        program: program,
+        exam_type: examType,
+        year_of_study: yearOfStudy ? parseInt(yearOfStudy, 10) : null,
         notify_email: emailNotifications,
         notify_study_reminders: studyReminders,
         notify_weekly_report: weeklyReport,
@@ -154,7 +165,7 @@ export default function Settings() {
           </CardContent>
         </Card>
 
-        {/* Academic Section (read-only) */}
+        {/* Academic Section */}
         <Card className="neuraal-glass border-border/60">
           <CardHeader>
             <div className="flex items-center gap-3">
@@ -163,7 +174,7 @@ export default function Settings() {
               </div>
               <div>
                 <CardTitle className="text-base">Academic Details</CardTitle>
-                <CardDescription>Set during onboarding</CardDescription>
+                <CardDescription>Tailor your experience</CardDescription>
               </div>
             </div>
           </CardHeader>
@@ -171,24 +182,61 @@ export default function Settings() {
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-1.5">
                 <Label className="text-muted-foreground text-xs">Education Level</Label>
-                <Input value={profile?.education_level || "—"} disabled className="bg-muted/50 text-muted-foreground" />
+                <Select value={educationLevel} onValueChange={setEducationLevel}>
+                  <SelectTrigger className="bg-background/50">
+                    <SelectValue placeholder="Select level" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="diploma">Diploma</SelectItem>
+                    <SelectItem value="degree">Degree</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div className="space-y-1.5">
                 <Label className="text-muted-foreground text-xs">Year of Study</Label>
-                <Input value={profile?.year_of_study ? `Year ${profile.year_of_study}` : "—"} disabled className="bg-muted/50 text-muted-foreground" />
+                <Select value={yearOfStudy} onValueChange={setYearOfStudy}>
+                  <SelectTrigger className="bg-background/50">
+                    <SelectValue placeholder="Select year" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1">Year 1</SelectItem>
+                    <SelectItem value="2">Year 2</SelectItem>
+                    <SelectItem value="3">Year 3</SelectItem>
+                    <SelectItem value="4">Year 4</SelectItem>
+                    <SelectItem value="5">Year 5+</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
             <div className="space-y-1.5">
               <Label className="text-muted-foreground text-xs">Institution</Label>
-              <Input value={profile?.institution || "—"} disabled className="bg-muted/50 text-muted-foreground" />
+              <Input 
+                value={institution} 
+                onChange={(e) => setInstitution(e.target.value)} 
+                placeholder="Your university or college"
+                className="bg-background/50" 
+              />
             </div>
             <div className="space-y-1.5">
               <Label className="text-muted-foreground text-xs">Program</Label>
-              <Input value={profile?.program || "—"} disabled className="bg-muted/50 text-muted-foreground" />
+              <Input 
+                value={program} 
+                onChange={(e) => setProgram(e.target.value)} 
+                placeholder="e.g. BSc Computer Science"
+                className="bg-background/50" 
+              />
             </div>
             <div className="space-y-1.5">
               <Label className="text-muted-foreground text-xs">Exam Type</Label>
-              <Input value={profile?.exam_type || "—"} disabled className="bg-muted/50 text-muted-foreground" />
+              <Select value={examType} onValueChange={setExamType}>
+                <SelectTrigger className="bg-background/50">
+                  <SelectValue placeholder="Select exam type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="semester">Semester Exams</SelectItem>
+                  <SelectItem value="board">Board Exams</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </CardContent>
         </Card>
