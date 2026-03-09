@@ -44,11 +44,12 @@ const statusConfig: Record<string, { label: string; variant: "default" | "second
   deactivated: { label: "Deactivated", variant: "secondary" },
 };
 
-function UserActionsMenu({ user, userRoles, updateStatus, assignRole, onDelete }: {
+function UserActionsMenu({ user, userRoles, updateStatus, assignRole, removeRole, onDelete }: {
   user: UserRow;
   userRoles: string[];
   updateStatus: (userId: string, status: string) => void;
   assignRole: (userId: string, role: string) => void;
+  removeRole: (userId: string, role: string) => void;
   onDelete: (user: UserRow) => void;
 }) {
   return (
@@ -73,9 +74,25 @@ function UserActionsMenu({ user, userRoles, updateStatus, assignRole, onDelete }
           </DropdownMenuItem>
         )}
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => assignRole(user.id, "super_admin")}>Assign Super Admin</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => assignRole(user.id, "academic_admin")}>Assign Academic Admin</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => assignRole(user.id, "support_admin")}>Assign Support Admin</DropdownMenuItem>
+        
+        {userRoles.includes("super_admin") ? (
+          <DropdownMenuItem onClick={() => removeRole(user.id, "super_admin")} className="text-destructive">Remove Super Admin</DropdownMenuItem>
+        ) : (
+          <DropdownMenuItem onClick={() => assignRole(user.id, "super_admin")}>Assign Super Admin</DropdownMenuItem>
+        )}
+        
+        {userRoles.includes("academic_admin") ? (
+          <DropdownMenuItem onClick={() => removeRole(user.id, "academic_admin")} className="text-destructive">Remove Academic Admin</DropdownMenuItem>
+        ) : (
+          <DropdownMenuItem onClick={() => assignRole(user.id, "academic_admin")}>Assign Academic Admin</DropdownMenuItem>
+        )}
+        
+        {userRoles.includes("support_admin") ? (
+          <DropdownMenuItem onClick={() => removeRole(user.id, "support_admin")} className="text-destructive">Remove Support Admin</DropdownMenuItem>
+        ) : (
+          <DropdownMenuItem onClick={() => assignRole(user.id, "support_admin")}>Assign Support Admin</DropdownMenuItem>
+        )}
+
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => onDelete(user)} className="text-destructive focus:text-destructive">
           <Trash2 className="h-4 w-4 mr-2" /> Delete Account
@@ -273,7 +290,7 @@ export default function AdminUsers() {
                               {format(new Date(user.created_at), "MMM d, yyyy")}
                             </TableCell>
                             <TableCell>
-                              <UserActionsMenu user={user} userRoles={userRoles} updateStatus={updateStatus} assignRole={assignRole} onDelete={setDeleteTarget} />
+                              <UserActionsMenu user={user} userRoles={userRoles} updateStatus={updateStatus} assignRole={assignRole} removeRole={removeRole} onDelete={setDeleteTarget} />
                             </TableCell>
                           </TableRow>
                         );
@@ -324,7 +341,7 @@ export default function AdminUsers() {
                         <span>Joined {format(new Date(user.created_at), "MMM d, yy")}</span>
                       </div>
                     </div>
-                    <UserActionsMenu user={user} userRoles={userRoles} updateStatus={updateStatus} assignRole={assignRole} onDelete={setDeleteTarget} />
+                    <UserActionsMenu user={user} userRoles={userRoles} updateStatus={updateStatus} assignRole={assignRole} removeRole={removeRole} onDelete={setDeleteTarget} />
                   </div>
                 </Card>
               );
